@@ -1,0 +1,4 @@
+# Dreymoor Urea Oracle — static publish, no build step.
+# Deploy target site: dreymoor-urea-oracle-cd-1ed87eec28.netlify.app
+[build]
+  publish = "site"
