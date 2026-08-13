@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Oracle — Dreymoor Urea Market Intelligence</title>
+<style>
+  :root {
+    color-scheme: light;
+    --page: #f9f9f7; --surface: #fcfcfb; --ink: #0b0b0b; --ink2: #52514e;
+    --muted: #898781; --grid: #e1e0d9; --baseline: #c3c2b7;
+    --border: rgba(11,11,11,0.10);
+    --good: #0ca30c; --warn: #fab219; --serious: #ec835a; --crit: #d03b3b;
+    --good-text: #006300;
+    --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --page: #0d0d0d; --surface: #1a1a19; --ink: #ffffff; --ink2: #c3c2b7;
+      --muted: #898781; --grid: #2c2c2a; --baseline: #383835;
+      --border: rgba(255,255,255,0.10);
+      --good-text: #0ca30c;
+      --s1: #3987e5; --s2: #d95926; --s3: #199e70;
+    }
+  }
+  * { box-sizing: border-box; margin: 0; }
+  body {
+    background: var(--page); color: var(--ink);
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-size: 15px; line-height: 1.5; padding: 24px 20px 60px;
+  }
+  .wrap { max-width: 1180px; margin: 0 auto; }
+  header.site { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-bottom: 6px; }
+  .brand { font-size: 20px; font-weight: 700; letter-spacing: .3px; }
+  .brand span { color: var(--muted); font-weight: 500; }
+  .asof { color: var(--ink2); font-size: 13px; }
+  .updated-chip { display:inline-block; padding:2px 10px; border:1px solid var(--border); border-radius:999px; font-size:12px; color:var(--ink2); background:var(--surface); }
+  h2 { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.1px; color: var(--muted); margin: 34px 0 12px; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px; }
+
+  /* hero view */
+  .hero { border-left: 4px solid var(--s1); }
+  .hero .headline { font-size: 17px; font-weight: 600; margin-bottom: 8px; }
+  .hero .body { color: var(--ink2); font-size: 14.5px; }
+  .hero .tail { margin-top: 10px; font-size: 13.5px; color: var(--ink2); }
+  .hero .tail b { color: var(--ink); }
+
+  /* benchmark grid */
+  .bench-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(178px, 1fr)); gap: 12px; }
+  .bench { padding: 14px 16px; }
+  .bench .name { font-size: 12.5px; font-weight: 600; color: var(--ink2); }
+  .bench .now { font-size: 21px; font-weight: 700; margin: 2px 0; }
+  .bench .unit { font-size: 11.5px; color: var(--muted); }
+  .bench .call { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; margin-top: 8px; font-size: 13px; font-weight: 600; }
+  .bench .target-inline { font-weight: 600; }
+  .bench .conf-row { margin-top: 6px; }
+  .arrow-down { color: var(--crit); } .arrow-up { color: var(--good-text); } .arrow-flat { color: var(--muted); }
+  .conf { font-size: 10.5px; font-weight: 700; letter-spacing: .5px; padding: 1px 7px; border-radius: 999px; border: 1px solid var(--border); color: var(--ink2); }
+  /* factor board */
+  .fact-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 10px; }
+  .fact { padding: 12px 14px; }
+  .fact .top { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 4px; }
+  .fact .code { font-weight: 700; font-size: 13px; }
+  .fact .fname { font-size: 12px; color: var(--muted); }
+  .fact .note { font-size: 12.8px; color: var(--ink2); }
+  .fact ul.note { margin: 0; padding-left: 16px; }
+  .fact ul.note li { margin: 2px 0; }
+  .state { display: inline-flex; align-items: center; gap: 5px; font-size: 10.5px; font-weight: 700; letter-spacing: .4px; padding: 2px 8px; border-radius: 999px; white-space: nowrap; }
+  .state::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+  .st-bull { color: var(--good-text); background: color-mix(in srgb, var(--good) 12%, transparent); }
+  .st-bear { color: var(--crit); background: color-mix(in srgb, var(--crit) 10%, transparent); }
+  .st-watch { color: #8a6100; background: color-mix(in srgb, var(--warn) 16%, transparent); }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .st-watch { color: var(--warn); } }
+  .st-quiet { color: var(--muted); background: color-mix(in srgb, var(--muted) 12%, transparent); }
+
+  /* drivers */
+  .drv-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+  .drv { padding: 12px 14px; }
+  .drv .name { font-size: 12px; font-weight: 600; color: var(--ink2); }
+  .drv .val { font-size: 19px; font-weight: 700; margin-top: 2px; }
+  .drv .chg { font-size: 12.5px; margin-top: 2px; }
+  .chg.up { color: var(--good-text); } .chg.down { color: var(--crit); } .chg.flat { color: var(--muted); }
+  .drv .sub { font-size: 11.5px; color: var(--muted); margin-top: 3px; }
+
+  /* geo list */
+  .geo li { margin: 7px 0 7px 2px; color: var(--ink2); font-size: 14px; }
+  .geo li b { color: var(--ink); font-weight: 600; }
+  .geo { padding-left: 20px; }
+
+  /* track record */
+  .log-entry { border-top: 1px solid var(--grid); padding: 12px 0; }
+  .log-entry:first-of-type { border-top: none; }
+  .log-date { font-weight: 700; font-size: 13.5px; }
+  .log-view { color: var(--ink2); font-size: 13.5px; margin-top: 3px; }
+  .log-score { font-size: 12.5px; margin-top: 3px; }
+  .score-pending { color: var(--muted); }
+  .score-correct { color: var(--good-text); font-weight: 600; }
+  .score-wrong { color: var(--crit); font-weight: 600; }
+
+  footer { margin-top: 40px; font-size: 12px; color: var(--muted); border-top: 1px solid var(--grid); padding-top: 14px; }
+  .cols2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 800px) { .cols2 { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="site">
+    <div class="brand">DREYMOOR <span>· Urea Oracle</span></div>
+    <div class="asof"><span class="updated-chip" id="asof-chip"></span></div>
+  </header>
+  <div class="asof" style="margin-bottom:18px" id="tagline">Daily urea market intelligence — factors, drivers, geopolitics, and the Oracle's forward view.</div>
+
+  <section class="card hero" id="hero"></section>
+
+  <h2>1–4 Week Calls</h2>
+  <div class="bench-grid" id="bench"></div>
+
+  <h2>Factor Board — Fundamentals (F) &amp; Geopolitics (G)</h2>
+  <div class="fact-grid" id="factors"></div>
+
+  <h2>Geopolitics Watch</h2>
+  <div class="card"><ul class="geo" id="geo"></ul></div>
+
+  <h2>Energy &amp; Crop Prices</h2>
+  <div class="drv-grid" id="drivers"></div>
+
+  <h2>Forecast Track Record</h2>
+  <div class="card" id="log"></div>
+
+  <footer>
+    Sources: Profercy Nitrogen Service (daily &amp; intraday reports), Fertecon, Argus/FMB, ICE TTF, EIA, public market data.
+    Factor codes per the Dreymoor factor framework (F1–F9 fundamentals, G1–G3 geopolitics); rules per the backtested Urea Oracle playbook v1.1.
+    Views are model-assisted market opinions with stated confidence, not guarantees. Internal use.
+  </footer>
+</div>
+
+<script id="oracle-data" type="application/json">
+{
+ "asof": "2026-08-13",
+ "updated": "Aug 13 at 19:50 Paris time (evening edition)",
+ "hero": {
+  "headline": "The RCF print is in: lowest offers of $390.25/t cfr east coast and $393.65/t west coast, both from Ameropa — counters have gone out at those levels with answers due 3pm IST tomorrow. Only 391,000t is auto-booked; whether the rest matches decides the market's next leg.",
+  "body": "Evening update — the tender print arrived this afternoon (Profercy flashes and a CRU alert, 13 August afternoon): RCF opened price bids in its 11 August tender and the lowest offers came in at $390.25/t cfr east coast and $393.65/t cfr west coast, both submitted by Ameropa (165,000t and 226,000t respectively) — almost exactly the low-$390s the market expected, and the first sub-$400 L1s on both coasts since April 2025. Of the 5.55m t offered in total by 30 participants, 1.336m t was priced below $400/t cfr, including 615,000t into the east coast below $395/t. Against the June NFL tender's L1s of $444.90–449.30/t, the Indian benchmark has repriced $55/t lower in two months. RCF has already issued counters at the L1 levels to several (not all) participants with a 3pm IST deadline tomorrow, 14 August; under tender rules the 391,000t offered at the lowest price is automatically booked. Now the matching arithmetic takes over — and it leans supportive: east-coast netbacks at the L1 work out below $370/t fob, viable mainly for Chinese prilled tonnage whose availability most estimate at only 1–1.5m t; Russian prilled netbacks at the west-coast L1 sit comfortably below $340/t fob Baltic against recent price targets of $355–360/t and above; and suppliers in Oman, Africa and SE Asia are not expected to show significant interest. If matching stays confined to the China-backed traders, RCF struggles to cover the full 1.7m t sought, granular benchmarks should not be marked down to the print, and unmet Indian demand returns as support from mid-September. Meanwhile the morning's stabilisation signals stand: Nola barges bounced $10/st to $391–393/st fob on real buyer interest, Brazilian suppliers are holding offers at $430–440/t cfr with the country's imports running 25% behind last year ahead of safrinha, Egyptian producers are withholding sales rather than discounting, and the corn-to-urea affordability ratio has recovered to 0.41 from 0.36 at end-July. The next 1–2 weeks still lean lower on momentum and sentiment, but the downside looks limited to roughly $15–30/t on the international benchmarks — and tomorrow afternoon's matching responses and fill rate are the single most important input of the week.",
+  "tail": "<b>Over 8 weeks: the fall stalls and prices level off in late August, then firm modestly into the September–October restocking window</b> — India follow-up buying if this tender under-fills, Brazil's compressed safrinha catch-up, US fall fill, and a European cost floor from TTF gas at €60/MWh (up 13% on the month, storage at record seasonal lows) that keeps an efficient European producer's urea cost near $519/t fob NW Europe — far above where Egypt trades. The bearish escape valve: a signed Hormuz arrangement would bring Gulf offers back within days and extend the decline by 2–3 weeks. The bullish tail: the Houthi attack that killed six seamen at Bab el-Mandeb on 12 August was the first deadly strike there in a year, and any widening toward the Saudi Red Sea berths that currently replace blocked Gulf loadings would lift Egypt fob and global levels within 1–4 weeks."
+ },
+ "benchmarks": [
+  {
+   "name": "Middle East fob",
+   "now": "$390–400/t",
+   "unit": "Aug 12",
+   "dir": "down",
+   "target": "$370–400 over 1–4w",
+   "conf": "60% CONFIDENCE",
+   "spark": [395.0, 395.0, 405.0, 405.0, 395.0, 395.0, 375.0, 375.0, 385.0, 395.0, 400.0, 405.0, 410.0, 420.0, 420.0, 425.0, 435.0, 445.0, 445.0, 445.0, 445.0, 445.0, 435.0, 430.0, 417.5, 417.5, 395.0, 395.0]
+  },
+  {
+   "name": "Egypt fob",
+   "now": "$450–500/t",
+   "unit": "Aug 12",
+   "dir": "down",
+   "target": "$430–485 over 1–4w",
+   "conf": "65% CONFIDENCE",
+   "spark": [420.0, 420.0, 420.0, 412.5, 412.5, 420.0, 432.5, 445.0, 490.0, 495.0, 497.0, 510.0, 532.5, 535.0, 535.0, 540.0, 555.0, 555.0, 555.0, 555.0, 550.0, 545.0, 520.0, 520.0, 495.0, 495.0, 490.0, 475.0]
+  },
+  {
+   "name": "Brazil cfr",
+   "now": "$410–440/t",
+   "unit": "Aug 12",
+   "dir": "down",
+   "target": "$395–430 over 1–4w",
+   "conf": "60% CONFIDENCE",
+   "spark": [405.0, 415.0, 415.0, 410.0, 416.0, 412.5, 412.5, 412.5, 430.0, 435.0, 450.0, 445.0, 440.0, 455.0, 457.5, 460.0, 477.5, 487.5, 482.5, 487.5, 482.5, 475.0, 462.5, 462.5, 452.5, 447.5, 440.0, 425.0]
+  },
+  {
+   "name": "US Gulf (Nola)",
+   "now": "$384–387/st",
+   "unit": "Aug 12",
+   "dir": "flat",
+   "target": "$375–400/st over 1–4w",
+   "conf": "55% CONFIDENCE",
+   "spark": [356.5, 362.5, 369.0, 370.5, 360.0, 360.0, 366.5, 374.0, 393.5, 392.0, 403.0, 405.0, 413.5, 418.5, 425.0, 431.5, 440.0, 422.5, 420.0, 435.5, 412.5, 415.0, 398.5, 385.0, 390.0, 398.5, 387.5, 385.5]
+  }
+ ],
+ "factors": [
+  {
+   "code": "F1",
+   "name": "Tenders & Policy",
+   "state": "bear",
+   "note": "The print is in: RCF opened price bids on 13 August — lowest offers $390.25/t cfr east coast and $393.65/t cfr west coast, both from Ameropa, the first sub-$400 L1s on both coasts since April 2025 and $55/t below June's NFL tender. 5.55m t was offered by 30 participants (Dreymoor among them, per CRU's list); only 1.336m t was priced below $400/t cfr, of which 615,000t east coast below $395/t. Counters have been issued at the L1 levels to several (not all) participants with responses due 3pm IST 14 August; the 391,000t offered at the lowest price is auto-booked under tender rules. The matching arithmetic leans toward an under-fill: Chinese prilled availability is estimated at 1–1.5m t, Russian netbacks at the west-coast L1 fall comfortably below $340/t fob Baltic against targets of $355–360/t and above, and Oman, African and SE Asian suppliers are not expected to participate meaningfully. Broad matching would confirm weakness through late August; a thin fill leaves Indian demand as support from mid-September."
+  },
+  {
+   "code": "F2",
+   "name": "Seasonality",
+   "state": "quiet",
+   "note": "August is close to neutral on the 16-year map; only Egypt and Nola keep a mild firm tilt (Nola rose in 67% of past Augusts). The September–October restocking window — India follow-ups, Brazil catch-up, US fall fill — starts building from late August."
+  },
+  {
+   "code": "F3",
+   "name": "Production Cost",
+   "state": "watch",
+   "note": "TTF gas holds near €60/MWh, up about 13% over the past month, with European storage at the lowest seasonal level on record. At these gas costs a NW European producer needs around $519/t fob to cover urea production (Argus, 6 Aug) — far above Egypt at $450–500/t fob — so European plants face curtailment pressure and Europe stays import-dependent, a floor building under Egypt fob into September."
+  },
+  {
+   "code": "F4",
+   "name": "Supply Shocks",
+   "state": "watch",
+   "note": "Supply is quietly rebuilding despite the closed strait: twelve vessels holding 637,000t of urea are loaded or set to load in the Gulf, the most since 24 June (Argus/Kpler data), with routes via Oman and Saudi Red Sea berths doing the work. Argentina's Profertil produced 617,000t in January–June, up 16% y/y (Adecoagro). The conflict has cut Middle East urea exports by an estimated 4–4.5m t to date (CF Industries, whole region). More tonnage reaching the water weakens the supply-scarcity support under prices over the next 2–4 weeks."
+  },
+  {
+   "code": "F5",
+   "name": "Long/Short Squeeze",
+   "state": "quiet",
+   "note": "No squeeze signals; traders are not reported accumulating either side."
+  },
+  {
+   "code": "F6",
+   "name": "Agri Market",
+   "state": "watch",
+   "note": "USDA's 12 August WASDE cut US corn and soybean yield forecasts by more than expected and grains rallied — corn is up close to 4% on the month. Higher crop prices improve urea affordability: the corn-to-urea ratio has recovered to 0.41 from 0.36 at end-July, close to the 0.43 that preceded July's urea price rebound (Argus). Set against that, Europe's corn harvest is poor — France's crop is forecast at its lowest since 1980 — which trims European urea demand into the autumn. Net effect has turned mildly supportive for demand over the next 4–8 weeks."
+  },
+  {
+   "code": "F7",
+   "name": "Deferred Buying",
+   "state": "watch",
+   "note": "Brazil's urea imports are running 25% behind last year while suppliers hold offers at $430–440/t cfr rather than chase bids below $400/t, and July's imports already rose year on year as the catch-up begins. A Singapore-based trader notes most Chinese granular urea must go to Brazil as there is little demand elsewhere. The longer buying stays postponed, the more it compresses into a short pre-safrinha window — a set-up that has historically produced price spikes in the September–October period."
+  },
+  {
+   "code": "F8",
+   "name": "Momentum",
+   "state": "bear",
+   "note": "The downward move continues but is visibly slowing. Fresh downside prints this week: a 30,000t Azerbaijani granular cargo sold at $415/t fob Black Sea against targets in the mid-to-high $400s last week, Egypt fob was assessed $10/t lower by Argus, and Chinese prilled fell about $10/t to $365–375/t fob. Against that, Nola barges bounced $10/st to $391–393/st fob on real buyer interest. Sharp drops like the 7–12 August leg have historically kept going for another 1–2 weeks before exhausting, so the path of least resistance stays down into late August, but at a slower pace."
+  },
+  {
+   "code": "F9",
+   "name": "Market Psychology",
+   "state": "bear",
+   "note": "A third day of minimal global activity: buyers and sellers at every hub are waiting for the Indian tender print before committing, and Egyptian producers are withholding sales entirely rather than discounting. Weak-price perception of this kind has brought lower prices over the following 1–2 weeks in 68% of past episodes and remains the strongest active signal on the board. One early counterpoint from Argus: some participants now point to urea's improved value versus the past six months — the first hint that perception could turn once the tender uncertainty clears. With the print now public and matching responses due by 3pm IST tomorrow, that wait-and-see paralysis should break within days."
+  },
+  {
+   "code": "G1",
+   "name": "Conflicts",
+   "state": "watch",
+   "note": "Hormuz talks remain stuck: Iran conditions reopening on the June memorandum — an end to the US naval blockade, unfreezing of assets, a halt to attacks on Lebanon and a US military drawdown — while a 60-day interim arrangement via agreed Iranian/Omani routes is drafted but awaits final authorisation in Tehran. Transits are running near 6 ships a day against more than 130 before the war. A signed arrangement is the live bearish catalyst — Gulf offers would return within days and extend the price decline by 2–3 weeks. The bullish path is not the closure itself, which is already the status quo, but the conflict widening toward Saudi or Omani export infrastructure, which would lift Egypt fob and global levels within 1–4 weeks."
+  },
+  {
+   "code": "G2",
+   "name": "Trade Policy",
+   "state": "bear",
+   "note": "China's export overhang still sets the market's direction: the roughly 4.5m t quota remains less than half committed, prilled offers have slid into the $360s/t fob, and domestic prices near $263/t fob equivalent leave room to go lower. One nuance from Profercy: export quotas for granular urea are scarcer than for prills, which limits how much Chinese granular (offered at $400–410/t fob, sharpest quotes $385–390/t) can flow. The US bill adding steep tariffs on Russian fertilizer awaits a House vote when Congress returns in early September; becoming law would support Nola into the autumn."
+  },
+  {
+   "code": "G3",
+   "name": "Global Logistics",
+   "state": "watch",
+   "note": "A Houthi attack killed six crew on a cargo ship at Bab el-Mandeb on 12 August — the first deadly strike there in a year, after the group declared a blockade of the strait last month with throughput already roughly halved. This raises freight and insurance costs on the Red Sea routes now carrying much of the region's replacement urea flow, and any widening toward Saudi Red Sea export berths would cut real supply within 1–4 weeks. Turkey continues to restrict Black Sea transits after drone attacks on merchant ships, and the Rhine remains near record lows, hampering EU inland fertilizer distribution through at least mid-August."
+  }
+ ],
+ "drivers": [
+  {
+   "name": "EU TTF gas",
+   "val": "€60",
+   "chg": "+13% m/m",
+   "dir": "up",
+   "sub": "storage lowest seasonal on record"
+  },
+  {
+   "name": "Brent crude",
+   "val": "$87.3",
+   "chg": "−2% d/d",
+   "dir": "down",
+   "sub": "pricing the Hormuz stalemate, not a resolution"
+  },
+  {
+   "name": "Henry Hub",
+   "val": "$2.78",
+   "chg": "−4% m/m",
+   "dir": "down",
+   "sub": "record US output keeps US gas cheap"
+  },
+  {
+   "name": "Corn (CBOT)",
+   "val": "455c/bu",
+   "chg": "+4% m/m",
+   "dir": "up",
+   "sub": "WASDE 12 Aug cut US yield more than expected"
+  },
+  {
+   "name": "Wheat (CBOT)",
+   "val": "655c/bu",
+   "chg": "+2% m/m",
+   "dir": "up",
+   "sub": "eased back from a 9-month high after WASDE"
+  },
+  {
+   "name": "Soybeans",
+   "val": "1158c/bu",
+   "chg": "−3% m/m",
+   "dir": "down",
+   "sub": "yield cut offset by larger acreage"
+  }
+ ],
+ "geo": [
+  "<b>Hormuz:</b> Still closed, and the gap remains political. Iran conditions any reopening on the June memorandum — an end to the US naval blockade, unfreezing of frozen assets, a halt to attacks on Lebanon and a drawback of US forces — and insists the route framework agreed with Oman (inbound through Iranian waters, outbound through Omani waters) is a technical matter, not a reopening. A 60-day interim arrangement is drafted but awaits final authorisation in Tehran. Transits are running near 6 ships a day against more than 130 before the war. A signed arrangement would bring Gulf urea offers back to world markets within days; a collapse of the talks renews escalation risk.",
+  "<b>Bab el-Mandeb / Red Sea:</b> A Houthi attack on a cargo ship killed six crew on 12 August — the first deadly strike in the strait in a year, following the group's declared blockade of the waterway last month. Throughput had already roughly halved. For urea the channel is freight and insurance costs on the Red Sea routes that now carry much of the Gulf's replacement flow, and the risk of widening toward Saudi Red Sea export berths — the single clearest route to a reversal of the bearish view.",
+  "<b>Black Sea:</b> Turkey continues to restrict and delay commercial transits into the Black Sea after drone attacks on merchant vessels, and strikes on port and energy infrastructure continue on both sides of the Russia/Ukraine war. For urea this adds a freight and risk penalty to Baltic and Black Sea prilled tonnage at exactly the moment Indian netback levels turn unattractive for Russian sellers.",
+  "<b>Supply-loss baseline:</b> CF Industries estimates the conflict has cut Middle East urea exports by 4–4.5m t to date (plus around 1m t of ammonia). The region normally exports about 20m t of urea a year — just over 16m t from Gulf producers plus 4.4m t committed offshore by Iran in 2025 — around 38% of world urea trade. Flows are reduced, not zero: twelve vessels holding 637,000t are loading or set to load in the Gulf, the most since 24 June, with Oman loading south of the strait and Saudi Red Sea berths active."
+ ],
+ "log": [
+  {
+   "date": "2026-08-13",
+   "view": "DOWN 1–4w: MEast $370–400 (60%), Egypt $430–485 (65%), Brazil $395–430 (60%); Nola SIDEWAYS $375–400/st (55%). RCF print (pm): L1 $390.25 EC / $393.65 WC (Ameropa); counters at L1, replies due 3pm IST 14 Aug; only 391kt auto-booked. Fill rate decides — thin fill → mid-Sep support.",
+   "score": "pending",
+   "scoreNote": "Scores on 27 Aug (2w) / 10 Sep (4w)"
+  },
+  {
+   "date": "2026-08-12",
+   "view": "HOLD, DOWN 1–4w unchanged: MEast $370–400 (60%), Egypt $445–490 (65%), Brazil $405–440 (65%); Nola SIDEWAYS $370–400/st (55%). No RCF price print public by midday; $390s cfr expected would push Russian prilled netbacks below $340 fob Baltic, risking non-participation. Libya NOC prilled awarded $400 fob. Decisive input is the matching round and fill rate, not the print.",
+   "score": "pending",
+   "scoreNote": "Scores on 26 Aug (2w) / 9 Sep (4w)"
+  },
+  {
+   "date": "2026-08-11",
+   "view": "DOWN 1–4w: MEast $370–400 (60%), Egypt $445–490 (65%), Brazil $405–440 (65%); Nola SIDEWAYS $370–400/st (55%). RCF: 5.55m t offered, lowest sub-$400 cfr EC via Chinese prilled; award 12 Aug. Hormuz talks stalled on reparations.",
+   "score": "pending",
+   "scoreNote": "Scores on 25 Aug (2w) / 8 Sep (4w)"
+  },
+  {
+   "date": "2026-08-10",
+   "view": "DOWN 1–4w: MEast $395–430 (60%), Egypt $455–505 (65%), Brazil $420–455 (65%); Nola SIDEWAYS $370–400/st (55%). Pivot: RCF award 11 Aug; a Hormuz deal would speed the fall, Houthi widening would reverse it.",
+   "score": "pending",
+   "scoreNote": "Scores on 24 Aug (2w) / 7 Sep (4w)"
+  },
+  {
+   "date": "2026-08-07",
+   "view": "DOWN 1–4w all benchmarks (Egypt 70% conf, $455–505; MEast $395–430; Brazil $430–460; Nola $360–390). 8w: fall stalls late Aug, firm into Sep–Oct. Trigger: RCF award <$450 cfr confirms; G1 escalation voids.",
+   "score": "pending",
+   "scoreNote": "Scores on ~21 Aug (2w) / 4 Sep (4w)"
+  }
+ ]
+}
+</script>
+
+<script>
+(function () {
+  const D = JSON.parse(document.getElementById('oracle-data').textContent);
+  document.getElementById('asof-chip').textContent = 'Updated ' + D.updated;
+
+  // hero
+  document.getElementById('hero').innerHTML =
+    '<div class="headline">' + D.hero.headline + '</div>' +
+    '<div class="body">' + D.hero.body + '</div>' +
+    '<div class="tail">' + D.hero.tail + '</div>';
+
+  // benchmarks
+  const arrows = { down: ['▼', 'arrow-down', 'Lower'], up: ['▲', 'arrow-up', 'Higher'], flat: ['◆', 'arrow-flat', 'Sideways'] };
+  document.getElementById('bench').innerHTML = D.benchmarks.map(b => {
+    const a = arrows[b.dir] || arrows.flat;
+    return '<div class="card bench"><div class="name">' + b.name + '</div>' +
+      '<div class="now">' + b.now + '</div><div class="unit">Profercy assessment ' + b.unit + '</div>' +
+      '<div class="call"><span class="' + a[1] + '">' + a[0] + ' ' + a[2] + '</span> <span class="target-inline ' + a[1] + '">' + b.target + '</span></div>' +
+      '<div class="conf-row"><span class="conf">' + b.conf + '</span></div></div>';
+  }).join('');
+
+  // factors
+  const stCls = { bull: ['st-bull', 'BULLISH'], bear: ['st-bear', 'BEARISH'], watch: ['st-watch', 'WATCH'], quiet: ['st-quiet', 'NEUTRAL'] };
+  document.getElementById('factors').innerHTML = D.factors.map(f => {
+    const s = stCls[f.state] || stCls.quiet;
+    const items = f.note.split(/;\s+|(?<=[.!?])(?<!(?:est|approx|vs|ca|no)\.)\s+(?=[A-Z€$~<(])/).map(x => x.trim()).filter(Boolean)
+      .map(x => { let y = x.charAt(0).toUpperCase() + x.slice(1); if (!/[.!?]$/.test(y)) y += '.'; return y; });
+    const note = '<ul class="note">' + items.map(x => '<li>' + x + '</li>').join('') + '</ul>';
+    return '<div class="card fact"><div class="top"><span><span class="code">' + f.code + '</span> <span class="fname">' + f.name + '</span></span>' +
+      '<span class="state ' + s[0] + '">' + s[1] + '</span></div>' + note + '</div>';
+  }).join('');
+
+  // drivers
+  const chgCls = { up: 'up', down: 'down', flat: 'flat' };
+  document.getElementById('drivers').innerHTML = D.drivers.map(d =>
+    '<div class="card drv"><div class="name">' + d.name + '</div><div class="val">' + d.val + '</div>' +
+    '<div class="chg ' + (chgCls[d.dir] || 'flat') + '">' + d.chg + '</div><div class="sub">' + d.sub + '</div></div>'
+  ).join('');
+
+  // geo
+  document.getElementById('geo').innerHTML = D.geo.map(g => '<li>' + g + '</li>').join('');
+
+  // log
+  const scoreCls = { pending: 'score-pending', correct: 'score-correct', wrong: 'score-wrong', mixed: 'score-pending' };
+  document.getElementById('log').innerHTML = D.log.map(l =>
+    '<div class="log-entry"><div class="log-date">' + l.date + '</div><div class="log-view">' + l.view + '</div>' +
+    '<div class="log-score ' + (scoreCls[l.score] || 'score-pending') + '">' +
+    (l.score === 'pending' ? '⏳ ' : l.score === 'correct' ? '✓ ' : l.score === 'wrong' ? '✗ ' : '') +
+    (l.scoreNote || l.score) + '</div></div>'
+  ).join('');
+})();
+</script>
+</body>
+</html>
