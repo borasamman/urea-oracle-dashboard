@@ -3,10 +3,14 @@ name: Publish Oracle dashboard
 # v2 (14 Aug 2026): TWO fixed publish moments per weekday - 13:00 and 19:00
 # Europe/Paris - plus opportunistic publishing of off-schedule editions.
 #
-# The job polls every 30 minutes, every day. Two behaviours:
-#   * SCHEDULED  - if the slot lands within 25 min before 12:59 or 18:59 Paris
+# The job polls every 15 minutes, every day. Two behaviours:
+#   * SCHEDULED  - if the slot lands within 90 min before 12:59 or 18:59 Paris
 #                  on a weekday, it sleeps to that exact second and publishes.
 #                  DST-proof: the target is computed in Europe/Paris.
+#                  The wide window + dense slots exist because GitHub's cron is
+#                  best-effort: on 14 Aug 2026 it fired at 13:06, 13:56, 15:35,
+#                  16:38, 18:02 - skipping most 30-min slots. One surviving slot
+#                  inside the window is enough to hit the target second.
 #   * OPPORTUNISTIC - any other slot peeks at the Drive folder and publishes
 #                  immediately if the newest dashboard file is not the one
 #                  recorded in the last [oracle-publish] commit. This covers
@@ -14,7 +18,7 @@ name: Publish Oracle dashboard
 #                  catch-up if a scheduled slot was delayed or failed.
 on:
   schedule:
-    - cron: '7,37 * * * *'
+    - cron: '2,17,32,47 * * * *'
   workflow_dispatch:
     inputs:
       force:
@@ -32,7 +36,7 @@ permissions:
 jobs:
   publish:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 120
     steps:
       - uses: actions/checkout@v4
         with:
@@ -57,11 +61,11 @@ jobs:
           NOON=$(TZ=Europe/Paris date -d "$TODAY 12:59:00" +%s)
           EVE=$(TZ=Europe/Paris date -d "$TODAY 18:59:00" +%s)
 
-          # Scheduled publish: weekdays only, within 25 min before a target.
+          # Scheduled publish: weekdays only, within 90 min before a target.
           if [ "$DOW" -le 5 ]; then
             for T in "$NOON" "$EVE"; do
               DELTA=$((T - NOW))
-              if [ "$DELTA" -gt 0 ] && [ "$DELTA" -le 1500 ]; then
+              if [ "$DELTA" -gt 0 ] && [ "$DELTA" -le 5400 ]; then
                 echo "Scheduled edition: sleeping ${DELTA}s to $(TZ=Europe/Paris date -d "@$T" '+%H:%M:%S %Z')..."
                 sleep "$DELTA"
                 echo "mode=publish" >> "$GITHUB_OUTPUT"
