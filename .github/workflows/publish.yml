@@ -1,24 +1,30 @@
 name: Publish Oracle dashboard
 
-# All cron times are UTC. The three slots bracket 13:00 Europe/Paris in both
-# summer (UTC+2) and winter (UTC+1); the job itself sleeps until exactly
-# 12:59 Paris, so the publish moment is DST-proof. Later slots double as
-# catch-up if an earlier one was delayed or failed.
+# v2 (14 Aug 2026): TWO fixed publish moments per weekday - 13:00 and 19:00
+# Europe/Paris - plus opportunistic publishing of off-schedule editions.
+#
+# The job polls every 30 minutes, every day. Two behaviours:
+#   * SCHEDULED  - if the slot lands within 25 min before 12:59 or 18:59 Paris
+#                  on a weekday, it sleeps to that exact second and publishes.
+#                  DST-proof: the target is computed in Europe/Paris.
+#   * OPPORTUNISTIC - any other slot peeks at the Drive folder and publishes
+#                  immediately if the newest dashboard file is not the one
+#                  recorded in the last [oracle-publish] commit. This covers
+#                  special editions at any hour, any day, and doubles as
+#                  catch-up if a scheduled slot was delayed or failed.
 on:
   schedule:
-    - cron: '37 10 * * 1-5'
-    - cron: '37 11 * * 1-5'
-    - cron: '37 12 * * 1-5'
+    - cron: '7,37 * * * *'
   workflow_dispatch:
     inputs:
       force:
-        description: 'Publish immediately, ignoring the 13:00 Paris gate'
+        description: 'Publish immediately, ignoring the schedule gate'
         type: boolean
         default: false
 
 concurrency:
   group: oracle-publish
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 permissions:
   contents: write
@@ -26,46 +32,60 @@ permissions:
 jobs:
   publish:
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 50
 
-      - name: Gate to 13:00 Paris (sleep / catch-up / skip)
+      - name: Gate (sleep to 13:00 / 19:00 Paris, or publish a new edition now)
         id: gate
         env:
           FORCE: ${{ inputs.force }}
         run: |
           set -euo pipefail
-          NOW=$(date +%s)
-          TARGET=$(TZ=Europe/Paris date -d "$(TZ=Europe/Paris date +%F) 12:59:00" +%s)
-          TODAY=$(TZ=Europe/Paris date +%F)
           if [ "${FORCE:-false}" = "true" ]; then
             echo "Forced publish (manual run)."
-            echo "mode=publish" >> "$GITHUB_OUTPUT"; exit 0
+            echo "mode=publish" >> "$GITHUB_OUTPUT"
+            echo "window=force" >> "$GITHUB_OUTPUT"
+            exit 0
           fi
-          if [ "$NOW" -lt "$TARGET" ]; then
-            DELTA=$((TARGET - NOW))
-            if [ "$DELTA" -le 5460 ]; then
-              echo "Sleeping $DELTA s until 12:59 Europe/Paris..."
-              sleep "$DELTA"
-              echo "mode=publish" >> "$GITHUB_OUTPUT"
-            else
-              echo "This slot is $DELTA s early - not today's publisher. Skipping."
-              echo "mode=skip" >> "$GITHUB_OUTPUT"
-            fi
+
+          NOW=$(date +%s)
+          DOW=$(TZ=Europe/Paris date +%u)          # 1-7, Mon-Sun
+          TODAY=$(TZ=Europe/Paris date +%F)
+          NOON=$(TZ=Europe/Paris date -d "$TODAY 12:59:00" +%s)
+          EVE=$(TZ=Europe/Paris date -d "$TODAY 18:59:00" +%s)
+
+          # Scheduled publish: weekdays only, within 25 min before a target.
+          if [ "$DOW" -le 5 ]; then
+            for T in "$NOON" "$EVE"; do
+              DELTA=$((T - NOW))
+              if [ "$DELTA" -gt 0 ] && [ "$DELTA" -le 1500 ]; then
+                echo "Scheduled edition: sleeping ${DELTA}s to $(TZ=Europe/Paris date -d "@$T" '+%H:%M:%S %Z')..."
+                sleep "$DELTA"
+                echo "mode=publish" >> "$GITHUB_OUTPUT"
+                echo "window=scheduled" >> "$GITHUB_OUTPUT"
+                exit 0
+              fi
+            done
+          fi
+
+          # Opportunistic: publish only if Drive holds an edition we never published.
+          NEWEST=$(python3 scripts/fetch_latest.py --peek || true)
+          if [ -z "$NEWEST" ]; then
+            echo "Peek returned nothing (Drive listing unreachable). Skipping quietly."
+            echo "mode=skip" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          LASTSRC=$(git log -1 --format=%s --grep='\[oracle-publish\]' -- site/index.html | sed -n 's/.*(\(.*\))$/\1/p' || true)
+          echo "newest in Drive: '$NEWEST' | last published: '${LASTSRC:-none}'"
+          if [ "$NEWEST" != "${LASTSRC:-}" ]; then
+            echo "New edition detected - publishing now."
+            echo "mode=publish" >> "$GITHUB_OUTPUT"
+            echo "window=special" >> "$GITHUB_OUTPUT"
           else
-            LAST=$(git log -1 --format=%cI --grep='\[oracle-publish\]' -- site/index.html || true)
-            LASTDAY=""
-            if [ -n "$LAST" ]; then LASTDAY=$(TZ=Europe/Paris date -d "$LAST" +%F); fi
-            if [ "$LASTDAY" = "$TODAY" ]; then
-              echo "Already published today ($LAST). Nothing to do."
-              echo "mode=skip" >> "$GITHUB_OUTPUT"
-            else
-              echo "Past 13:00 Paris with no publish yet today - catch-up publish now."
-              echo "mode=publish" >> "$GITHUB_OUTPUT"
-            fi
+            echo "Nothing new. Skipping."
+            echo "mode=skip" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Fetch newest dashboard from Drive
@@ -92,19 +112,19 @@ jobs:
           set -euo pipefail
           URL="https://dreymoor-urea-oracle-cd-1ed87eec28.netlify.app"
           echo "Waiting for '$ORACLE_CHIP' to appear at $URL ..."
-          for i in $(seq 1 40); do
-            BODY=$(curl -fsSL --max-time 30 "$URL/?v=$RANDOM" || true)
+          for i in $(seq 1 32); do
+            BODY=$(curl -fsSL --max-time 20 "$URL/?v=$RANDOM" || true)
             if printf '%s' "$BODY" | grep -qF "$ORACLE_CHIP"; then
               echo "Live: deploy verified after ~$((i * 15))s."
               exit 0
             fi
             sleep 15
           done
-          echo "::error::DEPLOY NOT LIVE after 10 minutes - commit pushed but Netlify did not serve it."
+          echo "::error::DEPLOY NOT LIVE after 8 minutes - commit pushed but Netlify did not serve it."
           exit 1
 
-      - name: Fail loudly if today's content was missing
-        if: steps.gate.outputs.mode == 'publish' && env.ORACLE_STALE == '1'
+      - name: Fail loudly if a scheduled edition had no fresh content
+        if: steps.gate.outputs.mode == 'publish' && steps.gate.outputs.window == 'scheduled' && env.ORACLE_STALE == '1'
         run: |
           echo "::error::CONTENT STALE - newest Drive file is dated ${ORACLE_ASOF}, not today. The Claude analysis task likely failed; the site keeps the previous edition."
           exit 1
