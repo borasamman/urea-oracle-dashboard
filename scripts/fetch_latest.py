@@ -2,13 +2,22 @@
 """Fetch the newest Urea Oracle dashboard HTML from the public Google Drive
 folder, stamp the "Updated ..." chip, and write it to site/index.html.
 
+v2 (14 Aug 2026):
+  * --peek  : print the winning Drive file name and exit (no download, no
+              write). Used by the workflow to decide whether an off-schedule
+              edition needs publishing.
+  * same-date edition ranking (lowest to highest priority):
+        -watchdog  <  (no suffix)  <  -noon  <  named special  <  -eHHMM
+    where -eHHMM is a timed edition (e.g. -e1935) and the highest HHMM wins.
+  * chip snaps to 13:00 or 19:00 inside the two scheduled publish windows.
+
 Outputs (appended to $GITHUB_ENV):
   ORACLE_CHANGED = 0/1   site/index.html was modified
   ORACLE_STALE   = 0/1   newest Drive content is NOT dated today (Paris)
   ORACLE_ASOF    = YYYY-MM-DD of the content used
   ORACLE_CHIP    = the exact "updated" string stamped into the page
   ORACLE_SRC     = Drive file name used
-Exit codes: 0 = ok (even if stale — the workflow decides how loud to be),
+Exit codes: 0 = ok (even if stale - the workflow decides how loud to be),
             2 = hard failure (listing unreachable/unparseable, download failed).
 """
 import datetime
@@ -23,8 +32,10 @@ LISTING_URL = f"https://drive.google.com/embeddedfolderview?id={FOLDER_ID}#list"
 NAME_RE = re.compile(
     r"urea-oracle-dashboard-(\d{4}-\d{2}-\d{2})(?:-([A-Za-z0-9]+))?\.html$"
 )
-UA = {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) oracle-publisher/1.0"}
+TIMED_RE = re.compile(r"^e([0-2]\d[0-5]\d)$")
+UA = {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) oracle-publisher/2.0"}
 PARIS = ZoneInfo("Europe/Paris")
+PEEK = "--peek" in sys.argv[1:]
 
 
 def fetch(url, timeout=60):
@@ -34,6 +45,11 @@ def fetch(url, timeout=60):
 
 
 def die(msg):
+    if PEEK:
+        # A peek must never break the workflow; the caller treats empty
+        # output as "no information, skip quietly".
+        print(f"::warning::{msg}", file=sys.stderr)
+        sys.exit(0)
     print(f"::error::{msg}")
     sys.exit(2)
 
@@ -66,17 +82,29 @@ def list_folder():
     return uniq
 
 
+def rank(suffix):
+    """Same-date ordering key: higher tuple wins."""
+    s = (suffix or "").lower()
+    if s == "watchdog":
+        return (0, 0)
+    if s == "":
+        return (1, 0)
+    if s == "noon":
+        return (2, 0)
+    m = TIMED_RE.match(s)
+    if m:
+        return (4, int(m.group(1)))  # timed edition; latest HHMM wins
+    return (3, 0)  # named special: evening, night, fix2, ...
+
+
 def pick(entries):
     best = None
     for fid, name in entries:
         m = NAME_RE.search(name)
         if not m:
             continue
-        date, suffix = m.group(1), (m.group(2) or "").lower()
-        # Same-date priority: special edition (evening/manual/fix...) beats the
-        # plain noon file; the watchdog copy ranks last (it duplicates the doc).
-        rank = 3 if suffix == "watchdog" else (2 if suffix == "" else 1)
-        key = (date, -rank)  # max date, then lowest rank
+        date, suffix = m.group(1), m.group(2)
+        key = (date,) + rank(suffix)
         if best is None or key > best[0]:
             best = (key, fid, name, date)
     if best is None:
@@ -104,9 +132,21 @@ def download(fid, name):
     die(f"DOWNLOAD FAILED for {name} ({fid}): {last}")
 
 
+def publish_chip(now):
+    """13:00 / 19:00 inside the scheduled windows, real clock time otherwise."""
+    mins = now.hour * 60 + now.minute
+    for target in (13 * 60, 19 * 60):
+        if target - 5 <= mins <= target + 5:
+            return f"{target // 60:02d}:00"
+    return now.strftime("%H:%M")
+
+
 def main():
     entries = list_folder()
     fid, name, file_date = pick(entries)
+    if PEEK:
+        print(name)
+        return
     print(f"Newest dashboard in Drive: {name} ({fid})")
     html = download(fid, name)
 
@@ -118,12 +158,7 @@ def main():
 
     chip = ""
     if not stale:
-        # Stamp the chip with the publish time. Scheduled publishes land at
-        # ~13:00 Paris; show exactly 13:00 in that window, else the real time.
-        hhmm = "13:00" if (now.hour, now.minute) in [
-            (12, mn) for mn in range(55, 60)
-        ] + [(13, mn) for mn in range(0, 6)] else now.strftime("%H:%M")
-        chip = f"{now.strftime('%b')} {now.day} at {hhmm} Paris time"
+        chip = f"{now.strftime('%b')} {now.day} at {publish_chip(now)} Paris time"
         html, n = re.subn(
             r'("updated"\s*:\s*")[^"]*(")', rf"\g<1>{chip}\g<2>", html, count=1
         )
@@ -132,7 +167,7 @@ def main():
             chip = ""
     else:
         print(
-            f"::warning::Newest Drive content is dated {asof}, not {today} — "
+            f"::warning::Newest Drive content is dated {asof}, not {today} - "
             "content pipeline did not produce today's edition."
         )
 
