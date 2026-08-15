@@ -36,6 +36,7 @@
   .brand span { color: var(--muted); font-weight: 500; }
   .asof { color: var(--ink2); font-size: 13px; }
   .updated-chip { display:inline-block; padding:2px 10px; border:1px solid var(--border); border-radius:999px; font-size:12px; color:var(--ink2); background:var(--surface); }
+  .vintage { color: var(--muted); font-size: 12px; margin-top: 3px; }
   h2 { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.1px; color: var(--muted); margin: 34px 0 12px; }
   .card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px; }
 
@@ -51,12 +52,19 @@
   .bench { padding: 14px 16px; }
   .bench .name { font-size: 12.5px; font-weight: 600; color: var(--ink2); }
   .bench .now { font-size: 21px; font-weight: 700; margin: 2px 0; }
-  .bench .unit { font-size: 11.5px; color: var(--muted); }
   .bench .call { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; margin-top: 8px; font-size: 13px; font-weight: 600; }
   .bench .target-inline { font-weight: 600; }
   .bench .conf-row { margin-top: 6px; }
   .arrow-down { color: var(--crit); } .arrow-up { color: var(--good-text); } .arrow-flat { color: var(--muted); }
   .conf { font-size: 10.5px; font-weight: 700; letter-spacing: .5px; padding: 1px 7px; border-radius: 999px; border: 1px solid var(--border); color: var(--ink2); }
+  /* 24h revision delta */
+  .bench .delta-row { margin-top: 7px; padding-top: 7px; border-top: 1px solid var(--grid); display: flex; align-items: baseline; flex-wrap: wrap; gap: 6px; font-size: 11.5px; line-height: 1.35; }
+  .delta { font-weight: 700; white-space: nowrap; }
+  .delta.up { color: var(--good-text); }
+  .delta.down { color: var(--crit); }
+  .delta.same { color: var(--muted); }
+  .delta-sub { color: var(--muted); }
+
   /* factor board */
   .fact-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 10px; }
   .fact { padding: 12px 14px; }
@@ -109,7 +117,10 @@
     <div class="brand">DREYMOOR <span>· Urea Oracle</span></div>
     <div class="asof"><span class="updated-chip" id="asof-chip"></span></div>
   </header>
-  <div class="asof" style="margin-bottom:18px" id="tagline">Daily urea market intelligence — factors, drivers, geopolitics, and the Oracle's forward view.</div>
+  <div class="asof" style="margin-bottom:18px">
+    <div id="tagline">Daily urea market intelligence — factors, drivers, geopolitics, and the Oracle's forward view.</div>
+    <div class="vintage" id="vintage"></div>
+  </div>
 
   <section class="card hero" id="hero"></section>
 
@@ -138,11 +149,12 @@
 <script id="oracle-data" type="application/json">
 {
  "asof": "2026-08-14",
- "updated": "Aug 14 at 19:07 Paris time",
+ "updated": "Aug 15 at 02:30 Paris time",
+ "vintage": "Reports read: Profercy 14 Aug 18:10 · Argus 13 Aug · Fertecon 13 Aug",
  "hero": {
-  "headline": "The tender filled — and then some. RCF secured 1,881,000t of confirmations against the 1.7m t it sought, with all but one trading company confirming the full volume offered at $390.25/t cfr east coast and $393.65/t cfr west coast. The support the midday edition expected from an under-filled tender has been removed, and Profercy cut three of the four benchmarks this evening.",
-  "body": "Evening revision, 14 August — this is the afternoon that decided the question the midday edition left open. Profercy reported at 12:53 Paris time that RCF had just over 1.8m tonnes confirmed once the matching deadline passed, and the evening daily put the total at 1,881,000t: 745,500t on the east coast at $390.25/t and 1,135,500t on the west coast at $393.65/t, spread across Ameropa, Midgulf, Koch, Agrifields, Indagro, Continental, Sun International, Agrofert and Saftco. Confirmations still need RCF's acceptance and the letters of intent were still awaited at publication, with reports suggesting they could be issued quickly. The midday view rested on the arithmetic pointing to a thin fill; that arithmetic was wrong in one specific place — Chinese availability estimates edged higher over the past few days to 1.3–1.5m t rather than the 1–1.5m t assumed, and Chinese prilled sellers were willing to back business at east coast netbacks up to $370/t fob. India is now covered for shipment through 24 September, so the follow-up buying that would have supported prices from mid-September does not arrive. Two things temper how far this carries: no cargoes from Oman were confirmed as committed, and the tonnage behind the print is overwhelmingly Chinese prilled rather than granular, so the granular benchmarks should not be marked all the way down to the $390/t cfr print. Profercy's 14 August assessment table shows the pressure arriving anyway: Middle East fob cut $15/t at the bottom of the range to $375–400/t, Egypt fob cut $20/t at the top to $450–480/t, Brazil cfr cut $5–10/t to $405–430/t, and Nola marked at $385/st. Profercy's World Nitrogen Index fell to a five-week low of 200.71, down 13.52 points on the week — its largest weekly decline in seven weeks. In the US an August barge changed hands at $385/st fob Nola, and September material, which sits outside the current assessment window, traded at $390/st yesterday afternoon before slipping to $384/st at the close of this morning's trading. Chinese prilled offers have kept sliding underneath all of this, with business concluded below $365/t fob and offers reported below $360/t fob late yesterday.",
-  "tail": "<b>Over the next 1–4 weeks the fall continues, and the level at which it stops is now lower than the midday edition assumed</b> — with Indian demand satisfied through 24 September, the next real demand window is Brazil's pre-safrinha catch-up and the US fall fill from late September, which means roughly six weeks with no large buyer to absorb Chinese offers. <b>Over 8 weeks: the fall stalls and prices level off in the second half of September, then firm modestly into the October restocking window</b>, supported by Brazil's imports still running 25% behind last year, corn-to-urea affordability back at 0.43, and a European cost floor from TTF gas near €60/MWh. The bearish escape valve is unchanged and still distant: a signed Hormuz arrangement would bring Gulf offers back within days and extend the decline by 2–3 weeks, but the talks remain deadlocked. The bullish tail is also unchanged: a strike on the Saudi Red Sea berths now carrying replacement urea flows would lift Egypt fob and global price levels within 1–4 weeks."
+  "headline": "RCF filled 1,881,000t against the 1.7m t sought — $390.25/t cfr east coast, $393.65/t cfr west coast, all but one trader taking full volume. Mid-September Indian support is gone.",
+  "body": "China is why. Availability for shipment by 24 September is now put at 1.3–1.5m t against 1–1.5m t this morning; prilled sellers backed east coast business at netbacks up to $370/t fob, with offers below $360/t fob late yesterday. Profercy 14 August: Middle East $375–400/t (−$15 low), Egypt $450–480/t (−$20 top), Brazil $405–430/t (−$5–10), Nola $385/st. World Nitrogen Index 200.71, a five-week low, −13.52 on the week — the largest weekly fall in seven. September Nola barge $390/st to $384/st inside a trading day. LOIs awaited; no Omani tonnes committed.",
+  "tail": "<b>1–4 weeks: lower, and the floor sits below this morning's</b> — India covered through 24 September leaves roughly six weeks with no large buyer against Chinese offers. <b>8 weeks: stalls in the second half of September, then firms modestly into October restocking</b> on Brazil catch-up (imports 25% behind last year) and the European gas cost floor. A signed Hormuz arrangement extends the fall by 2–3 weeks; a strike on the Saudi Red Sea berths reverses it within 1–4 weeks."
  },
  "benchmarks": [
   {
@@ -152,6 +164,7 @@
    "dir": "down",
    "target": "$365–395 over 1–4w",
    "conf": "65% CONFIDENCE",
+   "prev": { "date": "13 Aug", "target": "$370–400 over 1–4w", "dir": "down", "conf": "60% CONFIDENCE" },
    "spark": [395.0, 405.0, 405.0, 395.0, 395.0, 375.0, 375.0, 385.0, 395.0, 400.0, 405.0, 410.0, 420.0, 420.0, 425.0, 435.0, 445.0, 445.0, 445.0, 445.0, 445.0, 435.0, 430.0, 417.5, 417.5, 395.0, 395.0, 387.5]
   },
   {
@@ -161,6 +174,7 @@
    "dir": "down",
    "target": "$425–470 over 1–4w",
    "conf": "68% CONFIDENCE",
+   "prev": { "date": "13 Aug", "target": "$430–485 over 1–4w", "dir": "down", "conf": "65% CONFIDENCE" },
    "spark": [420.0, 420.0, 412.5, 412.5, 420.0, 432.5, 445.0, 490.0, 495.0, 497.0, 510.0, 532.5, 535.0, 535.0, 540.0, 555.0, 555.0, 555.0, 555.0, 550.0, 545.0, 520.0, 520.0, 495.0, 495.0, 490.0, 475.0, 465.0]
   },
   {
@@ -170,6 +184,7 @@
    "dir": "down",
    "target": "$390–425 over 1–4w",
    "conf": "65% CONFIDENCE",
+   "prev": { "date": "13 Aug", "target": "$395–430 over 1–4w", "dir": "down", "conf": "60% CONFIDENCE" },
    "spark": [415.0, 415.0, 410.0, 416.0, 412.5, 412.5, 412.5, 430.0, 435.0, 450.0, 445.0, 440.0, 455.0, 457.5, 460.0, 477.5, 487.5, 482.5, 487.5, 482.5, 475.0, 462.5, 462.5, 452.5, 447.5, 440.0, 425.0, 417.5]
   },
   {
@@ -179,6 +194,7 @@
    "dir": "down",
    "target": "$370–395/st over 1–4w",
    "conf": "60% CONFIDENCE",
+   "prev": { "date": "13 Aug", "target": "$375–400/st over 1–4w", "dir": "flat", "conf": "55% CONFIDENCE" },
    "spark": [362.5, 369.0, 370.5, 360.0, 360.0, 366.5, 374.0, 393.5, 392.0, 403.0, 405.0, 413.5, 418.5, 425.0, 431.5, 440.0, 422.5, 420.0, 435.5, 412.5, 415.0, 398.5, 385.0, 390.0, 398.5, 387.5, 385.5, 385.0]
   }
  ],
@@ -187,73 +203,73 @@
    "code": "F1",
    "name": "Tenders & Policy",
    "state": "bear",
-   "note": "The RCF tender is covered: 1,881,000t confirmed against the 1.7m t sought, made up of 745,500t on the east coast at $390.25/t cfr and 1,135,500t on the west coast at $393.65/t cfr. All but one trading company confirmed the full volume it had been offered, so this was a comfortable fill rather than the thin one the midday edition expected. Confirmations still require RCF's acceptance and letters of intent were awaited at publication, with reports that they may be issued quickly. India is now supplied for shipment through 24 September, which removes the follow-up Indian buying that would otherwise have supported prices from mid-September."
+   "note": "India is covered for shipment through 24 September, so the follow-up buying that would have supported prices from mid-September does not arrive. Still open: RCF's acceptance and the letters of intent — a cut to the confirmed volume is the only route back to residual Indian demand inside the window. Next scheduled Indian demand is not expected before late September."
   },
   {
    "code": "F2",
    "name": "Seasonality",
    "state": "quiet",
-   "note": "August is close to neutral on the 16-year map; only Egypt and Nola keep a mild firm tilt (Nola rose in 67% of past Augusts). With India now covered through 24 September, the restocking window that lifts prices has shifted later — Brazil catch-up and US fall fill from late September into October."
+   "note": "August is near-neutral on the 16-year map; only Egypt and Nola hold a mild firm tilt (Nola rose in 67% of past Augusts). The next seasonal support is the October restocking window — Brazil catch-up and US fall fill from late September."
   },
   {
    "code": "F3",
    "name": "Production Cost",
    "state": "watch",
-   "note": "TTF gas holds near €60.6/MWh, up about 14% over the past month, with European storage at the lowest seasonal level on record. At these gas costs a NW European producer needs around $519/t fob to cover urea production (Argus, 6 Aug) — far above Egypt at $450–480/t fob — so European plants face curtailment pressure and Europe stays import-dependent. This is the firmest floor building under Egypt fob over the next 4–8 weeks."
+   "note": "TTF holds near €60.6/MWh, up about 14% over the past month, with European storage at the lowest seasonal level on record. A NW European producer needs around $519/t fob to cover urea production at this gas cost (Argus, 6 Aug), against Egypt at $450–480/t fob. This is the firmest floor building under Egypt fob over the next 4–8 weeks."
   },
   {
    "code": "F4",
    "name": "Supply Shocks",
    "state": "watch",
-   "note": "Supply is quietly rebuilding despite the closed strait: twelve vessels holding 637,000t of urea were loaded or set to load in the Gulf in the week to 12 August, the most since 24 June (Argus/Kpler data), with routes via Oman and Saudi Red Sea berths doing the work. Notably, no cargoes from Oman were confirmed as committed to the Indian tender, so Gulf granular stayed out of the cheapest business. Iran remains active below the market: a 10,000t granular cargo sold at $360/t fob for August (Argus, 13 Aug). The conflict has cut Middle East urea exports by an estimated 4–4.5m t to date (CF Industries, whole region)."
+   "note": "Gulf producers loaded or scheduled 637,000t of urea across twelve cargoes in the week to 12 August, their highest weekly total since 24 June (Argus/Kpler). None of it moved through Hormuz: the berths are Oman's ports south of the strait and Saudi Arabia's Red Sea terminals. Iranian granular sold at $360/t fob for August, 10,000t (Argus, 13 Aug). CF Industries estimates the conflict has cut Middle East urea exports by 4–4.5m t to date, whole region."
   },
   {
    "code": "F5",
    "name": "Long/Short Squeeze",
    "state": "quiet",
-   "note": "No squeeze signals; traders are not reported accumulating either side. The traders who confirmed Indian volume now need to source it, which is a physical requirement rather than a positioning signal."
+   "note": "No positioning signals either side. The traders holding Indian confirmations still have to source the tonnes — physical short, not a built position."
   },
   {
    "code": "F6",
    "name": "Agri Market",
    "state": "watch",
-   "note": "Corn-to-urea affordability in Brazil reached 0.43 at the 12 August close, up from 0.36 at end-July and back to the level that preceded July's urea price rebound (Argus). The 12 August WASDE cut US corn and soybean yields more than expected, and USDA added 2.6m combined corn and soybean acres for 2026–27 while drought worsens crop conditions in the northern Corn Belt. Higher crop prices and more planted area both support fertilizer demand over the next 4–8 weeks, and this is now the main counterweight left on the board."
+   "note": "Corn-to-urea affordability in Brazil at 0.43 on the 12 August close, from 0.36 at end-July (Argus) — permissive, not a trigger: farmers can afford nitrogen when they choose to buy, which is not the same as buying. The 12 August WASDE cut US corn and soybean yields more than expected and USDA added 2.6m combined acres for 2026–27. The tested F6 edge is named agri events at 4–8 weeks (74%, N=23); day-to-day grain and ratio moves carry near-zero lead information. Nothing here argues for prices turning inside 1–4 weeks."
   },
   {
    "code": "F7",
    "name": "Deferred Buying",
    "state": "watch",
-   "note": "The Indian half of this factor has just been discharged — the tender was filled, so that postponed demand is now booked rather than pending. What remains is Brazil, where urea imports run 25% behind last year and farmers stayed slow to commit even as offers broke below $400/t cfr, plus Australian importers focused on September–October summer-crop needs. The longer Brazilian buying stays postponed, the more it compresses into a short pre-safrinha window, a set-up that has historically produced price spikes in the September–October period."
+   "note": "The Indian leg is discharged — that postponed demand is booked rather than pending. What remains is Brazil, where imports run 25% behind last year and buyers stayed slow to commit even with offers below $400/t cfr, plus Australian importers working September–October summer-crop needs. The longer Brazil waits, the tighter the pre-safrinha window gets — the September–October spike set-up."
   },
   {
    "code": "F8",
    "name": "Momentum",
    "state": "bear",
-   "note": "The downward move is intact and this evening's marks extended it. Profercy's 14 August assessment cut Middle East fob $15/t at the bottom of the range to $375–400/t, Egypt fob $20/t at the top to $450–480/t and Brazil cfr $5–10/t to $405–430/t, with Nola at $385/st. Profercy's World Nitrogen Index fell to a five-week low of 200.71, down 13.52 points on the week — the largest weekly decline in seven weeks. Sharp drops of this kind have historically kept going for another 1–2 weeks before exhausting, so the path of least resistance stays down into late August."
+   "note": "Bearish momentum, intact and extended by this evening's marks. After falls of this size, benchmarks have fallen a further $5–10/t over the following week in 67–71% of past episodes, and about $15/t cumulatively by week four, with the move spent by week eight (playbook R4). That is what sets the 1–4 week ranges above: expect further cuts to the assessments into late August, not a bounce."
   },
   {
    "code": "F9",
    "name": "Market Psychology",
    "state": "bear",
-   "note": "Buyers across EMEA are retreating and waiting for lower prices, producing a standoff in Egypt where producers refuse to meet bids of $420–425/t, and Asian participants are on the sidelines (Fertecon, 13 Aug). Weak-price perception of this kind has brought lower prices over the following 1–2 weeks in 68% of past episodes and remains the strongest active signal on the board. The tender uncertainty that had paralysed decisions is now resolved — but it resolved on the bearish side, so the more likely effect over the next 1–2 weeks is that sidelined buyers stay patient rather than step in."
+   "note": "Egypt is the visible standoff: bids $400–420/t fob against offers of $450–460/t and producer indications to $470–480/t, and Fertecon held its Egypt assessment at $445/t — the only urea benchmark it did not cut on 13 August. European demand is weak with drought named as the cause; Asian trading was largely absent pending the RCF price, and that price has now come in low (Fertecon, 13 Aug). Weak-price perception has brought lower prices over the following 1–2 weeks in 68% of past episodes — the strongest active signal on the board."
   },
   {
    "code": "G1",
    "name": "Conflicts",
    "state": "watch",
-   "note": "Hormuz talks are in open deadlock: Iran refuses direct negotiations and lists six conditions for reopening, Washington claims control of the strait and demands compensation from Tehran, and only 14 vessels crossed on Tuesday against more than 130 a day before the war (press reports, 13 Aug). The Iran–Oman safe-lane framework remains unsigned and this afternoon brought no reported change to that position. A signed arrangement is the live bearish catalyst — Gulf offers would return within days and extend the price decline by 2–3 weeks. The bullish path is not the closure itself, which is already the status quo, but the conflict widening toward Saudi or Omani export infrastructure, which would lift Egypt fob and global levels within 1–4 weeks."
+   "note": "Hormuz talks in open deadlock, with no movement this afternoon: Iran refuses direct negotiations and lists six conditions, Washington claims control of the strait and demands compensation. Hormuz transits ran fourteen vessels on Tuesday against more than 130 a day pre-war — all cargo types through the strait, a conflict-intensity gauge, not a urea flow (Gulf urea ships from berths outside the strait, per F4). The Iran–Oman safe-lane framework is advanced but unsigned. The bullish path is not the closure, already the status quo, but the conflict widening toward Saudi or Omani export infrastructure over 1–4 weeks."
   },
   {
    "code": "G2",
    "name": "Trade Policy",
    "state": "bear",
-   "note": "China's export overhang has just proved itself larger than the market assumed: availability estimates for shipment by 24 September edged up to 1.3–1.5m t, and Chinese prilled suppliers backed Indian business at east coast netbacks up to $370/t fob. Offers underneath that keep falling — business concluded below $365/t fob and offers reported below $360/t fob late yesterday. Whitelisted suppliers are near quota depletion with a further allocation expected, and Argus notes a third allocation would cap any price rise into the autumn. The US bill adding steep tariffs on Russian fertilizer awaits a House vote when Congress returns in early September; becoming law would support Nola into the autumn."
+   "note": "Whitelisted Chinese suppliers are near quota depletion with a further allocation expected, and Argus notes a third allocation would cap any price rise into the autumn. The US bill adding steep tariffs on Russian fertilizer awaits a House vote when Congress returns in early September; becoming law would support Nola into the autumn."
   },
   {
    "code": "G3",
    "name": "Global Logistics",
    "state": "watch",
-   "note": "A Houthi attack killed six crew on a cargo ship at Bab el-Mandeb on 12 August — the first deadly strike there in a year — and Houthi strikes hit the Aramco Jazan refinery on 9 August, with ship-tracking data showing Red Sea traffic slowing since the attacks on Saudi Arabia began. This raises freight and insurance costs on the Red Sea routes now carrying much of the Gulf's replacement urea flow; a strike on Saudi Red Sea export berths would cut real supply within 1–4 weeks. Freight demand for the Indian tender is already appearing: an inquiry to load 60–63,000t of prilled urea between 25 August and 10 September for Mundra and Gangavaram, plus a vessel sought to load 30,000t from China over 18–22 August for west coast Mexico. Russian drones damaged Ukraine's Danube ports of Izmail and Reni overnight on 13 August, Turkey continues to restrict Black Sea transits, and the Rhine remains near record lows."
+   "note": "A Houthi attack killed six crew at Bab el-Mandeb on 12 August, the first deadly strike there in a year, and strikes hit the Aramco Jazan refinery on 9 August, with Red Sea traffic slowing since — war-risk and freight cost on the routes now carrying Gulf producers' replacement flow. In the Black Sea, drone attacks on merchant vessels and the 13 August damage to Ukraine's Danube ports of Izmail and Reni hold a war-risk premium on cargoes loading at Black Sea ports. Turkey's hold on Bosphorus transits was brief and ended on 9 August; the straits are running normally. The Rhine near record lows raises European inland distribution costs."
   }
  ],
  "drivers": [
@@ -303,8 +319,8 @@
  "geo": [
   "<b>Hormuz:</b> Still closed, and the talks have hardened into deadlock with no reported movement this afternoon: Iran refuses direct negotiations and lists six conditions for reopening — an end to threats, a permanent halt to attacks, lifting the naval blockade, war compensation, sanctions removal and release of frozen assets — while Washington claims control of the strait and demands compensation from Tehran. Only 14 vessels crossed on Tuesday against more than 130 a day before the war; the Iran–Oman safe-lane framework is advanced but unsigned. A signed arrangement would bring Gulf urea offers back within days; the deadlock keeps escalation risk live.",
   "<b>Bab el-Mandeb / Red Sea:</b> A Houthi attack on a cargo ship killed six crew on 12 August — the first deadly strike in the strait in a year, following the group's declared blockade of the waterway last month. Houthi strikes also hit the Aramco Jazan refinery on 9 August, and ship-tracking data show Red Sea traffic slowing since the Saudi attacks began. For urea the channel is freight and insurance costs on the Red Sea routes that now carry much of the Gulf's replacement flow, and the risk of widening toward Saudi Red Sea export berths — the single clearest route to a reversal of the bearish view.",
-  "<b>Black Sea / Danube:</b> Russian drone strikes damaged infrastructure at Ukraine's Danube river ports of Izmail and Reni overnight on 13 August, though operations continued, and attacks on grain and port infrastructure continue at both ends of the Black Sea. Turkey continues to restrict and delay commercial transits after drone attacks on merchant vessels. For urea this adds a freight and risk penalty to Baltic and Black Sea prilled tonnage at exactly the moment Indian netback levels have turned unattractive for Russian sellers — it is still unclear how much, if any, Russian prilled tonnage stands behind today's Indian confirmations.",
-  "<b>Supply-loss baseline:</b> CF Industries estimates the conflict has cut Middle East urea exports by 4–4.5m t to date (plus around 1m t of ammonia). The region normally exports about 20m t of urea a year — just over 16m t from Gulf producers plus 4.4m t committed offshore by Iran in 2025 — around 38% of world urea trade. Flows are reduced, not zero: twelve vessels holding 637,000t were loading or set to load in the Gulf in the week to 12 August, the most since 24 June, with Oman loading south of the strait and Saudi Red Sea berths active. No Omani cargoes were confirmed as committed to today's Indian tender."
+  "<b>Black Sea / Danube:</b> Russian drone strikes damaged infrastructure at Ukraine's Danube river ports of Izmail and Reni overnight on 13 August, though operations continued, and attacks on merchant vessels and port infrastructure continue at both ends of the Black Sea. Turkey's hold on Bosphorus transits after those attacks was brief — permits resumed on 9 August and the straits have run normally since, so the standing risk sits at the load ports and on the water, not at the straits. For urea the channel is a war-risk premium on cargoes loading at Russian, Ukrainian and Georgian Black Sea ports — including the Turkmen and Azeri tonnage transhipped through Poti — at a moment when Indian netbacks have turned unattractive for Russian prilled sellers. It is still unclear how much, if any, Russian prilled stands behind the Indian confirmations.",
+  "<b>Supply-loss baseline:</b> CF Industries estimates the conflict has cut Middle East urea exports by 4–4.5m t to date (plus around 1m t of ammonia). The region normally exports about 20m t of urea a year — just over 16m t from Gulf producers plus 4.4m t committed offshore by Iran in 2025 — around 38% of world urea trade. Flows are reduced, not zero: twelve vessels holding 637,000t were loading or set to load in the Gulf in the week to 12 August, the most since 24 June, with Oman loading south of the strait and Saudi Red Sea berths active."
  ],
  "log": [
   {
@@ -351,6 +367,7 @@
 (function () {
   const D = JSON.parse(document.getElementById('oracle-data').textContent);
   document.getElementById('asof-chip').textContent = 'Updated ' + D.updated;
+  document.getElementById('vintage').textContent = D.vintage || '';
 
   // hero
   document.getElementById('hero').innerHTML =
@@ -358,14 +375,47 @@
     '<div class="body">' + D.hero.body + '</div>' +
     '<div class="tail">' + D.hero.tail + '</div>';
 
+  // 24h revision delta on the calls: compares this edition's target range
+  // against the SAME edition 24 hours earlier (midday vs midday, evening vs
+  // evening), on the mid-point of the range.
+  const dirWord = { down: 'Lower', up: 'Higher', flat: 'Sideways' };
+  function mid(s) {
+    const m = String(s).match(/([\d.]+)\s*[–-]\s*\$?([\d.]+)/);
+    if (m) return (parseFloat(m[1]) + parseFloat(m[2])) / 2;
+    const one = String(s).match(/([\d.]+)/);
+    return one ? parseFloat(one[1]) : null;
+  }
+  function deltaRow(b) {
+    if (!b.prev || !b.prev.target) return '';
+    const now = mid(b.target), was = mid(b.prev.target);
+    if (now === null || was === null) return '';
+    const unit = /\/st/.test(b.target) ? '/st' : '';
+    const d = Math.round((now - was) * 10) / 10;
+    let cls, txt;
+    if (d > 0.5) { cls = 'up'; txt = '▲ Up $' + Math.abs(d) + unit; }
+    else if (d < -0.5) { cls = 'down'; txt = '▼ Down $' + Math.abs(d) + unit; }
+    else { cls = 'same'; txt = '● Unchanged'; }
+    const bits = [];
+    if (b.prev.conf && b.prev.conf !== b.conf) {
+      bits.push('conf ' + b.prev.conf.replace(/\D/g, '') + '→' + b.conf.replace(/\D/g, '') + '%');
+    }
+    if (b.prev.dir && b.prev.dir !== b.dir) {
+      bits.push('was ' + (dirWord[b.prev.dir] || b.prev.dir));
+    }
+    const sub = 'vs ' + b.prev.date + (bits.length ? ' · ' + bits.join(' · ') : '');
+    return '<div class="delta-row"><span class="delta ' + cls + '">' + txt + '</span>' +
+           '<span class="delta-sub">' + sub + '</span></div>';
+  }
+
   // benchmarks
   const arrows = { down: ['▼', 'arrow-down', 'Lower'], up: ['▲', 'arrow-up', 'Higher'], flat: ['◆', 'arrow-flat', 'Sideways'] };
   document.getElementById('bench').innerHTML = D.benchmarks.map(b => {
     const a = arrows[b.dir] || arrows.flat;
     return '<div class="card bench"><div class="name">' + b.name + '</div>' +
-      '<div class="now">' + b.now + '</div><div class="unit">Profercy assessment ' + b.unit + '</div>' +
+      '<div class="now">' + b.now + '</div>' +
       '<div class="call"><span class="' + a[1] + '">' + a[0] + ' ' + a[2] + '</span> <span class="target-inline ' + a[1] + '">' + b.target + '</span></div>' +
-      '<div class="conf-row"><span class="conf">' + b.conf + '</span></div></div>';
+      '<div class="conf-row"><span class="conf">' + b.conf + '</span></div>' +
+      deltaRow(b) + '</div>';
   }).join('');
 
   // factors
