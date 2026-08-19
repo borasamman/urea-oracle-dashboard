@@ -2,3 +2,10 @@
 # Deploy target site: dreymoor-urea-oracle-cd-1ed87eec28.netlify.app
 [build]
   publish = "site"
+
+# The publisher itself now lives here (netlify/functions/publish.mjs), as a
+# scheduled function running every 5 minutes. It replaces the GitHub Actions
+# cron, which is best-effort and was observed skipping most slots on 14 Aug 2026.
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
