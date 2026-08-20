@@ -30,7 +30,9 @@ const REPO      = process.env.GITHUB_REPO     || 'borasamman/urea-oracle-dashboa
 const BRANCH    = process.env.GITHUB_BRANCH   || 'main';
 const GH_TOKEN  = process.env.GITHUB_TOKEN;
 const DRIVE_KEY = process.env.DRIVE_API_KEY;
-const DRY_RUN   = process.env.DRY_RUN === '1';
+const DRY_RUN   = false;   // gate retired 20 Aug 2026 at cutover. The Netlify env var
+                           // DRY_RUN=1 is now IGNORED — delete it when convenient. Set this
+                           // back to process.env.DRY_RUN === '1' to re-enter dry-run mode.
 
 const TARGET   = 'site/index.html';
 const PARIS    = 'Europe/Paris';
