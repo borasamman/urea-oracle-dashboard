@@ -169,6 +169,45 @@ const grab = (html, key) => {
   return m ? m[1] : null;
 };
 
+// ---- implied publish times -------------------------------------------------
+// The analysis prompts do not (yet) write a publish_at field, and they are ~45k
+// characters of hand-tuned editorial rules that should not be rewritten just to
+// carry a timestamp. So the publisher derives the embargo from the filename
+// contract it already relies on: a midday edition is due at 12:59 Paris on its
+// own date, an evening edition at 18:59. An explicit publish_at in the file
+// always wins. A named correction (-fix2 and friends) is due immediately.
+
+// Minutes that Europe/Paris is ahead of UTC at a given instant (DST-correct).
+function parisOffsetMinutes(d) {
+  const f = new Intl.DateTimeFormat('en-US', {
+    timeZone: PARIS, hour12: false, year: 'numeric', month: '2-digit',
+    day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'
+  });
+  const p = Object.fromEntries(f.formatToParts(d).map(x => [x.type, x.value]));
+  const asUTC = Date.UTC(+p.year, +p.month - 1, +p.day, (+p.hour) % 24, +p.minute, +p.second);
+  return (asUTC - d.getTime()) / 60000;
+}
+
+// Epoch ms for a Paris wall-clock time on a given date. Safe for 12:59/18:59,
+// which never fall inside a DST transition.
+function parisWallClock(dateStr, hh, mm) {
+  const guess = new Date(`${dateStr}T${String(hh).padStart(2, '0')}:${String(mm).padStart(2, '0')}:00Z`);
+  return new Date(guess.getTime() - parisOffsetMinutes(guess) * 60000);
+}
+
+function impliedDue(dateStr, suffix) {
+  const s = (suffix || '').toLowerCase();
+  if (s === '' || s === 'noon' || s === 'watchdog') return parisWallClock(dateStr, 12, 59).getTime();
+  if (TIMED_RE.test(s))                             return parisWallClock(dateStr, 18, 59).getTime();
+  return null;                                       // named correction — publish on sight
+}
+
+// Chips have always read 13:00 / 19:00 rather than 12:59 / 18:59, so a due time
+// landing on the 59th minute is displayed as the top of the hour.
+function chipForDue(ms) {
+  return chipFor(new Date(parisParts(new Date(ms)).mm === 59 ? ms + 60000 : ms));
+}
+
 // Two pages are the SAME EDITION if they differ only in the stamped chip.
 // Without this, a legacy file (no publish_at) would republish every 5 minutes:
 // its chip is restamped with the current time on every tick, so a naive equality
@@ -192,16 +231,24 @@ async function pickEligible(files, now, load = download) {
     catch (e) { console.warn(`[oracle] skipping ${c.name}: ${e.message}`); continue; }
 
     const publishAt = grab(html, 'publish_at');
+    let dueMs = null, dueSrc = 'none';
     if (publishAt) {
       const t = Date.parse(publishAt);
       if (Number.isNaN(t)) {
-        console.warn(`[oracle] ${c.name}: unparseable publish_at "${publishAt}" — treating as due`);
-      } else if (t > now.getTime()) {
-        console.log(`[oracle] ${c.name} is embargoed until ${publishAt}; looking further down`);
-        continue;                        // not yet due — try the next-best edition
+        console.warn(`[oracle] ${c.name}: unparseable publish_at "${publishAt}" — falling back to the implied slot`);
+      } else {
+        dueMs = t; dueSrc = 'explicit';
       }
     }
-    return { ...c, html, publishAt };
+    if (dueMs === null) {
+      dueMs = impliedDue(c.date, c.suffix);
+      if (dueMs !== null) dueSrc = 'implied';
+    }
+    if (dueMs !== null && dueMs > now.getTime()) {
+      console.log(`[oracle] ${c.name} is embargoed until ${new Date(dueMs).toISOString()} (${dueSrc}); looking further down`);
+      continue;                          // not yet due — try the next-best edition
+    }
+    return { ...c, html, publishAt, dueMs, dueSrc };
   }
   return null;
 }
@@ -252,12 +299,9 @@ async function commit(html, sha, message) {
 // mistake the old evening watchdog was written to avoid.
 function coversSlot(chosen, slotTime, slot) {
   if (!chosen) return false;
-  if (chosen.publishAt) {
-    const t = Date.parse(chosen.publishAt);
-    if (!Number.isNaN(t)) return t >= slotTime.getTime() - 120_000;   // 2 min tolerance
-  }
-  // Legacy files carry no publish_at: fall back to the naming contract, where
-  // only an -eHHMM file is an evening edition.
+  if (chosen.dueMs != null) return chosen.dueMs >= slotTime.getTime() - 120_000;  // 2 min tolerance
+  // A named correction has no due time of its own; fall back to the naming
+  // contract, where only an -eHHMM file is an evening edition.
   return slot.label === 'evening'
     ? TIMED_RE.test((chosen.suffix || '').toLowerCase())
     : true;
@@ -303,7 +347,7 @@ export default async () => {
 
   if (chosen) {
     const asof = grab(chosen.html, 'asof') || chosen.date;
-    const chip = chosen.publishAt ? chipFor(new Date(chosen.publishAt)) : legacyChip(now);
+    const chip = chosen.dueMs != null ? chipForDue(chosen.dueMs) : legacyChip(now);
 
     let html = chosen.html;
     const stamped = html.replace(/("updated"\s*:\s*")[^"]*(")/, `$1${chip}$2`);
