@@ -110,6 +110,12 @@
   footer { margin-top: 40px; font-size: 12px; color: var(--muted); border-top: 1px solid var(--grid); padding-top: 14px; }
   .cols2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   @media (max-width: 800px) { .cols2 { grid-template-columns: 1fr; } }
+
+  /* unified Dreymoor site nav (merge 20 Aug 2026 — keep on every edition) */
+  .site-nav { display: flex; gap: 8px; flex-wrap: wrap; margin: 2px 0 14px; }
+  .nav-pill { display: inline-block; padding: 4px 14px; border: 1px solid var(--border); border-radius: 999px; font-size: 12.5px; font-weight: 600; text-decoration: none; color: var(--ink2); background: var(--surface); }
+  .nav-pill.active { background: var(--ink); color: var(--page); border-color: var(--ink); }
+  a.nav-pill:hover { border-color: var(--ink2); color: var(--ink); }
 </style>
 </head>
 <body>
@@ -118,6 +124,10 @@
     <div class="brand">DREYMOOR <span>· Urea Oracle</span></div>
     <div class="asof"><span class="updated-chip" id="asof-chip"></span></div>
   </header>
+  <nav class="site-nav" aria-label="Dreymoor sites">
+    <span class="nav-pill active">Daily Urea Oracle</span>
+    <a class="nav-pill" href="https://script.google.com/macros/s/AKfycbxOw2wzVhgvqkATmR9Pz4ItWHxb7d-CLZmylZtH5913pMvuSUP8lT5eZ8sqqKsGdMjF/exec">Market Intelligence</a>
+  </nav>
   <div class="asof" style="margin-bottom:18px">
     <div id="tagline">Daily urea market intelligence — factors, drivers, geopolitics, and the Oracle's forward view.</div>
     <div class="vintage" id="vintage"></div>
@@ -150,7 +160,7 @@
 <script id="oracle-data" type="application/json">
 {
  "asof": "2026-08-20",
- "updated": "Aug 20 at 19:00 Paris time",
+ "updated": "Aug 20 at 23:55 Paris time",
  "vintage": "Reports read: Profercy 20 Aug 14:15 · Argus 19 Aug · Fertecon 19 Aug",
  "hero": {
   "headline": "Trump's 'Economic D-Day' package lands with the rally on trading day four — TTF pushed above €64/MWh and Brent above $93 reinforce the up-view.",
@@ -299,7 +309,7 @@
    "conf": "64% CONFIDENCE",
    "prev": {
     "date": "19 Aug",
-    "target": "$385–415/st by 16 Sep",
+    "target": "$385–415 by 16 Sep",
     "dir": "up",
     "conf": "62% CONFIDENCE"
    },
