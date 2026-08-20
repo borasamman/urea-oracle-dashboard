@@ -169,6 +169,13 @@ const grab = (html, key) => {
   return m ? m[1] : null;
 };
 
+// Two pages are the SAME EDITION if they differ only in the stamped chip.
+// Without this, a legacy file (no publish_at) would republish every 5 minutes:
+// its chip is restamped with the current time on every tick, so a naive equality
+// check sees a difference forever and commits forever.
+const stripChip = s => s.replace(/("updated"\s*:\s*")[^"]*(")/, '$1$2');
+const sameEdition = (a, b) => stripChip(a) === stripChip(b);
+
 // The publish schedule, as a property of the content: an edition is eligible
 // once its own publish_at has passed. Files without one are always eligible.
 async function pickEligible(files, now, load = download) {
@@ -304,7 +311,7 @@ export default async () => {
     else html = stamped;
 
     const target = await readTarget();
-    if (target.content === html) {
+    if (sameEdition(target.content, html)) {
       console.log(`[oracle] no change — site already serves ${chosen.name}`);
     } else if (DRY_RUN) {
       console.log(`[oracle] DRY_RUN: would publish ${chosen.name} (asof ${asof}, chip "${chip}")`);
