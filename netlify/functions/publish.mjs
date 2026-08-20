@@ -43,6 +43,7 @@ const UA       = 'oracle-publisher/3.0 (netlify scheduled function)';
 // Publish moments, Paris local time, weekdays only.
 const SLOTS = [{ hh: 12, mm: 59, label: 'midday' }, { hh: 18, mm: 59, label: 'evening' }];
 const GRACE_MIN = 6;   // how late a slot may be before we call it overdue
+const LATE_GRACE_MS = 6 * 60_000;  // past this, the chip tells the real time, not the slot
 
 // ---------------------------------------------------------------- time helpers
 
@@ -349,7 +350,12 @@ export default async () => {
 
   if (chosen) {
     const asof = grab(chosen.html, 'asof') || chosen.date;
-    const chip = chosen.dueMs != null ? chipForDue(chosen.dueMs) : legacyChip(now);
+    // Stamp the SLOT time when we publish on time, the REAL time when we are late.
+    // A page that reads "13:00" but went live at 15:00 misstates when the market was
+    // last read — the same dishonesty as republishing yesterday under a fresh clock.
+    const chip = chosen.dueMs != null
+      ? (now.getTime() <= chosen.dueMs + LATE_GRACE_MS ? chipForDue(chosen.dueMs) : chipFor(now))
+      : legacyChip(now);
 
     let html = chosen.html;
     const stamped = html.replace(/("updated"\s*:\s*")[^"]*(")/, `$1${chip}$2`);
