@@ -1,0 +1,28 @@
+{
+  "name": "Dreymoor Urea Oracle",
+  "short_name": "Oracle",
+  "description": "Daily factors, drivers, geopolitics, and the Oracle's forward urea view. Weekly Digest via Dreymoor Central Intelligence.",
+  "id": "/",
+  "start_url": "/?source=app",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0d0d0d",
+  "theme_color": "#0d0d0d",
+  "lang": "en",
+  "categories": ["business", "finance", "news"],
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/icons/icon-512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    {
+      "name": "Weekly Digest",
+      "short_name": "Digest",
+      "description": "Dreymoor Central Intelligence weekly dashboard",
+      "url": "/?open=digest",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}
