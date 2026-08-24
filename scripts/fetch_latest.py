@@ -37,6 +37,12 @@ UA = {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) oracle-publisher/2.0"}
 PARIS = ZoneInfo("Europe/Paris")
 PEEK = "--peek" in sys.argv[1:]
 
+# The Weekly Digest (Dreymoor Central Intelligence) moved from Google Apps Script to
+# Netlify on 24 Aug 2026. The dashboard template still carries the old URL, so the
+# publisher rewrites it on every edition.
+OLD_DIGEST_URL = "https://script.google.com/macros/s/AKfycbxOw2wzVhgvqkATmR9Pz4ItWHxb7d-CLZmylZtH5913pMvuSUP8lT5eZ8sqqKsGdMjF/exec"
+DIGEST_URL = "https://dreymoor-fertilizer.netlify.app"
+
 
 def fetch(url, timeout=60):
     req = urllib.request.Request(url, headers=UA)
@@ -149,6 +155,7 @@ def main():
         return
     print(f"Newest dashboard in Drive: {name} ({fid})")
     html = download(fid, name)
+    html = html.replace(OLD_DIGEST_URL, DIGEST_URL)
 
     m = re.search(r'"asof"\s*:\s*"(\d{4}-\d{2}-\d{2})"', html)
     asof = m.group(1) if m else file_date
