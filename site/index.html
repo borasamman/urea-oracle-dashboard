@@ -2,7 +2,17 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<!-- iPhone app shell (PWA, 24 Aug 2026) — keep these tags on every edition -->
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#f9f9f7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0d0d0d" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Oracle">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="apple-touch-icon" href="/icons/icon-180.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
 <title>Oracle — Dreymoor Urea Market Intelligence</title>
 <style>
   :root {
@@ -116,6 +126,15 @@
   .nav-pill { display: inline-block; padding: 4px 14px; border: 1px solid var(--border); border-radius: 999px; font-size: 12.5px; font-weight: 600; text-decoration: none; color: var(--ink2); background: var(--surface); }
   .nav-pill.active { background: var(--ink); color: var(--page); border-color: var(--ink); }
   a.nav-pill:hover { border-color: var(--ink2); color: var(--ink); }
+  /* iPhone app shell (PWA) — safe areas + install hint */
+  @supports (padding: env(safe-area-inset-top)) {
+    body { padding-top: calc(24px + env(safe-area-inset-top)); padding-bottom: calc(60px + env(safe-area-inset-bottom)); }
+  }
+  @media (display-mode: standalone) { body { padding-top: calc(14px + env(safe-area-inset-top)); } }
+  .install-hint { display: none; margin: 0 0 16px; padding: 10px 14px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); font-size: 13px; color: var(--ink2); }
+  .install-hint.show { display: flex; align-items: center; gap: 10px; justify-content: space-between; }
+  .install-hint b { color: var(--ink); }
+  .install-hint button { border: 0; background: none; color: var(--muted); font-size: 18px; line-height: 1; cursor: pointer; padding: 2px 4px; }
 </style>
 </head>
 <body>
@@ -129,10 +148,13 @@
     <a class="nav-pill" href="https://script.google.com/macros/s/AKfycbxOw2wzVhgvqkATmR9Pz4ItWHxb7d-CLZmylZtH5913pMvuSUP8lT5eZ8sqqKsGdMjF/exec">Weekly Digest</a>
   </nav>
   <div class="asof" style="margin-bottom:18px">
-    <div id="tagline">Daily urea market intelligence — factors, drivers, geopolitics, and the Oracle's forward view.</div>
-    <div class="vintage" id="vintage"></div>
+    <div id="tagline">Daily factors, drivers, geopolitics, and the Oracle's forward urea view.</div>
   </div>
 
+  <div class="install-hint" id="install-hint" role="note">
+    <span>Add the Oracle to your iPhone: tap <b>Share</b> in Safari, then <b>Add to Home Screen</b>.</span>
+    <button type="button" aria-label="Dismiss" id="install-hint-x">×</button>
+  </div>
   <section class="card hero" id="hero"></section>
 
   <h2 id="bench-heading"></h2>
@@ -160,18 +182,18 @@
 <script id="oracle-data" type="application/json">
 {
  "asof": "2026-08-24",
- "updated": "Aug 24 at 13:00 Paris time",
- "vintage": "Reports read: Profercy 24 Aug 11:33 · Argus 21 Aug · Fertecon 21 Aug",
+ "updated": "Aug 24 at 19:00 Paris time",
+ "vintage": "Reports read: Profercy 24 Aug 18:19 · Argus 21 Aug · Fertecon 21 Aug",
  "hero": {
-  "headline": "Egyptian producers lift granular targets to $500/t fob; the short-covering squeeze runs into a sixth trading day.",
-  "body": "Mopco and Abu Qir each sold 5,000t of September granular at $490/t fob on Friday and now ask $500. Chinese prilled export prices rose $10 to $380–390/t fob — the cheapest origin is rising, not falling — and an EU cash cost near $625/t ex-works keeps European producers out as sellers. The recovering Rhine (Kaub up 59cm in a week) reopens inland delivery for Europe's deferred buyers; the week's test is whether they pay $490-plus on returning from holidays.",
-  "tail": "<p><b>To 21 September: higher on all four benchmarks</b> — Egypt $480–530, Brazil $440–475, Nola $405–435/st, Middle East $395–430. In past squeezes like this, prices were still rising two weeks later in nearly nine of ten cases.</p><p><b>To 19 October:</b> the climb is expected to slow through September — India is likely out until a new tender near month-end and Chinese quotes near $400–410/t fob cap Brazil. Restocking should hold a floor from late September; the steepest part of the move is likely past by early October.</p><p><b>What would void the up-view:</b> Egypt back below $460/t fob, Chinese granular into Brazil below $420/t cfr in volume before 21 September, or a negotiated Hormuz reopening — a path Iran's president reopened by defending the June MOU.</p>"
+  "headline": "Short-covering holds the rally into trading day six and reaches the US barge market; European gas at a three-and-a-half-year high lifts the cost floor under the move.",
+  "body": "Nola September barges changed hands at $415–417/st today, the highest since late July. Indonesian producers scrapped their prilled tenders rather than accept bids of $370–390/t fob against targets above $500. European gas has lifted the region's cash cost of production further above every benchmark on the board, so no European tonnage can cap the move. Iran's assembly advanced a law charging transit fees in the Strait of Hormuz, with fines, detention or confiscation for those that do not pay, making a settlement that reopens Gulf exports less likely than it looked this morning.",
+  "tail": "<p><b>To 21 September: higher on all four benchmarks.</b> In past squeezes like this, prices were still rising two weeks later in nearly nine of ten cases.</p><p><b>To 19 October:</b> the climb is expected to slow through September, with India likely out until a new tender near month-end and Chinese quotes near $400–410/t fob capping Brazil. The steepest part of the move is likely past by early October.</p><p><b>What would void the up-view:</b> Egypt back below $460/t fob, Chinese granular into Brazil below $420/t cfr in volume before 21 September, or a negotiated Hormuz reopening.</p>"
  },
  "benchmarks": [
   {
    "name": "Middle East fob",
-   "now": "$385–400/t",
-   "unit": "Aug 21",
+   "now": "$390–400/t",
+   "unit": "Aug 24",
    "dir": "up",
    "target": "$395–430 by 21 Sep",
    "conf": "60% CONFIDENCE",
@@ -182,7 +204,6 @@
     "conf": "60% CONFIDENCE"
    },
    "spark": [
-    395.0,
     375.0,
     375.0,
     385.0,
@@ -209,13 +230,14 @@
     382.5,
     382.5,
     395.0,
-    392.5
+    392.5,
+    395.0
    ]
   },
   {
    "name": "Egypt fob",
    "now": "$490/t",
-   "unit": "Aug 21",
+   "unit": "Aug 24",
    "dir": "up",
    "target": "$480–530 by 21 Sep",
    "conf": "68% CONFIDENCE",
@@ -226,7 +248,6 @@
     "conf": "68% CONFIDENCE"
    },
    "spark": [
-    420.0,
     432.5,
     445.0,
     490.0,
@@ -253,13 +274,14 @@
     445.0,
     452.5,
     462.5,
+    490.0,
     490.0
    ]
   },
   {
    "name": "Brazil cfr",
    "now": "$430–440/t",
-   "unit": "Aug 21",
+   "unit": "Aug 24",
    "dir": "up",
    "target": "$440–475 by 21 Sep",
    "conf": "63% CONFIDENCE",
@@ -270,7 +292,6 @@
     "conf": "63% CONFIDENCE"
    },
    "spark": [
-    412.5,
     412.5,
     412.5,
     430.0,
@@ -297,16 +318,17 @@
     417.5,
     421.5,
     435.0,
+    435.0,
     435.0
    ]
   },
   {
    "name": "US Gulf (Nola)",
-   "now": "$406/st",
-   "unit": "Aug 21",
+   "now": "$408–417/st",
+   "unit": "Aug 24",
    "dir": "up",
-   "target": "$405–435/st by 21 Sep",
-   "conf": "64% CONFIDENCE",
+   "target": "$410–440/st by 21 Sep",
+   "conf": "65% CONFIDENCE",
    "prev": {
     "date": "21 Aug",
     "target": "$405–435/st by 18 Sep",
@@ -314,7 +336,6 @@
     "conf": "64% CONFIDENCE"
    },
    "spark": [
-    360.0,
     366.5,
     374.0,
     393.5,
@@ -341,7 +362,8 @@
     379.5,
     387.5,
     399.0,
-    406.0
+    406.0,
+    412.5
    ]
   }
  ],
@@ -362,25 +384,25 @@
    "code": "F3",
    "name": "Production Cost",
    "state": "watch",
-   "note": "EU integrated cash cost, ex-works, recomputed at $625/t urea on TTF €65.63/MWh and EUR/USD 1.168 — down about $5 on Friday evening's $630 and up about $93 since 13 August. Profercy's own calculation today puts the European breakeven near $605/t ex-works before emissions costs. Both sit well above Egypt's $490/t fob prints, so no high-cost European tonnage is available to cap the rally."
+   "note": "EU integrated cash cost, ex-works, recomputed at $643/t urea on TTF €67.73/MWh and EUR/USD 1.168 — up about $13 on Friday evening's $630 and about $111 since 13 August. TTF is at its highest since January 2023, so the floor is still rising underneath the rally rather than levelling off. Every benchmark on the board, Egypt's $490/t fob included, sits far below that cash cost, so no European tonnage is available to sell into the move."
   },
   {
    "code": "F4",
    "name": "Supply Shocks",
    "state": "watch",
-   "note": "Profercy calls vessel movement out of Hormuz harder than at any point in the conflict: Iranian granular base prices rolled over at $345/t fob, stocks are building at plants, and loaded cargoes still wait at Iranian ports — against pre-war Iranian exports that could top 450,000t in a month (4.4m t in 2025). One exception crossed: the Al Lulu, loaded with Saudi urea, transited Hormuz this week bound for Djibouti (Kpler) — a single passage, not a reopening. Gulf producers keep loading from Oman's ports south of the strait and Saudi Red Sea terminals."
+   "note": "Profercy calls vessel movement out of Hormuz harder than at any point in the conflict: Iranian granular base prices rolled over at $345/t fob, stocks are building at plants, and loaded cargoes still wait at Iranian ports — against pre-war Iranian exports that could top 450,000t in a month (4.4m t in 2025). Gulf producers keep loading from Oman's ports south of the strait and Saudi Arabia's Red Sea terminals."
   },
   {
    "code": "F5",
    "name": "Long/Short Squeeze",
    "state": "bull",
-   "note": "The short-covering rush enters its sixth trading day with sellers still setting terms: each Egyptian sale has cleared above the last and producers now ask $500/t fob. In past squeezes like this, prices were still rising two weeks later in nearly nine of ten cases and a month later in about three of four — the most reliable pattern in the Oracle's record. The old bearish leg is closing: with the Rhine recovering, tonnage stranded at Romanian, Bulgarian and Baltic discharge ports can start moving inland into a rising market."
+   "note": "The short-covering rush is in its sixth trading day with sellers still setting the terms: each Egyptian sale has cleared above the last and producers now ask $500/t fob. In past squeezes like this, prices were still rising two weeks later in nearly nine of ten cases and a month later in about three of four. The old bearish leg is closing as the Rhine recovers, letting tonnage stranded at Romanian, Bulgarian and Baltic discharge ports move inland into a rising market."
   },
   {
    "code": "F6",
    "name": "Agri Market",
    "state": "watch",
-   "note": "Corn reached 493c/bu, up 9% on the month, after the Pro Farmer tour found yields below USDA's August estimate — crop events of this kind have lifted urea prices one to two months later in about three-quarters of past cases, so support is expected to run into mid-October. The Met Office now calls this El Nino the strongest since the 19th century; if that verifies it reinforces the weak Indian monsoon and points to thinner Indian and southeast Asian buying into 2027 — a conditional, not a fact. Farmer affordability leaves room to buy but is not itself a reason to expect buying."
+   "note": "Corn is holding near 493c/bu, up 9% on the month, after the Pro Farmer tour found yields below USDA's August estimate — crop events of this kind have lifted urea prices one to two months later in about three-quarters of past cases, so support is expected to run into mid-October. The Met Office calls this El Nino the strongest since the 19th century; if that verifies it reinforces the weak Indian monsoon and points to thinner Indian and southeast Asian buying into 2027."
   },
   {
    "code": "F7",
@@ -392,54 +414,54 @@
    "code": "F8",
    "name": "Momentum",
    "state": "bull",
-   "note": "Bullish momentum extended through Friday's marks on every hub — Egypt $490/t fob, Brazil $430–440/t cfr, Nola $406/st, Chinese prilled up $10 to $380–390/t fob — and no benchmark has printed lower since 18 August. Moves of this size have continued rather than reversed over the following two weeks in a little over half of past cases. Egypt trading back below $460/t fob would break the run."
+   "note": "Bullish momentum broadened today: Nola September barges traded $415–417/st, the highest since late July, and the Middle East low end firmed $5 while Egypt and Brazil held. No benchmark has printed lower since 18 August. Moves of this size have continued rather than reversed over the following two weeks in a little over half of past cases. Egypt trading back below $460/t fob would break the run."
   },
   {
    "code": "F9",
    "name": "Market Psychology",
    "state": "bull",
-   "note": "Fertecon reports the $490/t fob Egyptian sale 'caught many participants off guard', an Algerian producer rejected a $490/t bid, and Black Sea bids pushed past $450/t fob — sellers are confident enough to refuse firm money. The honest counterweight: European buyers are still on holiday, and traders openly question whether these levels hold on their return this week. When sentiment has turned like this before, prices were still higher two weeks later in about three of four cases."
+   "note": "Sellers are confident enough to refuse firm money: an Algerian producer rejected a $490/t bid last week, Black Sea bids pushed past $450/t fob, and this afternoon's scrapped Indonesian tenders left 35,000t of prilled unsold. The honest counterweight is that European buyers only return from the holidays this week, and traders openly question whether these levels hold when they do. When sentiment has turned like this before, prices were still higher two weeks later in about three of four cases."
   },
   {
    "code": "G1",
    "name": "Conflicts",
    "state": "watch",
-   "note": "Two-way risk widened this weekend. Iran warned it could seize ships in Hormuz once the promised US sanctions package lands — the package itself is still unannounced. Against that, President Pezeshkian publicly defended the June MOU as 'the best path forward' and urged ending the conflict, the first presidential-level push toward settlement — a negotiated reopening is the main bearish tail and it just became more live. Hormuz transits run near 4% of pre-war levels (21 inbound, 18 outbound in the week to 7 August, UK Navy — all cargo types, a conflict gauge, not a urea flow). Escalation onto Omani or Saudi Red Sea berths would price through Egypt fob."
+   "note": "Iran's assembly advanced a law charging ships for transit through the Strait of Hormuz, with fines, detention or confiscation for those that do not pay — Tehran is moving to police the strait rather than reopen it. That pulls against President Pezeshkian's weekend defence of the June MOU, which remains the only presidential-level push toward settlement and the main bearish tail on this board. Escalation onto Omani or Saudi Red Sea berths would price through Egypt fob."
   },
   {
    "code": "G2",
    "name": "Trade Policy",
    "state": "bear",
-   "note": "China's weekly export price guidance printed at $391.50/t fob granular and $348.30 prilled for the week to 21 August, and participants now see a floor under Chinese prices — the origin that capped every rally this summer is being priced up by its own policy. The offsetting risk: the market expects a third export quota, and its arrival would put fresh Chinese tonnes under Brazil. The US bill to tariff Russian fertilizer still awaits a House vote; passage before 21 September would void the Nola call."
+   "note": "China's weekly export price guidance printed at $391.50/t fob granular and $348.30 prilled for the week to 21 August, and participants now see a floor under Chinese prices. The offsetting risk is that the market expects a third export quota, whose arrival would put fresh Chinese tonnes under Brazil. The US bill to tariff Russian fertilizer still awaits a House vote, and passage before 21 September would void the Nola call."
   },
   {
    "code": "G3",
    "name": "Global Logistics",
    "state": "watch",
-   "note": "The Rhine is recovering fast: Kaub read 64cm this morning, up 21cm in a day and 59cm in a week from the 7cm record low, so barge loads past Kaub can deepen and schedules should normalise within about ten days — earlier than the October estimate carried until now. The Danube remains restricted but navigable. Black Sea war risk keeps the insurance penalty on Russian and Ukrainian loadings after this month's drone strikes on merchant ships; Baltic cargoes exit via the Danish straits, untouched. El Nino has pushed the Panama Canal to limit transits and extend draft restrictions, a freight cost on Asia–Atlantic routes that supports cfr levels in the Americas at the margin."
+   "note": "Kaub read 64cm today, up 21cm in a day and 59cm in a week from the 7cm record low, so barge loads past Kaub can deepen and schedules are expected to normalise within about ten days — earlier than the October recovery estimate carried until last week. The Danube remains restricted but navigable. Black Sea war risk keeps the insurance penalty on Russian and Ukrainian loadings after this month's drone strikes on merchant ships, while Baltic cargoes exit through the Danish straits untouched."
   }
  ],
  "drivers": [
   {
    "name": "EU TTF gas",
-   "val": "€65.6",
-   "chg": "−0.4% d/d",
-   "dir": "flat",
-   "sub": "+3.1% m/m; storage 62%, lowest seasonal on record"
+   "val": "€67.7",
+   "chg": "+2.8% d/d",
+   "dir": "up",
+   "sub": "highest since Jan 2023; +16.1% m/m; storage 62%, lowest seasonal on record"
   },
   {
    "name": "Brent crude",
-   "val": "$92.8",
-   "chg": "−1.7% d/d",
+   "val": "$92.6",
+   "chg": "−1.9% d/d",
    "dir": "down",
-   "sub": "profit-taking ahead of the Iran sanctions package; +5.0% m/m"
+   "sub": "profit-taking ahead of the Iran sanctions package; +4.8% m/m"
   },
   {
    "name": "Henry Hub",
    "val": "$2.72",
    "chg": "−1.8% d/d",
    "dir": "down",
-   "sub": "−2.3% m/m; output ~111.5 bcf/d"
+   "sub": "−2.3% m/m; storage build 16 bcf vs 29 bcf five-year average"
   },
   {
    "name": "Corn (CBOT)",
@@ -464,8 +486,9 @@
   }
  ],
  "geo": [
-  "<b>Iran threatens ship seizures in Hormuz</b> as Washington finalises its 'toughest in history' sanctions package, still unannounced as of this morning. A seizure would raise war-risk premiums across Gulf-adjacent routes and would price urea through Egypt fob and other non-Gulf origins, since Gulf product already largely cannot sail.",
-  "<b>Iran's president defends the June MOU:</b> Pezeshkian called the memorandum 'the best path forward' and urged ending the conflict — the first presidential-level push toward settlement. A negotiated Hormuz reopening remains the market's main bearish tail: Gulf offers would return within days and pressure Egypt fob and global levels down.",
+  "<b>Iran moves to charge for Hormuz transits:</b> its assembly advanced a law requiring ships to pay transit fees, with fines, detention or confiscation for those that do not. Institutionalising control of the strait cuts against a negotiated reopening and raises war-risk and insurance costs on everything sailing through it.",
+  "<b>Washington promises its heaviest sanctions yet:</b> Treasury Secretary Bessent says the aim is to sever every economic lifeline to Iran, and Tehran has warned it could seize vessels in Hormuz once the package lands. The package itself is still unannounced. A seizure would price urea through Egypt fob and other non-Gulf origins, since Gulf product already largely cannot sail.",
+  "<b>Iran's president still defends the June MOU:</b> Pezeshkian called the memorandum 'the best path forward' at the weekend, the only presidential-level push toward settlement. A negotiated reopening remains the market's main bearish tail: Gulf offers would return within days and pressure Egypt fob and global levels down.",
   "<b>Hormuz traffic near 4% of pre-war:</b> 21 inbound and 18 outbound transits in the week to 7 August (UK Navy data, all cargo types — a conflict gauge, not a urea flow). The US military escorted more than 15m bbl of oil through the strait on 20 August, and Iran granted Iraqi tankers passage — managed exceptions, not a reopening.",
   "<b>Black Sea:</b> this month's drone campaign against merchant ships at Russia's grain ports sustains the war-risk and insurance penalty on Russian and Ukrainian Black Sea urea loadings. Baltic cargoes exit through the Danish straits and carry no Black Sea exposure.",
   "<b>Panama Canal restricts transits</b> as the Met Office calls this El Nino the strongest since the 19th century: transit limits and extended draft restrictions raise freight on Asia–Atlantic routes, a marginal cost support to cfr levels in the Americas."
@@ -473,7 +496,7 @@
  "log": [
   {
    "date": "2026-08-24",
-   "view": "MIDDAY: rally day 6. Egypt sold twice at $490/t fob, producers ask $500; China guidance $391.50/t gran fob. UP to 21 Sep: MEast $395–430 (60%), Egypt $480–530 (68%), Brazil $440–475 (63%), Nola $405–435/st (64%).",
+   "view": "EVENING revision. Rally day 6. NEW Profercy assessment 24 Aug (18:19 Paris): MEast $390–400 (low +$5), Egypt $490 nc, Brazil $430–440 nc, USG $408–417/st (mid +$6.5). Nola Sep barges traded $415–417/st today, highest since late July, vs $408/st seller interest on 21 Aug pm; latest Sep trades = $452–454/t cfr metric equiv. Nola call RAISED to $410–440/st by 21 Sep (64→65%); other three held. Afternoon inputs: Profercy 12:56 Paris — Indonesian prilled sales tenders (PIM Lhokseumawe 15,000t, Gresik 15,000t, Palembang 5,000t low-biuret) formally scrapped; best bids $370s/t fob at PIM/Gresik, high-$390s from Camelot and ~$380 from a Korean trader at Palembang, against producer targets above $500 and a PIM reserve of $499.70/t fob — 35,000t withdrawn rather than sold (F9/F5 seller withholding). TTF €67.73/MWh (+2.8% d/d, highest since Jan 2023): F3 recomputed $643/t EU cash cost ex-works at EUR/USD 1.1676, +$13 vs Friday evening's $630, +$111 since 13 Aug. G1 hardened: Iran's assembly advanced a Hormuz transit-fee law (fines/detention/confiscation for non-payers); Bessent 'sever every economic lifeline'; package still unannounced — the negotiated-reopening bearish tail is less live than at midday. Lead rule R9 (F5 squeeze, 88% 2w / 73% 4w), trading day 6; supported by F8, F9, F7, F3. UP to 21 Sep: MEast $395–430 (60%), Egypt $480–530 (68%), Brazil $440–475 (63%), Nola $410–440/st (65%). Note to 19 Oct: climb slows through September on India's absence and the Chinese ceiling; steepest part likely past by early October. Voids: Egypt below $460/t fob, Chinese granular into Brazil below $420/t cfr in volume before 21 Sep, or a Hormuz reopening. Off the page: Bangladesh approved a third FY26/27 G2G lot of 40,000t Saudi granular from Sabic at $380.83/t via Yanbu (formula G2G, immaterial); Egypt Jan–May urea exports 1.22m t, −24% y/y and lowest since 2021 on CBAM-driven EU losses (trade statistics); Algerian granular loadings for Argentina/Brazil (shipping diary); Pakistan stocks 910,000t into August. Kaub 64cm. prev[] = 21 Aug EVENING values (no weekend runs).",
    "score": "pending",
    "scoreNote": "Scores on 7 Sep (2w) / 21 Sep (4w)"
   },
@@ -535,7 +558,7 @@
    "date": "2026-08-10",
    "view": "DOWN 1–4w: MEast $395–430 (60%), Egypt $455–505 (65%), Brazil $420–455 (65%); Nola SIDEWAYS $370–400/st (55%). Pivot: RCF award 11 Aug; a Hormuz deal would speed the fall, Houthi widening would reverse it.",
    "score": "mixed",
-   "scoreNote": "2w score (24 Aug, vs the 21 Aug assessment, the nearest prior trading day): direction 2/4 — MEast −$25 and Brazil −$17.5 correct, Egypt −$5 inside the dead-band, Nola +$16/st against the sideways call. Range 3/4 (miss: Nola). Voided by G1 escalation (MOU declared dead 17 Aug, UAE–Iran rupture 18 Aug, US secondary sanctions 19–20 Aug). 4w scores 7 Sep."
+   "scoreNote": "2w score (24 Aug, against the 24 Aug assessment): direction 2/4 — MEast −$22.5 and Brazil −$17.5 correct, Egypt −$5 inside the dead-band, Nola +$22.5/st against the sideways call. Range 3/4 (miss: Nola). Voided by G1 escalation (MOU declared dead 17 Aug, UAE–Iran rupture 18 Aug, US secondary sanctions 19–20 Aug). 4w scores 7 Sep."
   },
   {
    "date": "2026-08-07",
@@ -550,7 +573,6 @@
 (function () {
   const D = JSON.parse(document.getElementById('oracle-data').textContent);
   document.getElementById('asof-chip').textContent = 'Updated ' + D.updated;
-  document.getElementById('vintage').textContent = D.vintage || '';
 
   // Forecast horizons are always DATES, derived here from `asof` so no run can
   // publish a week-count or a stale date: near = asof + 28 days (the 4-week
@@ -647,6 +669,52 @@
     (l.score === 'pending' ? '⏳ ' : l.score === 'correct' ? '✓ ' : l.score === 'wrong' ? '✗ ' : '') +
     (l.scoreNote || l.score) + '</div></div>'
   ).join('');
+})();
+</script>
+<script>
+/* iPhone app shell (PWA, 24 Aug 2026) — keep on every edition */
+(function () {
+  var DIGEST = 'https://script.google.com/macros/s/AKfycbxOw2wzVhgvqkATmR9Pz4ItWHxb7d-CLZmylZtH5913pMvuSUP8lT5eZ8sqqKsGdMjF/exec';
+  var standalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+  var q = new URLSearchParams(location.search);
+
+  // Home-screen shortcut "Weekly Digest" lands here with ?open=digest.
+  if (q.get('open') === 'digest') { location.replace(DIGEST); return; }
+
+  if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
+    navigator.serviceWorker.register('/sw.js').catch(function () {});
+  }
+
+  // When the app is brought back to the foreground, check whether a newer
+  // edition has been published (13:00 / 19:00 flips) and reload if so.
+  var chip = document.getElementById('asof-chip');
+  var seen = null;
+  function currentChip() {
+    try { return JSON.parse(document.getElementById('oracle-data').textContent).updated; } catch (e) { return null; }
+  }
+  seen = currentChip();
+  function checkForNewEdition() {
+    if (!standalone || !seen) return;
+    fetch('/?v=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.text(); }).then(function (html) {
+      var m = html.match(/"updated":\s*"([^"]+)"/);
+      if (m && m[1] !== seen) location.reload();
+    }).catch(function () {});
+  }
+  document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible') checkForNewEdition(); });
+  window.addEventListener('pageshow', function (ev) { if (ev.persisted) checkForNewEdition(); });
+
+  // One-time install hint for iPhone Safari users who have not installed yet.
+  var isiOS = /iPhone|iPad|iPod/.test(navigator.userAgent) && !window.MSStream;
+  var hint = document.getElementById('install-hint');
+  var dismissed = false;
+  try { dismissed = localStorage.getItem('oracle-install-hint') === '1'; } catch (e) {}
+  if (hint && isiOS && !standalone && !dismissed) {
+    hint.classList.add('show');
+    document.getElementById('install-hint-x').addEventListener('click', function () {
+      hint.classList.remove('show');
+      try { localStorage.setItem('oracle-install-hint', '1'); } catch (e) {}
+    });
+  }
 })();
 </script>
 </body>
