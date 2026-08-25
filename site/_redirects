@@ -1,0 +1,8 @@
+# Weekly Digest (Dreymoor Central Intelligence) served under this site's own
+# origin so the iPhone app stays full-screen when the nav pill is tapped.
+# Netlify proxies these paths to the DCI site; the browser never leaves
+# this origin. Added 25 Aug 2026. The publisher never touches this file.
+/digest      https://dreymoor-fertilizer.netlify.app/        200
+/digest/     https://dreymoor-fertilizer.netlify.app/        200
+/digest/*    https://dreymoor-fertilizer.netlify.app/:splat  200
+/data.js     https://dreymoor-fertilizer.netlify.app/data.js 200
