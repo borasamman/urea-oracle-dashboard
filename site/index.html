@@ -135,6 +135,32 @@
   .install-hint.show { display: flex; align-items: center; gap: 10px; justify-content: space-between; }
   .install-hint b { color: var(--ink); }
   .install-hint button { border: 0; background: none; color: var(--muted); font-size: 18px; line-height: 1; cursor: pointer; padding: 2px 4px; }
+
+  /* Ask the Oracle — public question panel (1 Sep 2026). KEEP ON EVERY EDITION,
+     like the .site-nav pill bar. Analysis runs touch only the JSON block. */
+  .ask { padding: 18px; }
+  .ask-sub { margin: -2px 0 14px; color: var(--ink2); font-size: 13.5px; max-width: 66ch; }
+  .ask-log { display: flex; flex-direction: column; gap: 10px; }
+  .ask-log:not(:empty) { margin-bottom: 14px; }
+  .ask-q, .ask-a { border-radius: 9px; padding: 10px 13px; font-size: 14px; line-height: 1.55; }
+  .ask-q { background: color-mix(in srgb, var(--s1) 10%, transparent); border: 1px solid color-mix(in srgb, var(--s1) 26%, transparent); align-self: flex-end; max-width: 85%; }
+  .ask-a { background: var(--page); border: 1px solid var(--border); color: var(--ink2); }
+  .ask-a p { margin: 0 0 8px; } .ask-a p:last-child { margin-bottom: 0; }
+  .ask-src { margin-top: 8px; padding-top: 7px; border-top: 1px solid var(--grid); color: var(--muted); font-size: 11.5px; }
+  .ask-form { display: flex; gap: 8px; }
+  #ask-input { flex: 1; min-width: 0; background: var(--page); color: var(--ink); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; font: inherit; font-size: 14px; }
+  #ask-input:focus { outline: 2px solid var(--s1); outline-offset: -1px; }
+  #ask-send { background: var(--ink); color: var(--page); border: 0; border-radius: 8px; padding: 10px 18px; font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; }
+  #ask-send:disabled { opacity: .45; cursor: default; }
+  .ask-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+  .ask-chip { background: transparent; color: var(--ink2); border: 1px solid var(--border); border-radius: 999px; padding: 5px 11px; font: inherit; font-size: 12.5px; cursor: pointer; }
+  .ask-chip:hover { border-color: var(--ink2); color: var(--ink); }
+  .ask-foot { margin: 12px 0 0; color: var(--muted); font-size: 11.5px; }
+  .ask-think { display: inline-flex; gap: 4px; align-items: center; color: var(--muted); font-size: 13px; }
+  .ask-think i { width: 5px; height: 5px; border-radius: 50%; background: var(--muted); display: inline-block; animation: askpulse 1.1s infinite ease-in-out; }
+  .ask-think i:nth-child(2) { animation-delay: .15s; } .ask-think i:nth-child(3) { animation-delay: .3s; }
+  @keyframes askpulse { 0%, 80%, 100% { opacity: .25; } 40% { opacity: 1; } }
+  @media (max-width: 560px) { .ask-q { max-width: 95%; } }
 </style>
 </head>
 <body>
@@ -169,6 +195,28 @@
   <h2>Energy &amp; Crop Prices</h2>
   <div class="drv-grid" id="drivers"></div>
 
+
+  <!-- Ask the Oracle — public question panel (1 Sep 2026). KEEP ON EVERY EDITION,
+       exactly like the .site-nav pill bar above: analysis runs touch only the
+       embedded JSON block, so this section persists. Backed by the Supabase
+       edge function `ask`, which reads the published edition plus the Profercy
+       archive; see claude/oracle-ask-panel.md. -->
+  <h2>Ask the Oracle</h2>
+  <section class="card ask" id="ask">
+    <p class="ask-sub">Questions about the urea market — today's view, the numbers behind it, or what happened before. Answers are drawn from this dashboard and five years of daily market reports.</p>
+    <div class="ask-log" id="ask-log" aria-live="polite"></div>
+    <form class="ask-form" id="ask-form" autocomplete="off">
+      <input id="ask-input" type="text" maxlength="400" placeholder="e.g. Why is Egypt trading above the Middle East?" aria-label="Ask a question about the urea market">
+      <button type="submit" id="ask-send">Ask</button>
+    </form>
+    <div class="ask-chips">
+      <button type="button" class="ask-chip">What is driving the market today?</button>
+      <button type="button" class="ask-chip">When is India expected back in the market?</button>
+      <button type="button" class="ask-chip">Where were prices this time last year?</button>
+    </div>
+    <p class="ask-foot">Market commentary, not investment advice. Answers are generated from published reports and can be wrong — check anything you trade on.</p>
+  </section>
+
   <h2>Forecast Track Record</h2>
   <div class="card" id="log"></div>
 
@@ -181,14 +229,14 @@
 
 <script id="oracle-data" type="application/json">
 {
- "asof": "2026-08-31",
- "updated": "Aug 31 at 19:00 Paris time",
- "publish_at": "2026-08-31T19:00:00+02:00",
- "vintage": "Reports read: Profercy 28 Aug 18:19 · Argus 28 Aug · Fertecon 28 Aug",
+ "asof": "2026-09-01",
+ "updated": "Sep 1 at 13:00 Paris time",
+ "publish_at": "2026-09-01T13:00:00+02:00",
+ "vintage": "Reports read: Profercy 1 Sep 11:30 · Argus 31 Aug · Fertecon 31 Aug",
  "hero": {
-  "headline": "Iran fired missiles at US bases in Jordan and Trump promised a hard response, ending a month's pause in the conflict.",
-  "body": "All four benchmarks are expected to keep rising. Jordan intercepted the eight Iranian missiles; the UAE shot down an Iranian drone and denied Iran's claim of a strike on Al Minhad air base. Trump said the US will \"hit them hard\". The negotiated Hormuz reopening that would void this view is further off, and the non-Iranian urea shut inside the Gulf stays shut. European gas rose again to its highest since January 2023, lifting European producers' costs.",
-  "tail": "<p><b>14 Days Out (to 14 September):</b> All four benchmarks are expected to end higher than the 28 August marks. Escalations of this kind have lifted urea prices for three to four weeks in about two of three past cases, and the gain builds over weeks rather than days.</p><p><b>28 Days Out (to 28 September):</b> The rise is expected to slow once India's August tender cargoes finish shipping on 24 September; a new Chinese export allocation is the likeliest cap.</p><p><b>What would void the up-view:</b> Gulf urea sailing through Hormuz in volume, Egypt below $460/t fob, or Chinese granular into Brazil below $430/t cfr, before 14 September. A US tariff on Russian fertilizer becoming law voids the New Orleans call.</p>"
+  "headline": "Two tankers were hit in the Hormuz lane Washington calls safe; Trump's promised reply is still to come.",
+  "body": "All four benchmarks are expected to keep rising. The Sidr and Senegal Prosperity were struck near Khasab on Monday night on the escorted southern corridor — the first attacks on that lane since the US–Iran exchange resumed. Mopco sold 10,000t at $500/t fob Egypt — the first business there since early June — and New Orleans barges traded up to $440/st. Gas at €71/MWh, a January-2023 high, keeps raising European production costs, and corn above 500c/bu keeps US buyers covering before an early river close.",
+  "tail": "<p><b>14 Days Out (to 15 September):</b> All four benchmarks are expected to end higher. Escalations like this have lifted urea prices for three to four weeks in two of three past cases; the gain builds over weeks, so a considered entry loses little.</p><p><b>28 Days Out (to 29 September):</b> The rise is expected to slow once the August Indian cargoes finish shipping on 24 September; a new Chinese export allocation, still unissued, is the likeliest cap.</p><p><b>What would void the up-view:</b> Gulf urea sailing through Hormuz in volume, Egypt below $470/t fob, or Chinese granular into Brazil below $435/t cfr, before 15 September. A US tariff on Russian fertilizer becoming law voids the New Orleans call.</p>"
  },
  "benchmarks": [
   {
@@ -196,13 +244,13 @@
    "now": "$395–405/t",
    "unit": "Aug 28",
    "dir": "up",
-   "target": "$400–435 by 14 Sep",
+   "target": "$405–440 by 15 Sep",
    "conf": "66% CONFIDENCE",
    "prev": {
-    "date": "28 Aug",
-    "target": "$400–435 by 11 Sep",
+    "date": "31 Aug",
+    "target": "$400–435 by 14 Sep",
     "dir": "up",
-    "conf": "64% CONFIDENCE"
+    "conf": "65% CONFIDENCE"
    },
    "spark": [
     395.0,
@@ -240,13 +288,13 @@
    "now": "$490–500/t",
    "unit": "Aug 28",
    "dir": "up",
-   "target": "$495–535 by 14 Sep",
-   "conf": "65% CONFIDENCE",
+   "target": "$500–540 by 15 Sep",
+   "conf": "66% CONFIDENCE",
    "prev": {
-    "date": "28 Aug",
-    "target": "$495–530 by 11 Sep",
+    "date": "31 Aug",
+    "target": "$495–535 by 14 Sep",
     "dir": "up",
-    "conf": "63% CONFIDENCE"
+    "conf": "64% CONFIDENCE"
    },
    "spark": [
     495.0,
@@ -284,11 +332,11 @@
    "now": "$445–450/t",
    "unit": "Aug 28",
    "dir": "up",
-   "target": "$450–485 by 14 Sep",
-   "conf": "62% CONFIDENCE",
+   "target": "$455–490 by 15 Sep",
+   "conf": "63% CONFIDENCE",
    "prev": {
-    "date": "28 Aug",
-    "target": "$445–480 by 11 Sep",
+    "date": "31 Aug",
+    "target": "$450–485 by 14 Sep",
     "dir": "up",
     "conf": "62% CONFIDENCE"
    },
@@ -328,11 +376,11 @@
    "now": "$417–427/st",
    "unit": "Aug 28",
    "dir": "up",
-   "target": "$425–455/st by 14 Sep",
+   "target": "$430–460/st by 15 Sep",
    "conf": "68% CONFIDENCE",
    "prev": {
-    "date": "28 Aug",
-    "target": "$420–450/st by 11 Sep",
+    "date": "31 Aug",
+    "target": "$425–455/st by 14 Sep",
     "dir": "up",
     "conf": "68% CONFIDENCE"
    },
@@ -373,127 +421,132 @@
    "code": "F1",
    "name": "Tenders & Policy",
    "state": "bear",
-   "note": "India is out of the import market until its next tender: the 1.78m t bought in August ships by 24 September, and the next tender is likely to be announced in late September. An Indian buyer told Fertecon on 28 August that the workable level for the next round is $450–460/t cfr India, roughly $60/t above the August award prices. This box stays bearish until a tender is issued, which is the only event that can turn it."
+   "note": "India is out of the import market until its next tender: the 1.78m t bought in August ships by 24 September, and the next tender is likely to be announced in late September. An Indian buyer put the workable level for the next round at $450–460/t cfr India (Fertecon, 28 Aug), roughly $60/t above the August award prices. This box stays bearish until a tender is issued, which is the only event that can turn it."
   },
   {
    "code": "F2",
    "name": "Seasonality",
    "state": "watch",
-   "note": "August's firm tilt ends today. Through September, Middle East prices have risen over the following month in about two of three past years, while Egypt and New Orleans have more often slipped, and the US has been the weakest September market of the past five years. European and US autumn buying has usually started in late September, just past the 14 September horizon."
+   "note": "September has opened. Middle East prices have risen over the following month in about two of three past Septembers, while Egypt and New Orleans have more often slipped, and the US has been the weakest September market of the past five years. European and US autumn buying has usually started in late September, at the edge of this forecast window."
   },
   {
    "code": "F3",
    "name": "Production Cost",
    "state": "watch",
-   "note": "European producers' cash cost of making urea is about $658/t at the plant gate, computed at this afternoon's gas price (TTF €69.87/MWh, EUR/USD 1.160) — up $10/t on this morning and $19/t on Friday evening as gas rose again. Egyptian urea delivered to a French Atlantic port costs roughly $552–608/t once freight, the EU carbon border charge and port handling (the last estimated) are added to the 28 August fob range, so imported tonnage stays about $50–105/t cheaper than European production."
+   "note": "European producers' cash cost of making urea is about $671/t at the plant gate, computed at today's gas price (TTF €71.28/MWh, EUR/USD 1.160) — up $23/t on yesterday's midday reading as gas set a fresh high since January 2023. Egyptian urea delivered to a French Atlantic port costs roughly $552–608/t once freight, the EU carbon border charge and port handling (the last estimated) are added to the 28 August fob range, so imported tonnage stays about $65–120/t cheaper than European production and the gap is widening."
   },
   {
    "code": "F4",
    "name": "Supply Shocks",
    "state": "watch",
-   "note": "Ten vessels holding just over 520,000t of non-Iranian urea remain shut inside the Gulf (Argus, 28 Aug). Iran's Hengam plant (1.1m t/year) is expected to start within days, adding tonnes that at present cannot leave. Sunday's US strike and Iran's reply raise the risk that the limited traffic using Iran's toll lane stops as well."
+   "note": "Ten vessels holding just over 520,000t of non-Iranian urea remain shut inside the Gulf (Argus, 31 Aug). Iranian producers cut official prices $10 to $335/t fob and opened sales tenders for about 90,000–120,000t of urea this week, with inventories building because few if any vessels can leave — tonnage that exists but cannot reach buyers. Monday night's tanker attacks raise the risk that the limited toll-lane traffic stops as well."
   },
   {
    "code": "F5",
    "name": "Long/Short Squeeze",
    "state": "bull",
-   "note": "Sellers who withheld tonnage through mid-August have been paid on every benchmark, and no producer has cut an asking price. The pattern is in its eleventh trading day, and in past cases most of the gain arrived inside the first two weeks, so this box now carries less of the forward case than the conflict and cost channels do. A producer cutting its asking price would turn it."
+   "note": "Sellers who withheld tonnage through mid-August keep being paid: Mopco's $500/t fob sale extends the pattern into a twelfth trading day with no producer cutting an asking price. In past cases most of the gain arrived inside the first two weeks, so this box carries less of the forward case than the conflict and cost channels do. A producer cutting its asking price would turn it."
   },
   {
    "code": "F6",
    "name": "Agri Market",
    "state": "bull",
-   "note": "Soybeans at 1,280c/bushel are the highest since December 2023 and corn is holding 513c, while wheat eased 1.1% today to 758c after Friday's three-year high. Profercy named rising grain values as the reason US retailers and Brazilian buyers engaged on 28 August, which is the demand channel that matters here. Crop moves of this kind have lifted urea prices one to two months later in about three of four past cases."
+   "note": "Corn is above 500c/bu for the first time since 2023, soybeans are at their highest since December 2023 and wheat is up about 17% on the month; Argus (31 Aug) again tied the pickup in US interior urea demand to rising corn. Crop moves of this kind have lifted urea prices one to two months later in about three of four past cases. One caution: a buyer told Fertecon (31 Aug) that if El Niño delays Brazil's soybean harvest, the safrinha corn window — a key nitrogen consumer — could shrink and cut Brazilian fertilizer demand; that is a weather forecast, not a fact, and is carried at low weight."
   },
   {
    "code": "F7",
    "name": "Deferred Buying",
    "state": "bull",
-   "note": "Brazilian buyers bid $445/t cfr against offers pushed to $460/t cfr on 28 August, and Brazil's urea imports for January–August were about 25% below the same months of 2025 (StoneX, 25 Aug). US retailers are covering ahead of an early river close, with the barge lines' final upper-Mississippi loading dates set for 29 September–5 October, about a week earlier than the past two years (Argus, 28 Aug). Catch-up buying like this has lifted prices over the following month in roughly two of three past cases."
+   "note": "US traders and retailers are covering before the upper-Mississippi river close, whose final loading dates (29 September–5 October) come about a week earlier than the past two years, and shipping times now rule out significant new imports arriving before it (Profercy, 1 Sep). A December New Orleans barge traded $428/st against $440/st for September, so the premium sits on prompt tonnage. Brazil's urea imports for January–August were about 25% below the same months of 2025 (StoneX, 25 Aug), and bids for non-Chinese lots have climbed into the mid-to-high $450s/t cfr. Catch-up buying like this has lifted prices over the following month in roughly two of three past cases."
   },
   {
    "code": "F8",
    "name": "Momentum",
    "state": "bull",
-   "note": "The last assessed marks, on 28 August, were higher on all four benchmarks: Argus lifted the Middle East to $415–425/t fob and New Orleans $7 to $420–427/st on trades at $423–425/st, and Fertecon raised Egypt to $490/t fob. No benchmark has printed lower since 18 August. Two consecutive trading days of lower granular assessments would turn this box bearish."
+   "note": "Monday's marks were higher across the board: Argus lifted the Middle East to $420–425/t fob, Brazil to $445–450/t cfr and New Orleans $14 to $435–440/st on September barge trades, and business today added a $440/st barge. No benchmark has printed lower since 18 August. Two consecutive trading days of lower granular assessments would turn this box bearish."
   },
   {
    "code": "F9",
    "name": "Market Psychology",
    "state": "bull",
-   "note": "Egyptian sellers reported renewed European import inquiry on 28 August (Argus) and September offers moved up to $530/t fob Egypt and $525/t fob Algeria, but Egyptian producers concede no bid interest has appeared close to $500/t fob. The soft spot is Asia, where buyers are holding back while a new Chinese export allocation is expected. When the mood has turned like this before, prices were still higher two weeks later in about three of four past cases."
+   "note": "The standing refusal at the top of the Egyptian market has given way: after a week of quotes with no bids near $500/t fob, business printed at $500/t fob and offers moved comfortably above it, with producers now targeting the low-$520s/t fob. The soft spot remains Asia, where buyers are holding back while China's next export allocation is awaited. When the mood has turned like this before, prices were still higher two weeks later in about three of four past cases."
   },
   {
    "code": "G1",
    "name": "Conflicts",
    "state": "bull",
-   "note": "Iran's missile salvo at two US air bases in Jordan and the drone the UAE shot down over its territorial waters are the first Iranian strikes since late July, and Trump has promised a US response. A US official said no strike hit Kharg Island, contradicting the videos Trump posted. Allied navies dispute the US claim that Hormuz is demined, and no urea has crossed the strait. A negotiated reopening is the event that would turn this box bearish."
+   "note": "Two tankers — the Saudi-flagged Sidr and the South Korean-owned Senegal Prosperity — were hit near Khasab on Monday night, the first attacks on the southern corridor the US Navy escorts, after Iran's missiles at US bases in Jordan answered Sunday's US strike on Larak Island. Trump has promised a further response; Pezeshkian says Tehran would return to the June memorandum terms if Washington reciprocates. Hormuz transits ran at 7–10 vessels a day over the weekend — all cargo types — and none carried urea. A negotiated reopening is the event that would turn this box bearish."
   },
   {
    "code": "G2",
    "name": "Trade Policy",
    "state": "watch",
-   "note": "China's two 2026 allocation rounds of about 5m t are largely spent, September cargoes are sold out, and roughly 0.5–1.5m t is still uncommitted after 1.2–1.5m t went to India for shipment by 24 September (Bloomberg, 27 Aug). A third allocation is expected but the Chinese government has issued nothing, and that announcement is the main bearish risk to the up-view. The US Russia sanctions bill, allowing tariffs up to 500% on Russian fertilizer, passed the Senate 86–11 and still awaits a House vote."
+   "note": "China's two 2026 allocation rounds of about 5m t are largely spent, and the widely expected third batch has still not been issued — Profercy (1 Sep) reports Chinese trade slowing on the wait, with granular offers around $410/t fob and little prilled business at or above $365/t fob. That third allocation remains the main bearish risk to the up-view. The US Russia sanctions bill, allowing tariffs up to 500% on Russian fertilizer, passed the Senate 86–11 but has stalled in the House over tariff concerns, with no vote scheduled."
   },
   {
    "code": "G3",
    "name": "Global Logistics",
    "state": "watch",
-   "note": "Ukraine's Black Sea corridor has carried no traffic since 23 July and Kyiv says Russia hit 52 civilian ships in six weeks, so Russian and Ukrainian loadings carry a war-risk penalty and Russian granular stays out of the Black Sea market, while Baltic cargoes exit through the Danish straits unaffected. The Rhine is back to normal navigation and the Danube is passable, so imported nitrogen is again reaching southern Germany, eastern France and the landlocked Danube markets. The low-water constraint on European distribution is over and that watch is closed."
+   "note": "War risk on the Hormuz approaches rose again with Monday night's hits on two tankers inside the corridor treated as safer, which would raise freight and insurance costs on loadings near the strait and widen the premium non-Gulf origins already earn. Ukraine's Black Sea corridor has carried no traffic since 23 July and Russian granular stays out of the Black Sea market, while Baltic cargoes exit through the Danish straits unaffected. Turkey says it is in talks with Moscow and Kyiv on safe passage for grain ships — if that revives the corridor, the war-risk penalty on Black Sea loadings could ease."
   }
  ],
  "drivers": [
   {
    "name": "EU TTF gas",
-   "val": "€69.9",
-   "chg": "+4.3% d/d",
+   "val": "€71.3",
+   "chg": "+2.1% d/d",
    "dir": "up",
-   "sub": "+21% m/m and the highest since January 2023 — QatarEnergy extended its Hormuz LNG force majeure into early November and EU storage is heading for a record-low winter peak"
+   "sub": "+24% m/m and the highest since January 2023; EU storage about 64% full, well below normal for early September"
   },
   {
    "name": "Brent crude",
-   "val": "$90.6",
-   "chg": "+2.8% d/d",
+   "val": "$92.2",
+   "chg": "+1.9% d/d",
    "dir": "up",
-   "sub": "+8.2% m/m; above $90 on Sunday's US strike in Hormuz and Iran's reply"
+   "sub": "+10% m/m; above $92 on the renewed US–Iran strikes and the tanker hits in Hormuz"
   },
   {
    "name": "Henry Hub",
    "val": "$2.91",
    "chg": "+0.7% d/d",
    "dir": "up",
-   "sub": "+4.6% m/m; US Lower-48 output at a record 111.4 bcf/d in August"
+   "sub": "+4.6% m/m; record US Lower-48 output caps the move"
   },
   {
    "name": "Corn (CBOT)",
    "val": "513c/bu",
    "chg": "+0.2% d/d",
    "dir": "up",
-   "sub": "+14.2% m/m; rising corn is the stated reason US buyers returned to Nola (Profercy, 28 Aug)"
+   "sub": "+14.2% m/m and above 500c for the first time since 2023; Argus ties the pickup in US urea demand to it"
   },
   {
    "name": "Wheat (CBOT)",
-   "val": "758c/bu",
-   "chg": "−1.1% d/d",
-   "dir": "down",
-   "sub": "+16.5% m/m; eased from Friday's three-year high, with Black Sea exports still halted"
+   "val": "765c/bu",
+   "chg": "+1.2% d/d",
+   "dir": "up",
+   "sub": "+17.6% m/m; Turkey says it is in talks with Russia and Ukraine on safe passage for grain exports"
   },
   {
    "name": "Soybeans (CBOT)",
-   "val": "1280c/bu",
-   "chg": "+0.3% d/d",
+   "val": "1285c/bu",
+   "chg": "+0.7% d/d",
    "dir": "up",
-   "sub": "+9.5% m/m and the highest since December 2023 on steady Chinese buying"
+   "sub": "+9.9% m/m, highest since December 2023 on Chinese buying and weaker US crop ratings"
   }
  ],
  "geo": [
-  "<b>Iran struck back for the first time since late July:</b> the Revolutionary Guards fired at least eight ballistic missiles at two US air bases in Jordan, which Jordan says it intercepted, and the UAE shot down an Iranian drone over its territorial waters while denying Iran's claim of a missile strike on Al Minhad air base. Trump has promised the US \"will hit them hard\"; a US official said no strike hit Kharg Island, contradicting videos Trump posted. President Pezeshkian said Tehran still seeks a negotiated solution but will respond to any aggression.",
-  "<b>The US strike that started the exchange:</b> two Iranian rocket launchers on Larak Island, being prepared to lay new mines in Hormuz, were hit on Sunday 30 August; Tasnim reports two dead. Brent is above $90.",
-  "<b>Hormuz remains shut to normal traffic:</b> limited shipping moves only through Iran's seven-mile toll lane under Iranian permission, allied navies dispute the US claim that the strait is demined (Bloomberg, 26 Aug), and ten vessels holding just over 520,000t of non-Iranian urea still cannot leave the Gulf (Argus, 28 Aug). That shut-in tonnage would reach the market first if a usable lane opens, and it remains the largest bearish risk to the current view.",
-  "<b>QatarEnergy extended its LNG force majeure into early November</b> because Hormuz is still closed (notice to Italy's Edison, reported by Argus, 28 Aug) — European gas is at its highest since January 2023 and EU storage is heading for its lowest pre-winter peak on record.",
-  "<b>Black Sea attacks on shipping are escalating:</b> Ukraine's corridor has carried no traffic since 23 July, Kyiv says Russia hit 52 civilian ships in six weeks, and wheat set a three-year high on Friday on the disruption. Baltic cargoes exit through the Danish straits and are unaffected."
+  "<b>Two tankers were hit in the Strait of Hormuz on Monday night:</b> the Saudi-flagged Sidr and the South Korean-owned Senegal Prosperity were struck by projectiles near Khasab, minutes apart, on the southern corridor the US Navy escorts — the first attacks on that lane since the US–Iran exchange resumed. Transits ran at 7–10 vessels a day over the weekend, all cargo types, against roughly 130 a day pre-war.",
+  "<b>A US reply to Iran's missiles is pending:</b> after Sunday's US strike on IRGC minelaying forces on Larak Island and Iran's ballistic missiles at the King Hussein and al-Azraq bases in Jordan, Trump called the conflict 'a relatively little war' for the US and repeated that it will 'hit them hard'; no new US strike had been reported by publication. Pezeshkian says Tehran would return to the June memorandum's terms if Washington reciprocates.",
+  "<b>Hormuz remains shut to normal traffic:</b> ten vessels holding just over 520,000t of non-Iranian urea still cannot leave the Gulf (Argus, 31 Aug), no urea crossed the strait over the weekend, and allied navies dispute the US demining claim. That shut-in tonnage would reach the market first if a usable lane opens — the largest bearish risk to the current view.",
+  "<b>Turkey is talking to Moscow and Kyiv about safe passage for Black Sea grain exports</b> — the first easing signal since Ukraine's corridor stopped carrying traffic in late July; wheat eased off its three-year high on the reports. Russian and Ukrainian loadings still carry a war-risk penalty, while Baltic cargoes exit through the Danish straits unaffected."
  ],
  "log": [
+  {
+   "date": "2026-09-01",
+   "view": "MIDDAY edition. WHAT THE OVERNIGHT AND MORNING CHANGED: the escalation reached the shipping lane itself — two tankers, the Saudi-flagged Sidr and the South Korean-owned Senegal Prosperity, were struck by projectiles near Khasab on Monday night, minutes apart, on the southern corridor the US Navy escorts. Trump called the conflict 'a relatively little war' and repeated that the US will 'hit them hard'; no new US strike had been reported by publication; Pezeshkian says Tehran would return to the June memorandum terms if Washington reciprocates. G1 stays the LEAD RULE. NO NEW PROFERCY GRANULAR UREA ASSESSMENT at run time — none was published on the 31 Aug UK holiday and the 1 Sep table (carrying the 31 Aug USG figure with it) is expected this evening; benchmarks stand at the 28 Aug table, NO spark append and NO price-table row. REPORTS READ: Profercy flash 31 Aug 20:59 Paris — Mopco sold 10,000t of granular at $500/t fob Egypt for September, +$10 on 20–21 Aug and the first Egyptian business at $500 or above since early June. Profercy 1 Sep 11:30 Paris — Nola September barges traded $435, $438 then $440/st (+$13–15 on late last week, just under $480/t cfr metric, above Brazil), a December barge at $428/st; Brazilian bids for small non-Chinese lots climbed to the mid-to-high $450s/t cfr from the mid-$440s late last week; Nigerian bids over $450/t fob; Middle East trader cargoes moving to Latin America with implied returns from Brazil over $400/t fob and SIUCI committed into early October; Iran cut official prices $10 to $335/t fob with vessels trapped behind the strait, inventories building and Pardis, MIS and KPIC sales tenders totalling roughly 90,000–120,000t; China granular offers around $410/t fob with little prilled business at or above $365/t fob and trade slowed by the wait for the third quota batch; TTF October over €71/MWh implying just under $640/t ex-works urea for an efficient plant pre-emissions. Argus Nitrogen 31 Aug — daily marks MEast $420–425 (+$2.5), Brazil $445–450 (+$5), Nola $435–440/st (+$14), China prilled $385–400 (+$2.5), no Egypt daily assessment on the public holiday; ten vessels/520,000t+ of non-Iranian urea unchanged; 7 Hormuz transits Saturday and 10 Sunday, all cargo types, none carrying urea; Brazil October futures $468–470/t cfr on the CME. Fertecon Daily 31 Aug — NOLA-7 $439/st (+$16); Russian offers to Brazil raised to $450–460/t cfr September on the strikes with no concluded trade; three Brazil October paper trades at $468–470/t cfr; Tampa September ammonia settled $555/t cfr (−$80, different product, off the urea board); a buyer's El Niño caution that a delayed soybean harvest could compress Brazil's safrinha corn window is carried hedged in F6. RECONCILIATION: the Mopco sale appears in all three services and is counted once, dated 31 Aug. DRIVERS: TTF €71.28/MWh (+2.10% d/d, +23.95% m/m, highest since January 2023; EU storage ~64%); Brent $92.22 (+1.91% d/d, +10.09% m/m); Henry Hub $2.91 (+0.71% d/d); corn 513.08c (+0.21% d/d, +14.21% m/m); wheat 765.43c (+1.18% d/d, +17.58% m/m — off Friday's high on Turkey's grain safe-passage talks with Moscow and Kyiv); soybeans 1284.61c (+0.73% d/d, +9.91% m/m); EUR/USD 1.1599. F3 RECOMPUTED per rule 1l: gas = 71.28 ÷ 3.412 × 1.1599 = $24.23/mn Btu; NH3 = $901/t; urea = $671/t EU integrated cash cost ex-works — +$23/t on the 31 Aug midday $648/t (like-for-like); Profercy's own 1 Sep figure on the same gas is just under $640/t ex-works pre-emissions for an efficient plant; Argus weekly NWE fob cost row $583.50 (27 Aug), a different basis. EU COST STACK per rule 1x: Egypt $490–500/t fob + freight $44–46/t (Argus 31 Aug, Egypt–French bay) + CBAM $8–47/t + port $10–15/t (estimate) = ~$552–608/t delivered against the $671/t ex-works cash cost — the gap widens to ~$65–120/t. STANDING ITEMS RE-VERIFIED: Hormuz shut-in unchanged; no urea crossings; the US Russia-sanctions bill has stalled in the House over tariff concerns (RFE/RL) — no vote, the Nola void has not fired; no India tender announced; no Chinese government allocation issued; Black Sea corridor still carrying no traffic since 23 July. ACTIVE FACTORS: G1 BULL — LEAD RULE (R1; daily stair-climb +2.5%/65% at d3, +5.3%/68% at d5, +10.0%/69% at d15; weekly blind 77% at 4w; entry urgency LOW — the move builds over three to four weeks). F8 BULL (R4 59% at 2w — all assessed benchmarks marked higher Monday, $440/st printed today). F9 BULL (R3 77% at 2w — the Egyptian refusal at the top resolved with a $500/t fob print; Asia the soft spot on the quota wait). F5 BULL but mature (trading day 12; R9 88% at 2w / 73% at 4w, forward weight cut). F6 BULL (R8 74% at 4–8w; Argus ties US demand to corn above 500c; the El Niño safrinha risk is the hedged counterweight). F7 BULL (66% at 2w; river close 29 Sep–5 Oct, about a week early; Brazil imports −25% Jan–Aug, StoneX 25 Aug). F3 watch ($671/t ex-works). F1 BEAR (India out to late September; next-round anchor $450–460/t cfr India). F2 watch (September mixed — MEast firm in about two of three past years, Egypt and Nola more often soft, USG the weakest recent-regime September market). F4 watch (10 vessels/520,000t+ shut in; Iranian inventories building behind the strait). G2 watch (third batch unissued — the named bearish tail). G3 watch (tanker hits raise corridor war-risk; Turkey's grain-corridor talks are the easing tail). VIEW (to 15 September): UP on all four, RANGES RAISED to Monday's marks, confidence up one point on the three Hormuz-exposed legs against yesterday's midday — MEast $405–440 (66% CONFIDENCE, from 65%); Egypt $500–540 (66%, from 64%); Brazil $455–490 (63%, from 62%); Nola $430–460/st (68%, unchanged). Caps respected: strongest supporting rules G1 (77% blind at 4w) and F5 (88% at 2w). Note to 29 September: the rise is expected to slow once the RCF cargoes finish shipping on 24 September; India's next tender is likely announced in late September (announcement, not tonnes — the Indian buyer's $450–460/t cfr indication is the first anchor); a third Chinese allocation is the likeliest cap; European and US autumn buying is expected to start in late September. LANDMARK CHECK: the window rolled a day and both landmarks are event-dated and now sit inside it — retained. VOIDS: Gulf urea sailing through Hormuz in volume, Egypt trading below $470/t fob, or Chinese granular placed into Brazil below $435/t cfr in volume before 15 September voids the up-view; the Nola call is voided if the Russia-tariff bill becomes law inside the window. SCORING: the 2026-08-18 entry matured at its 2-week checkpoint today and scores WRONG (direction 0/4, range 0/4 against the 28 Aug assessment, the nearest prior table) without a void annotation — the second clean wrong, after 17 Aug; both were issued into the 18 August turn. Next maturity: the 2026-08-19 entry (2w) tomorrow, 2 September. prev[] blocks carry the 31 AUGUST MIDDAY values on all four per house rules section 4 (midday vs midday).",
+   "score": "pending",
+   "scoreNote": "Scores on 15 Sep (2w) / 29 Sep (4w)"
+  },
   {
    "date": "2026-08-31",
    "view": "EVENING revision (midday entry revised in place). WHAT THE AFTERNOON CHANGED: the escalation became two-way. Iran's IRGC fired at least eight ballistic missiles at two US air bases in Jordan (Jordan reports all intercepted; a US source reports no significant impact), and the UAE defence ministry says it intercepted an Iranian drone over its territorial waters while calling reports of a missile attack on Al Minhad air base baseless. Trump: 'We're going to hit them hard. There will be a response.' A US official confirmed NO strike hit Kharg Island, contradicting AI-generated videos Trump posted to Truth Social — that rumour is explicitly kept off the board. Pezeshkian said war serves no one's interest and Tehran seeks a negotiated solution but 'will respond decisively to any aggression'. Note per house rule 1a: Iranian drones and missiles aimed at the UAE are not new in this war (repeated interceptions over Dubai in March 2026); the news is the resumption after a month's pause and the promised US reply, not the existence of the capability. NO NEW PROFERCY GRANULAR UREA ASSESSMENT (UK public holiday; the 28 Aug daily had already flagged that the 31 Aug USG figure publishes alongside 1 September). Benchmarks stand at the 28 Aug table (MEast $395–405, Egypt $490–500, Brazil $445–450, USG $417–427/st); NO spark append and NO price-table row — claude/urea-daily-price-table.md remains current through 2026-08-28. Vintage unchanged from midday. DRIVERS refreshed this run: TTF €69.87/MWh (+4.32% d/d, +21.5% m/m — a fresh high for this move, above the €68.76 read at midday); Brent $90.60 (+2.83% d/d, +8.15% m/m); Henry Hub $2.91 (+0.71% d/d, +4.6% m/m); EUR/USD 1.1598. GRAIN TILES RE-BASED to the front-month CBOT series and relabelled accordingly, because no same-series December print was obtainable this run and carrying the midday December values against front-month changes would have manufactured a false day-on-day move (house rule 1e): corn 513.08c (+0.21% d/d, +14.21% m/m), wheat 758.20c (−1.15% d/d, +16.47% m/m), soybeans 1279.51c (+0.26% d/d, +9.48% m/m, highest since December 2023). F3 RECOMPUTED per rule 1l on this afternoon's gas and FX: gas = 69.87 ÷ 3.412 × 1.1598 = $23.75/mn Btu; NH3 = 23.75 × 36 + 29 = $884/t; urea = 884 × 0.58 + 23.75 × 5.2 + 22 = $658/t EU integrated cash cost ex-works — +$10/t on the midday $648/t and +$19/t against the 28 August EVENING recomputation of $639/t (the like-for-like comparison). EU cost stack per rule 1x, unchanged Egyptian mark: Egypt $490–500 fob + freight $44–46 (Argus 28 Aug, Egypt–French bay) + CBAM $8–47 + port $10–15 (estimate) = ~$552–608/t delivered, against the $658/t ex-works cash cost and the Argus French Atlantic fca mark of €490/t (~$568/t) — the gap widens to ~$50–105/t as gas rises while Egypt holds. STANDING ITEMS RE-VERIFIED: Hormuz shut-in tonnage unchanged (10 vessels / 520,000t+, Argus 28 Aug); no urea crossings; Russia-tariff bill still awaiting a House vote, Nola void not fired; no India tender announced; no Chinese government allocation issued (the 'expected soon' report remains market expectation, not policy, per rule 1y); Black Sea corridor still carrying no traffic since 23 July. WATERWAYS WATCH CLOSED: Kaub read 72cm at 13:30 CEST with the pegelonline station reporting normal conditions on both low- and high-water indicators, so the Rhine constraint on barge supply of imported nitrogen to southern Germany and eastern France is over, the Danube is passable to the landlocked markets it serves, and the standing watch opened by Bora on 15 August is closed explicitly rather than left to fade. ACTIVE FACTORS: G1 BULL — LEAD RULE (R1), the two-way exchange being the day's driver and the reason for the confidence raise; daily G1 stair-climb +2.5%/65% at d3 → +5.3%/68% at d5 → +10.0%/69% at d15, weekly blind 77% at 4w; entry urgency LOW, the move builds over three to four weeks. F5 BULL but mature (trading day 11 since the 18 Aug turn; R9 88% at 2w / 73% at 4w, most of a fast-rule move delivered by d10, forward weight cut). F8 BULL (R4 59% at 2w). F9 BULL (R3 77% at 2w, Egypt the single standing refusal at the top). F6 BULL (R8 74% at 4–8w; soybeans at a 2023 high and corn holding, wheat off its high — the named-agri channel from Profercy's 28 Aug attribution stands). F7 BULL (66% at 2w). F3 watch ($658/t ex-works, +$19 evening-on-evening). F1 bear. F2 watch — the August tilt ends today. F4 watch. G2 watch. G3 watch, with the Rhine leg retired. VIEW (to 14 September): UP on all four, RANGES HELD from midday, CONFIDENCE RAISED two points on the two Hormuz-exposed legs — MEast $400–435 (66%, from 65% at midday and 64% Friday evening); Egypt $495–535 (65%, from 64% and 63%); Brazil $450–485 (62%, unchanged from midday and Friday evening — the expected Chinese allocation still caps it); Nola $425–455/st (68%, unchanged — no Hormuz channel, and today's grain tape was mixed). Caps respected: G1 77% blind at 4w, F5 88% at 2w; none exceeded. Note to 28 September: the rise is expected to slow once the RCF cargoes finish shipping on 24 September, with India's next tender likely announced in late September; a new Chinese allocation is the likeliest cap; European and US autumn buying is expected to start late September. LANDMARK CHECK: both landmarks are shipment- and tender-dated rather than calendar-drifting; the window did not roll this evening (same issue date as midday) so both sit where the midday entry placed them, the tender-announcement landmark just inside the far edge. VOIDS: Gulf urea sailing through Hormuz in volume, Egypt below $460/t fob, or Chinese granular into Brazil below $430/t cfr before 14 September; the Nola call is voided if the Russia-tariff bill becomes law. SCORING: nothing matured this evening — the 2026-08-17 entry was scored at midday against the 28 August table (direction 0/4, range 0/4, WRONG, and without a void annotation, the record's first clean wrong). Next maturity: the 2026-08-18 entry (2w) tomorrow, 1 September. prev[] blocks carry the 28 AUGUST EVENING values on all four per house rules section 4 (evening vs evening; 29–30 August were the weekend, so Friday evening is the correct 24-hour comparison, and prev.date reads '28 Aug').",
@@ -551,8 +604,8 @@
   {
    "date": "2026-08-18",
    "view": "MIDDAY: LOIs imminent on 1.78m t; first demand response — Brazil bids $410–420 cfr, China granular offers up. MEast $355–385 (65%), Egypt $410–450 (68%), Brazil $390–420 (55%), Nola $362–385/st (60%).",
-   "score": "pending",
-   "scoreNote": "Scores on 1 Sep (2w) / 15 Sep (4w)"
+   "score": "wrong",
+   "scoreNote": "2w score (1 Sep, against the 28 Aug assessment, the nearest prior trading day — no table was published 29 Aug–1 Sep morning): direction 0/4 — MEast mid 382.5→400 (+$17.5) against a DOWN call, Egypt mid 445→495 (+$50) against DOWN, Brazil mid 417.5→447.5 (+$30) against DOWN, Nola mid 379.5→422 (+$42.5/st) against DOWN. Range 0/4 — no target range overlaps the 28 Aug assessment. The entry's named voids (an RCF cut at the LOI stage — LOIs issued in full on 19 August; a strike on Omani or Saudi Red Sea export berths; the Russia bill becoming law) did not fire, so the score stands without a void annotation — the second clean wrong, after 17 August: both entries were issued into the 18 August turn. 4w scores 15 Sep."
   },
   {
    "date": "2026-08-17",
@@ -748,6 +801,46 @@
       try { localStorage.setItem('oracle-install-hint', '1'); } catch (e) {}
     });
   }
+})();
+</script>
+<script>
+/* Ask the Oracle — panel behaviour (1 Sep 2026). KEEP ON EVERY EDITION. */
+(function () {
+  var ENDPOINT = 'https://qexbmezexqcitprtdemt.supabase.co/functions/v1/ask';
+  var form = document.getElementById('ask-form');
+  var input = document.getElementById('ask-input');
+  var send = document.getElementById('ask-send');
+  var log = document.getElementById('ask-log');
+  if (!form) return;
+
+  function esc(s) { return String(s).replace(/[&<>]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]; }); }
+  function paras(s) { return esc(s).split(/\n{2,}|\n/).filter(Boolean).map(function (p) { return '<p>' + p + '</p>'; }).join(''); }
+  function add(cls, html) { var d = document.createElement('div'); d.className = cls; d.innerHTML = html; log.appendChild(d); d.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); return d; }
+
+  function ask(q) {
+    if (!q || send.disabled) return;
+    add('ask-q', esc(q));
+    input.value = '';
+    send.disabled = true;
+    var wait = add('ask-a', '<span class="ask-think">Reading the reports<i></i><i></i><i></i></span>');
+    fetch(ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ question: q }) })
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        var html = paras(d.answer || 'No answer came back — try again in a moment.');
+        if (d.sources && d.sources.length) {
+          var dates = d.sources.map(function (s) { return s.date; }).filter(Boolean);
+          if (dates.length) html += '<div class="ask-src">Drawn from Profercy daily reports of ' + esc(dates.slice(0, 4).join(', ')) + '</div>';
+        }
+        wait.innerHTML = html;
+      })
+      .catch(function () { wait.innerHTML = '<p>The Oracle could not be reached just now.</p>'; })
+      .then(function () { send.disabled = false; input.focus(); });
+  }
+
+  form.addEventListener('submit', function (e) { e.preventDefault(); ask(input.value.trim()); });
+  Array.prototype.forEach.call(document.querySelectorAll('.ask-chip'), function (b) {
+    b.addEventListener('click', function () { ask(b.textContent.trim()); });
+  });
 })();
 </script>
 </body>
