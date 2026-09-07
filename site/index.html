@@ -101,6 +101,19 @@
   .drv .chg { font-size: 12.5px; margin-top: 2px; }
   .chg.up { color: var(--good-text); } .chg.down { color: var(--crit); } .chg.flat { color: var(--muted); }
   .drv .sub { font-size: 11.5px; color: var(--muted); margin-top: 3px; }
+  /* 52-week graph on each price tile (7 Sep 2026 — keep on every edition) */
+  .drv .spark52 { margin: 8px 0 4px; }
+  .drv .spark52 { min-height: 44px; }
+  .drv .spark52 svg { display: block; overflow: visible; }
+  .drv .spark52 .area { fill: var(--ink); opacity: .07; }
+  .drv .spark52 .line { fill: none; stroke: var(--ink2); stroke-width: 1.5; stroke-linejoin: round; stroke-linecap: round; }
+  .drv .spark52 .base { stroke: var(--grid); stroke-width: 1; }
+  .drv .spark52 .dot { fill: var(--ink); }
+  .drv .spark52 .hit { fill: transparent; }
+  .drv .spark52 .hit:hover + .pt { opacity: 1; }
+  .drv .spark52 .pt { opacity: 0; fill: var(--ink2); pointer-events: none; }
+  .drv .range { font-size: 10.5px; color: var(--muted); margin-bottom: 4px; white-space: nowrap; }
+  .drv .range b { font-weight: 600; color: var(--ink2); }
 
   /* geo list */
   .geo li { margin: 7px 0 7px 2px; color: var(--ink2); font-size: 14px; }
@@ -217,8 +230,8 @@
 <script id="oracle-data" type="application/json">
 {
  "asof": "2026-09-04",
- "updated": "Sep 4 at 19:00 Paris time",
- "publish_at": "2026-09-04T19:00:00+02:00",
+ "updated": "Sep 7 at 12:03 Paris time",
+ "publish_at": "2026-09-07T12:03:00+02:00",
  "vintage": "Reports read: Profercy 4 Sep 18:09 · Argus 3 Sep · Fertecon 3 Sep",
  "hero": {
   "headline": "Iran widens its Hormuz restrictions and crossings thin further; Egypt and Brazil mark higher, New Orleans barges ease.",
@@ -521,13 +534,23 @@
    "sub": "+13% m/m; a further 192,000t US sale to China flashed by the USDA, the third this week"
   }
  ],
+ "history": {
+  "EU TTF gas": [["2025-09-08", 32.66], ["2025-09-15", 32.31], ["2025-09-22", 32.7], ["2025-09-29", 31.44], ["2025-10-06", 32.17], ["2025-10-13", 31.82], ["2025-10-20", 32.02], ["2025-10-27", 31.12], ["2025-11-03", 31.2], ["2025-11-10", 31.25], ["2025-11-17", 30.2], ["2025-11-24", 28.82], ["2025-12-01", 27.27], ["2025-12-08", 27.68], ["2025-12-15", 28.16], ["2025-12-22", 28.09], ["2025-12-29", 29], ["2026-01-05", 28.37], ["2026-01-12", 36.88], ["2026-01-19", 40.04], ["2026-01-26", 39.28], ["2026-02-02", 35.69], ["2026-02-09", 32.5], ["2026-02-16", 32.03], ["2026-02-23", 31.96], ["2026-03-02", 53.38], ["2026-03-09", 50.12], ["2026-03-16", 59.26], ["2026-03-23", 54.18], ["2026-03-30", 50.04], ["2026-04-06", 43.64], ["2026-04-13", 38.77], ["2026-04-20", 44.86], ["2026-04-27", 45.77], ["2026-05-04", 44.14], ["2026-05-11", 50.17], ["2026-05-18", 48.68], ["2026-05-25", 46], ["2026-06-01", 48.5], ["2026-06-08", 46.77], ["2026-06-15", 42.07], ["2026-06-22", 40.78], ["2026-06-29", 44.25], ["2026-07-06", 48.65], ["2026-07-13", 57.4], ["2026-07-20", 63.58], ["2026-07-27", 59.07], ["2026-08-03", 55.54], ["2026-08-10", 61.42], ["2026-08-17", 65.86], ["2026-08-24", 66.98], ["2026-08-31", 71.95]],
+  "Brent crude": [["2025-09-08", 66.99], ["2025-09-15", 66.68], ["2025-09-22", 70.13], ["2025-09-29", 64.53], ["2025-10-06", 62.73], ["2025-10-13", 61.29], ["2025-10-20", 65.94], ["2025-10-27", 65.07], ["2025-11-03", 63.63], ["2025-11-10", 64.39], ["2025-11-17", 62.56], ["2025-11-24", 63.2], ["2025-12-01", 63.75], ["2025-12-08", 61.12], ["2025-12-15", 60.47], ["2025-12-22", 60.64], ["2025-12-29", 60.75], ["2026-01-05", 63.34], ["2026-01-12", 64.13], ["2026-01-19", 65.88], ["2026-01-26", 70.69], ["2026-02-02", 68.05], ["2026-02-09", 67.75], ["2026-02-16", 71.76], ["2026-02-23", 72.48], ["2026-03-02", 92.69], ["2026-03-09", 103.14], ["2026-03-16", 112.19], ["2026-03-23", 112.57], ["2026-03-30", 109.03], ["2026-04-06", 95.2], ["2026-04-13", 90.38], ["2026-04-20", 105.33], ["2026-04-27", 108.17], ["2026-05-04", 101.29], ["2026-05-11", 109.26], ["2026-05-18", 103.54], ["2026-05-25", 92.05], ["2026-06-01", 93.09], ["2026-06-08", 87.33], ["2026-06-15", 80.59], ["2026-06-22", 71.99], ["2026-06-29", 72.13], ["2026-07-06", 76.01], ["2026-07-13", 88.1], ["2026-07-20", 96.78], ["2026-07-27", 90.12], ["2026-08-03", 83.55], ["2026-08-10", 88.52], ["2026-08-17", 94.39], ["2026-08-24", 89.31], ["2026-08-31", 96.28]],
+  "Henry Hub": [["2025-09-08", 2.94], ["2025-09-15", 2.89], ["2025-09-22", 2.84], ["2025-09-29", 3.32], ["2025-10-06", 3.11], ["2025-10-13", 3.01], ["2025-10-20", 3.3], ["2025-10-27", 4.12], ["2025-11-03", 4.32], ["2025-11-10", 4.57], ["2025-11-17", 4.58], ["2025-11-24", 4.85], ["2025-12-01", 5.29], ["2025-12-08", 4.11], ["2025-12-15", 3.98], ["2025-12-22", 4.37], ["2025-12-29", 3.62], ["2026-01-05", 3.17], ["2026-01-12", 3.1], ["2026-01-19", 5.28], ["2026-01-26", 4.35], ["2026-02-02", 3.42], ["2026-02-09", 3.24], ["2026-02-16", 3.05], ["2026-02-23", 2.86], ["2026-03-02", 3.19], ["2026-03-09", 3.13], ["2026-03-16", 3.1], ["2026-03-23", 3.1], ["2026-03-30", 2.8], ["2026-04-06", 2.65], ["2026-04-13", 2.67], ["2026-04-20", 2.52], ["2026-04-27", 2.78], ["2026-05-04", 2.76], ["2026-05-11", 2.96], ["2026-05-18", 2.91], ["2026-05-25", 3.29], ["2026-06-01", 3.23], ["2026-06-08", 3.12], ["2026-06-15", 3.2], ["2026-06-22", 3.23], ["2026-06-29", 3.24], ["2026-07-06", 2.94], ["2026-07-13", 2.91], ["2026-07-20", 2.87], ["2026-07-27", 2.75], ["2026-08-03", 2.66], ["2026-08-10", 2.73], ["2026-08-17", 2.77], ["2026-08-24", 2.89], ["2026-08-31", 2.97]],
+  "Corn (CBOT)": [["2025-09-15", 424], ["2025-09-22", 422], ["2025-09-29", 419], ["2025-10-06", 413], ["2025-10-13", 422.5], ["2025-10-20", 423.25], ["2025-10-27", 431.5], ["2025-11-03", 427.25], ["2025-11-10", 430.25], ["2025-11-17", 425.5], ["2025-11-24", 435.5], ["2025-12-01", 436.75], ["2025-12-08", 431.5], ["2025-12-15", 443.75], ["2025-12-22", 450], ["2025-12-29", 437.5], ["2026-01-05", 445.75], ["2026-01-12", 424.75], ["2026-01-19", 430.5], ["2026-01-26", 428.25], ["2026-02-02", 430.25], ["2026-02-09", 431.75], ["2026-02-16", 427.5], ["2026-02-23", 438.75], ["2026-03-02", 447], ["2026-03-09", 452.5], ["2026-03-16", 465.5], ["2026-03-23", 462], ["2026-03-30", 452.25], ["2026-04-06", 441], ["2026-04-13", 448.75], ["2026-04-20", 455], ["2026-04-27", 468.25], ["2026-05-04", 456.25], ["2026-05-11", 455.75], ["2026-05-18", 463.25], ["2026-05-25", 446.75], ["2026-06-01", 417.5], ["2026-06-08", 412.75], ["2026-06-15", 417.5], ["2026-06-22", 412.75], ["2026-06-29", 425], ["2026-07-06", 438], ["2026-07-13", 444.75], ["2026-07-20", 464.25], ["2026-07-27", 440.75], ["2026-08-03", 439], ["2026-08-10", 459], ["2026-08-17", 483.75], ["2026-08-24", 512], ["2026-08-31", 512], ["2026-09-04", 536.75]],
+  "Wheat (CBOT)": [["2025-09-15", 522.5], ["2025-09-22", 519.75], ["2025-09-29", 515.25], ["2025-10-06", 498.5], ["2025-10-13", 503.75], ["2025-10-20", 512.5], ["2025-10-27", 534], ["2025-11-03", 527.75], ["2025-11-10", 527.25], ["2025-11-17", 527], ["2025-11-24", 531], ["2025-12-01", 537.5], ["2025-12-08", 534.5], ["2025-12-15", 509.75], ["2025-12-22", 519], ["2025-12-29", 506.5], ["2026-01-05", 517.25], ["2026-01-12", 518], ["2026-01-19", 529.5], ["2026-01-26", 538], ["2026-02-02", 529.75], ["2026-02-09", 548.75], ["2026-02-16", 573.5], ["2026-02-23", 591.25], ["2026-03-02", 611.25], ["2026-03-09", 618.5], ["2026-03-16", 595.25], ["2026-03-23", 605], ["2026-03-30", 598.25], ["2026-04-06", 571], ["2026-04-13", 591.25], ["2026-04-20", 608.25], ["2026-04-27", 624.5], ["2026-05-04", 607.5], ["2026-05-11", 635.75], ["2026-05-18", 646.25], ["2026-05-25", 610.5], ["2026-06-01", 580], ["2026-06-08", 584.5], ["2026-06-15", 605.75], ["2026-06-22", 578.25], ["2026-06-29", 590.5], ["2026-07-06", 632], ["2026-07-13", 682.75], ["2026-07-20", 678], ["2026-07-27", 639.25], ["2026-08-03", 639.75], ["2026-08-10", 674.75], ["2026-08-17", 681.5], ["2026-08-24", 767], ["2026-08-31", 716], ["2026-09-04", 734]],
+  "Soybeans (CBOT)": [["2025-09-15", 1025.5], ["2025-09-22", 1013.75], ["2025-09-29", 1018], ["2025-10-06", 1006.75], ["2025-10-13", 1019.5], ["2025-10-20", 1041.75], ["2025-10-27", 1099.75], ["2025-11-03", 1101.75], ["2025-11-10", 1112.75], ["2025-11-17", 1125], ["2025-11-24", 1137.75], ["2025-12-01", 1105.25], ["2025-12-08", 1076.75], ["2025-12-15", 1049.25], ["2025-12-22", 1058.75], ["2025-12-29", 1029.5], ["2026-01-05", 1048.5], ["2026-01-12", 1057.75], ["2026-01-19", 1067.75], ["2026-01-26", 1064.25], ["2026-02-02", 1115.25], ["2026-02-09", 1133], ["2026-02-16", 1137.5], ["2026-02-23", 1157.25], ["2026-03-02", 1185], ["2026-03-09", 1211], ["2026-03-16", 1161.25], ["2026-03-23", 1159.25], ["2026-03-30", 1163.5], ["2026-04-06", 1175.75], ["2026-04-13", 1167.25], ["2026-04-20", 1163.75], ["2026-04-27", 1187.75], ["2026-05-04", 1194.25], ["2026-05-11", 1177], ["2026-05-18", 1196.5], ["2026-05-25", 1186.75], ["2026-06-01", 1121.5], ["2026-06-08", 1113.5], ["2026-06-15", 1122.75], ["2026-06-22", 1126.25], ["2026-06-29", 1131.75], ["2026-07-06", 1196.5], ["2026-07-13", 1204.5], ["2026-07-20", 1248], ["2026-07-27", 1172], ["2026-08-03", 1156.5], ["2026-08-10", 1173.75], ["2026-08-17", 1225], ["2026-08-24", 1276.25], ["2026-08-31", 1293.75], ["2026-09-04", 1309.75]]
+ },
  "geo": [
   "<b>Iran has widened the restrictions it applies to vessels crossing the Strait of Hormuz,</b> extending them to ships it judges non-compliant. Commodity-carrying crossings fell to six on Wednesday from eleven the day before, against a ten-day average near thirteen (Reuters) — a gauge of how hard the strait is to use, not a urea flow. Ten vessels holding just over 520,000t of non-Iranian urea still cannot leave the Gulf (Argus, 3 Sep); that tonnage would reach the market first if a usable lane opens.",
   "<b>No new strike exchange was reported between the US and Iran today,</b> a second quiet day after the 1–3 September rounds. Vice-President Vance described the fighting as occasional flare-ups rather than a war. Washington still says it will not negotiate while attacks on shipping continue, and no talks have been announced.",
   "<b>Israel's threat to Iranian energy infrastructure stands and remains conditional:</b> defence minister Katz said Israel would strike energy targets across Iranian territory if Iran attacks Israel. Iran's urea plants run on that gas at about 5.4m t a year, so a strike that fired the condition would remove tonnes by a second path alongside the closed strait.",
   "<b>President Putin said prospects exist for a peace agreement with US and Chinese backing,</b> while Turkey's drafted safe-passage plan sits with Moscow. Nothing is agreed and Ukraine's corridor has carried no traffic since 23 July; Baltic cargoes exit through the Danish straits and are unaffected either way."
- ]
-}</script>
+ ],
+ "_history_note": "history = 52 weekly closing prices per Energy & Crop Prices tile, keyed by the tile name, [ISO date, value] pairs oldest first; the page draws it as the 52-week graph. Runs: keep it verbatim; every Monday midday run appends last week's close for each series and drops the oldest point so each stays at 52. Source: front-month futures weekly closes (TTF, Brent, Henry Hub, CBOT corn/wheat/soybeans)."
+}
+</script>
 
 <script>
 (function () {
@@ -616,10 +639,60 @@
 
   // drivers
   const chgCls = { up: 'up', down: 'down', flat: 'flat' };
+  // 52-week graph (7 Sep 2026): D.history[name] = [[ISO date, close], ...] oldest first.
+  // Matched by name (falls back to a keyword so a renamed tile still finds its series).
+  const H = D.history || {};
+  const findHist = name => {
+    if (H[name]) return H[name];
+    const n = name.toLowerCase();
+    const key = Object.keys(H).find(k => { const kk = k.toLowerCase();
+      return ['ttf', 'brent', 'henry', 'corn', 'wheat', 'soy'].some(w => n.includes(w) && kk.includes(w)); });
+    return key ? H[key] : null;
+  };
+  const fmtN = v => v >= 100 ? Math.round(v).toString() : (v >= 10 ? v.toFixed(1) : v.toFixed(2));
+  const fmtD = iso => { const dt = new Date(iso + 'T00:00:00Z'); return dt.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', timeZone: 'UTC' }); };
+  const drawSparks = () => {
+    document.querySelectorAll('#drivers .spark52').forEach(box => {
+      const pts = (findHist(box.dataset.name) || []).filter(p => p && p[1] != null);
+      if (pts.length < 2) { box.innerHTML = ''; return; }
+      const W = Math.max(80, Math.round(box.getBoundingClientRect().width)) || 200, Hh = 44, padT = 5, padB = 3;
+      const vals = pts.map(p => p[1]);
+      const lo = Math.min(...vals), hi = Math.max(...vals), span = (hi - lo) || 1;
+      const x = i => (i / (pts.length - 1)) * W;
+      const y = v => padT + (1 - (v - lo) / span) * (Hh - padT - padB);
+      const line = pts.map((p, i) => (i ? 'L' : 'M') + x(i).toFixed(1) + ' ' + y(p[1]).toFixed(1)).join(' ');
+      const area = line + ' L' + W + ' ' + Hh + ' L0 ' + Hh + ' Z';
+      const last = pts[pts.length - 1];
+      const step = W / (pts.length - 1);
+      const hits = pts.map((p, i) => {
+        const cx = x(i), cy = y(p[1]);
+        const lbl = fmtD(p[0]) + ' · ' + fmtN(p[1]);
+        const anchor = cx < W * 0.3 ? 'start' : (cx > W * 0.7 ? 'end' : 'middle');
+        return '<rect class="hit" x="' + (cx - step / 2).toFixed(1) + '" y="0" width="' + step.toFixed(1) + '" height="' + Hh + '"><title>' + lbl + '</title></rect>' +
+          '<g class="pt"><circle cx="' + cx.toFixed(1) + '" cy="' + cy.toFixed(1) + '" r="2.5"></circle>' +
+          '<text x="' + cx.toFixed(1) + '" y="' + (cy < 16 ? cy + 12 : cy - 6).toFixed(1) + '" font-size="9.5" text-anchor="' + anchor + '">' + lbl + '</text></g>';
+      }).join('');
+      box.innerHTML = '<svg viewBox="0 0 ' + W + ' ' + Hh + '" width="' + W + '" height="' + Hh + '" role="img" aria-label="52-week price history, low ' + fmtN(lo) + ', high ' + fmtN(hi) + '">' +
+        '<path class="area" d="' + area + '"></path>' +
+        '<line class="base" x1="0" y1="' + Hh + '" x2="' + W + '" y2="' + Hh + '"></line>' +
+        '<path class="line" d="' + line + '"></path>' +
+        '<circle class="dot" cx="' + x(pts.length - 1).toFixed(1) + '" cy="' + y(last[1]).toFixed(1) + '" r="2.5"></circle>' +
+        hits + '</svg>';
+    });
+  };
+  const range52 = (d) => {
+    const pts = (findHist(d.name) || []).filter(p => p && p[1] != null);
+    if (pts.length < 2) return '';
+    const vals = pts.map(p => p[1]);
+    return '<div class="spark52" data-name="' + d.name.replace(/"/g, '&quot;') + '"></div>' +
+      '<div class="range">52-wk range <b>' + fmtN(Math.min(...vals)) + '</b> – <b>' + fmtN(Math.max(...vals)) + '</b></div>';
+  };
   document.getElementById('drivers').innerHTML = D.drivers.map(d =>
     '<div class="card drv"><div class="name">' + d.name + '</div><div class="val">' + d.val + '</div>' +
-    '<div class="chg ' + (chgCls[d.dir] || 'flat') + '">' + d.chg + '</div><div class="sub">' + d.sub + '</div></div>'
+    '<div class="chg ' + (chgCls[d.dir] || 'flat') + '">' + d.chg + '</div>' + range52(d) + '<div class="sub">' + d.sub + '</div></div>'
   ).join('');
+  drawSparks();
+  let sparkT; window.addEventListener('resize', () => { clearTimeout(sparkT); sparkT = setTimeout(drawSparks, 120); });
 
   // geo
   document.getElementById('geo').innerHTML = D.geo.map(g => '<li>' + g + '</li>').join('');
