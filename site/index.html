@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <!-- iPhone app shell (PWA, 24 Aug 2026) — keep these tags on every edition -->
 <link rel="manifest" href="/manifest.webmanifest">
-<meta name="theme-color" content="#f9f9f7" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#0d0d0d" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f4f7f8" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0e1719" media="(prefers-color-scheme: dark)">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Oracle">
@@ -17,21 +17,25 @@
 <style>
   :root {
     color-scheme: light;
-    --page: #f9f9f7; --surface: #fcfcfb; --ink: #0b0b0b; --ink2: #52514e;
-    --muted: #898781; --grid: #e1e0d9; --baseline: #c3c2b7;
-    --border: rgba(11,11,11,0.10);
-    --good: #0ca30c; --warn: #fab219; --serious: #ec835a; --crit: #d03b3b;
-    --good-text: #006300;
-    --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a;
+    /* Dreymoor brand palette (dreymoorfert.com, applied 10 Sep 2026 — keep on every edition) */
+    --brand: #38b8c8; --brand-deep: #257f8d; --brand-2: #31d58c; --brand-soft: #98eac5;
+    --brand-text: #257f8d; --pill-bg: #257f8d; --pill-fg: #ffffff;
+    --page: #f4f7f8; --surface: #ffffff; --ink: #333333; --ink2: #555555;
+    --muted: #777777; --grid: #e3e9ea; --baseline: #c7d2d4;
+    --border: rgba(51,51,51,0.12);
+    --good: #31d58c; --warn: #fab219; --serious: #ec835a; --crit: #d03b3b;
+    --good-text: #178a58;
+    --s1: #38b8c8; --s2: #eb6834; --s3: #22a86d;
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
       color-scheme: dark;
-      --page: #0d0d0d; --surface: #1a1a19; --ink: #ffffff; --ink2: #c3c2b7;
-      --muted: #898781; --grid: #2c2c2a; --baseline: #383835;
+      --brand-text: #38b8c8; --pill-bg: #38b8c8; --pill-fg: #0e1719;
+      --page: #0e1719; --surface: #162326; --ink: #f1f5f5; --ink2: #c4cfd1;
+      --muted: #8b9a9d; --grid: #253538; --baseline: #34474b;
       --border: rgba(255,255,255,0.10);
-      --good-text: #0ca30c;
-      --s1: #3987e5; --s2: #d95926; --s3: #199e70;
+      --good-text: #31d58c;
+      --s1: #38b8c8; --s2: #d95926; --s3: #31d58c;
     }
   }
   * { box-sizing: border-box; margin: 0; }
@@ -41,13 +45,13 @@
     font-size: 15px; line-height: 1.5; padding: 24px 20px 60px;
   }
   .wrap { max-width: 1180px; margin: 0 auto; }
-  header.site { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-bottom: 6px; }
-  .brand { font-size: 20px; font-weight: 700; letter-spacing: .3px; }
+  header.site { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 2px solid var(--brand); }
+  .brand { font-size: 20px; font-weight: 700; letter-spacing: .3px; color: var(--brand-text); }
   .brand span { color: var(--muted); font-weight: 500; }
   .asof { color: var(--ink2); font-size: 13px; }
-  .updated-chip { display:inline-block; padding:2px 10px; border:1px solid var(--border); border-radius:999px; font-size:12px; color:var(--ink2); background:var(--surface); }
+  .updated-chip { display:inline-block; padding:2px 10px; border:1px solid color-mix(in srgb, var(--brand-2) 40%, transparent); border-radius:999px; font-size:12px; color:var(--good-text); background:color-mix(in srgb, var(--brand-2) 14%, transparent); }
   .vintage { color: var(--muted); font-size: 12px; margin-top: 3px; }
-  h2 { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.1px; color: var(--muted); margin: 34px 0 12px; }
+  h2 { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.1px; color: var(--brand-text); margin: 34px 0 12px; }
   .card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px; }
 
   /* hero view */
@@ -105,13 +109,13 @@
   .drv .spark52 { margin: 8px 0 4px; }
   .drv .spark52 { min-height: 44px; }
   .drv .spark52 svg { display: block; overflow: visible; }
-  .drv .spark52 .area { fill: var(--ink); opacity: .07; }
-  .drv .spark52 .line { fill: none; stroke: var(--ink2); stroke-width: 1.5; stroke-linejoin: round; stroke-linecap: round; }
+  .drv .spark52 .area { fill: var(--brand); opacity: .12; }
+  .drv .spark52 .line { fill: none; stroke: var(--brand-text); stroke-width: 1.5; stroke-linejoin: round; stroke-linecap: round; }
   .drv .spark52 .base { stroke: var(--grid); stroke-width: 1; }
-  .drv .spark52 .dot { fill: var(--ink); }
+  .drv .spark52 .dot { fill: var(--brand-text); }
   .drv .spark52 .hit { fill: transparent; }
   .drv .spark52 .hit:hover + .pt { opacity: 1; }
-  .drv .spark52 .pt { opacity: 0; fill: var(--ink2); pointer-events: none; }
+  .drv .spark52 .pt { opacity: 0; fill: var(--brand-text); pointer-events: none; }
   .drv .range { font-size: 10.5px; color: var(--muted); margin-bottom: 4px; white-space: nowrap; }
   .drv .range b { font-weight: 600; color: var(--ink2); }
 
@@ -143,8 +147,8 @@
   /* unified Dreymoor site nav (merge 20 Aug 2026; Production Costs + CBAM pills 9 Sep 2026 — keep on every edition) */
   .site-nav { display: flex; gap: 8px; flex-wrap: wrap; margin: 2px 0 14px; }
   .nav-pill { display: inline-block; padding: 4px 14px; border: 1px solid var(--border); border-radius: 999px; font-size: 12.5px; font-weight: 600; text-decoration: none; color: var(--ink2); background: var(--surface); }
-  .nav-pill.active { background: var(--ink); color: var(--page); border-color: var(--ink); }
-  a.nav-pill:hover { border-color: var(--ink2); color: var(--ink); }
+  .nav-pill.active { background: var(--pill-bg); color: var(--pill-fg); border-color: var(--pill-bg); }
+  a.nav-pill:hover { border-color: var(--brand); color: var(--brand-text); }
   /* iPhone app shell (PWA) — safe areas + install hint */
   @supports (padding: env(safe-area-inset-top)) {
     body { padding-top: calc(24px + env(safe-area-inset-top)); padding-bottom: calc(60px + env(safe-area-inset-bottom)); }
@@ -168,12 +172,12 @@
   .ask-src { margin-top: 8px; padding-top: 7px; border-top: 1px solid var(--grid); color: var(--muted); font-size: 11.5px; }
   .ask-form { display: flex; gap: 8px; }
   #ask-input { flex: 1; min-width: 0; background: var(--page); color: var(--ink); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; font: inherit; font-size: 14px; }
-  #ask-input:focus { outline: 2px solid var(--s1); outline-offset: -1px; }
-  #ask-send { background: var(--ink); color: var(--page); border: 0; border-radius: 8px; padding: 10px 18px; font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; }
+  #ask-input:focus { outline: 2px solid var(--brand); outline-offset: -1px; }
+  #ask-send { background: var(--pill-bg); color: var(--pill-fg); border: 0; border-radius: 8px; padding: 10px 18px; font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; }
   #ask-send:disabled { opacity: .45; cursor: default; }
   .ask-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
   .ask-chip { background: transparent; color: var(--ink2); border: 1px solid var(--border); border-radius: 999px; padding: 5px 11px; font: inherit; font-size: 12.5px; cursor: pointer; }
-  .ask-chip:hover { border-color: var(--ink2); color: var(--ink); }
+  .ask-chip:hover { border-color: var(--brand); color: var(--brand-text); }
   .ask-foot { margin: 12px 0 0; color: var(--muted); font-size: 11.5px; }
   .ask-think { display: inline-flex; gap: 4px; align-items: center; color: var(--muted); font-size: 13px; }
   .ask-think i { width: 5px; height: 5px; border-radius: 50%; background: var(--muted); display: inline-block; animation: askpulse 1.1s infinite ease-in-out; }
@@ -256,8 +260,8 @@
 <script id="oracle-data" type="application/json">
 {
  "asof": "2026-09-09",
- "updated": "Sep 9 at 23:14 Paris time",
- "publish_at": "2026-09-09T23:14:00+02:00",
+ "updated": "Sep 10 at 01:15 Paris time",
+ "publish_at": "2026-09-10T01:15:00+02:00",
  "vintage": "Reports read: Profercy 9 Sep 18:35 · Argus 8 Sep · Fertecon 8 Sep",
  "hero": {
   "headline": "Iran's attacks on shipping reach the bypass ports outside Hormuz; three of four benchmarks mark higher.",
