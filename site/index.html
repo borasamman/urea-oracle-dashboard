@@ -140,7 +140,7 @@
   .cols2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   @media (max-width: 800px) { .cols2 { grid-template-columns: 1fr; } }
 
-  /* unified Dreymoor site nav (merge 20 Aug 2026 — keep on every edition) */
+  /* unified Dreymoor site nav (merge 20 Aug 2026; Production Costs + CBAM pills 9 Sep 2026 — keep on every edition) */
   .site-nav { display: flex; gap: 8px; flex-wrap: wrap; margin: 2px 0 14px; }
   .nav-pill { display: inline-block; padding: 4px 14px; border: 1px solid var(--border); border-radius: 999px; font-size: 12.5px; font-weight: 600; text-decoration: none; color: var(--ink2); background: var(--surface); }
   .nav-pill.active { background: var(--ink); color: var(--page); border-color: var(--ink); }
@@ -191,6 +191,8 @@
   <nav class="site-nav" aria-label="Dreymoor sites">
     <span class="nav-pill active">Daily Urea Oracle</span>
     <a class="nav-pill" href="/digest/">Weekly Digest</a>
+    <a class="nav-pill" href="/digest/?page=costs">Production Costs</a>
+    <a class="nav-pill" href="/digest/?page=cbam">CBAM</a>
   </nav>
   <div class="asof" style="margin-bottom:18px">
     <div id="tagline">Daily factors, drivers, geopolitics, and the Oracle's forward urea view.</div>
@@ -254,8 +256,8 @@
 <script id="oracle-data" type="application/json">
 {
  "asof": "2026-09-09",
- "updated": "Sep 9 at 19:25 Paris time",
- "publish_at": "2026-09-09T19:18:00+02:00",
+ "updated": "Sep 9 at 23:14 Paris time",
+ "publish_at": "2026-09-09T23:14:00+02:00",
  "vintage": "Reports read: Profercy 9 Sep 18:35 · Argus 8 Sep · Fertecon 8 Sep",
  "hero": {
   "headline": "Iran's attacks on shipping reach the bypass ports outside Hormuz; three of four benchmarks mark higher.",
@@ -634,6 +636,23 @@
     const pct = Math.max(0, Math.min(100, used / q.initial_t * 100));
     const asof = q.last_allocation || q.source_update || q.fetched;
     const cls = pct >= 90 ? 'crit' : (pct >= 70 ? 'hot' : '');
+    // Seasonal projection (9 Sep 2026, Bora): the quota is drawn at customs
+    // clearance, and European arrivals are seasonal — light June–September,
+    // heavy October–February. SEASON = share of the year's urea imports cleared
+    // in each month by the five tracked EU importers (France, Italy, Spain,
+    // Poland, Romania), average of 2016–2024 (Global Trade Tracker, HS 310210).
+    const SEASON = [10.4, 10.8, 9.3, 8.4, 8.3, 5.7, 6.0, 6.4, 8.1, 8.7, 8.7, 9.3];
+    const dim = (y, m) => new Date(Date.UTC(y, m, 0)).getUTCDate();
+    const wday = d => SEASON[d.getUTCMonth()] / 100 / dim(d.getUTCFullYear(), d.getUTCMonth() + 1);
+    function seasonal(startISO, asofISO, usedT, quotaT, endISO) {
+      const start = new Date(startISO + 'T00:00:00Z'), a = new Date(asofISO + 'T00:00:00Z'), end = new Date(endISO + 'T00:00:00Z');
+      let sw = 0; for (let d = new Date(start); d <= a; d.setUTCDate(d.getUTCDate() + 1)) sw += wday(d);
+      if (sw <= 0) return null;
+      const annual = usedT / sw, marks = {};
+      let cum = usedT, d = new Date(a);
+      while (cum < quotaT && d < end) { d.setUTCDate(d.getUTCDate() + 1); cum += annual * wday(d); [50, 75, 90].forEach(p => { if (!marks[p] && cum >= quotaT * p / 100) marks[p] = d.toISOString().slice(0, 10); }); }
+      return { annual, windowShare: sw * 100, out: cum >= quotaT ? d.toISOString().slice(0, 10) : null, marks };
+    }
     let pace = '';
     if (q.exhaustion_date) {
       pace = '<b>The quota is used up.</b> The Commission recorded it as exhausted on ' + longISO(q.exhaustion_date) + ', so urea from the origins it covered pays the 6.5% duty again until a new quota opens.';
@@ -644,10 +663,16 @@
         const left = Math.round(q.balance_t / perDay);
         const out = new Date(asof + 'T00:00:00Z'); out.setUTCDate(out.getUTCDate() + left);
         const outISO = out.toISOString().slice(0, 10);
-        const endGap = q.end ? daysBetween(outISO, q.end) : null;
-        pace = 'Since the quota opened on ' + shortISO(q.start) + ', about <b>' + fmtT(perDay) + ' t a day</b> has cleared duty-free. At that pace the remaining <b>' + fmtT(q.balance_t) + ' t</b> would last about ' + Math.round(left / 7) + ' weeks and run out around <b>' + longISO(outISO) + '</b>';
-        if (endGap != null) pace += endGap > 0 ? ', about ' + Math.round(endGap / 7) + ' weeks before the quota closes on ' + shortISO(q.end) + '.' : ' — after the quota closes on ' + shortISO(q.end) + ', so it is not expected to run out.';
-        else pace += '.';
+        const s = q.end ? seasonal(q.start, asof, used, q.initial_t, q.end) : null;
+        if (s && s.out) {
+          const gap = daysBetween(s.out, q.end);
+          pace = 'European urea imports are seasonal: the five tracked EU importers clear only about ' + Math.round(s.windowShare) + '% of their year\'s urea between ' + shortISO(q.start) + ' and ' + shortISO(asof) + ', and about ' + Math.round(SEASON[9] + SEASON[10] + SEASON[11] + SEASON[0] + SEASON[1]) + '% between October and February. Scaling the ' + fmtT(used) + ' t cleared so far by that pattern, the quota is expected to run out around <b>' + longISO(s.out) + '</b>' + (gap > 0 ? ', about ' + Math.round(gap / 7) + ' weeks before it closes on ' + shortISO(q.end) : '') + (s.marks[50] ? ' — half used around ' + shortISO(s.marks[50]) : '') + (s.marks[90] ? ', 90% used around ' + shortISO(s.marks[90]) : '') + '. A straight-line average (about ' + fmtT(perDay) + ' t a day) would put it at ' + longISO(outISO) + ', but that ignores the autumn and winter buying season.';
+        } else if (s && !s.out) {
+          pace = 'European urea imports are seasonal. Scaling the ' + fmtT(used) + ' t cleared so far by the usual monthly pattern of the five tracked EU importers, the quota is not expected to run out before it closes on ' + longISO(q.end) + '.';
+        } else {
+          const endGap = q.end ? daysBetween(outISO, q.end) : null;
+          pace = 'Since the quota opened on ' + shortISO(q.start) + ', about <b>' + fmtT(perDay) + ' t a day</b> has cleared duty-free. At that pace the remaining <b>' + fmtT(q.balance_t) + ' t</b> would last about ' + Math.round(left / 7) + ' weeks and run out around <b>' + longISO(outISO) + '</b>' + (endGap != null && endGap > 0 ? ', about ' + Math.round(endGap / 7) + ' weeks before the quota closes on ' + shortISO(q.end) + '.' : '.');
+        }
         const h = (q.history || []).filter(p => p && p[1] != null).sort((a, b) => a[0] < b[0] ? -1 : 1);
         if (h.length >= 2) {
           const last = h[h.length - 1];
@@ -655,14 +680,10 @@
           const span = daysBetween(h[j][0], last[0]);
           if (span >= 14) {
             const recent = (h[j][1] - last[1]) / span;
-            if (recent > 0) {
-              const left2 = Math.round(last[1] / recent);
-              const out2 = new Date(last[0] + 'T00:00:00Z'); out2.setUTCDate(out2.getUTCDate() + left2);
-              pace += ' Over the last ' + span + ' days the pace has been about <b>' + fmtT(recent) + ' t a day</b>, which points to around <b>' + longISO(out2.toISOString().slice(0, 10)) + '</b>.';
-            }
+            if (recent > 0) pace += ' Over the last ' + span + ' days about <b>' + fmtT(recent) + ' t a day</b> has cleared, against ' + fmtT(perDay) + ' t a day since the start.';
           }
         }
-        pace += ' Pace is the past average, not a forecast — a few large clearances can move the date by weeks.';
+        pace += ' These dates follow past patterns, not a forecast of demand — a few large clearances, or a change in which origins pay the duty, can move them by weeks.';
       }
     }
     box.innerHTML =
@@ -702,8 +723,10 @@
   var standalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
   var q = new URLSearchParams(location.search);
 
-  // Home-screen shortcut "Weekly Digest" lands here with ?open=digest.
+  // Home-screen shortcut "Weekly Digest" lands here with ?open=digest;
+  // ?open=costs / ?open=cbam open the Production Costs and CBAM pages (9 Sep 2026).
   if (q.get('open') === 'digest') { location.replace(DIGEST); return; }
+  if (q.get('open') === 'costs' || q.get('open') === 'cbam') { location.replace(DIGEST + '?page=' + q.get('open')); return; }
 
   if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
     navigator.serviceWorker.register('/sw.js').catch(function () {});
