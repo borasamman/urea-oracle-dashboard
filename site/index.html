@@ -241,7 +241,7 @@
   <!-- EU duty-free urea import quota (9 Sep 2026). KEEP ON EVERY EDITION,
        like the .site-nav pill bar and the Ask panel. Rendered from the
        "eu_quota" JSON key, then refreshed from /quota.json, which the Netlify
-       scheduled function netlify/functions/quota.mjs rewrites daily from the
+       scheduled function quota.mjs rewrites daily from the
        Commission's QUOTA database (order number 09.0173). -->
   <h2>EU Duty-Free Urea Import Quota</h2>
   <section class="card quota" id="quota"></section>
@@ -259,14 +259,14 @@
 
 <script id="oracle-data" type="application/json">
 {
- "asof": "2026-09-09",
- "updated": "Sep 10 at 01:15 Paris time",
- "publish_at": "2026-09-10T01:15:00+02:00",
- "vintage": "Reports read: Profercy 9 Sep 18:35 · Argus 8 Sep · Fertecon 8 Sep",
+ "asof": "2026-09-10",
+ "updated": "Sep 10 at 13:00 Paris time",
+ "publish_at": "2026-09-10T13:00:00+02:00",
+ "vintage": "Reports read: Profercy 10 Sep 12:11 · Argus 9 Sep · Fertecon 9 Sep",
  "hero": {
-  "headline": "Iran's attacks on shipping reach the bypass ports outside Hormuz; three of four benchmarks mark higher.",
-  "body": "Ten merchant ships were struck near the Strait of Hormuz today, including an LNG carrier at Khor Fakkan on the UAE's Gulf of Oman coast — the first hits on the berths outside the strait that Gulf producers have been using. Brazil moved most: non-Chinese granular is offered at $485–490/t cfr and suppliers refused large bids at $470/t. US barges traded to $454–455/st. Egypt alone did not follow, its range narrowing to $505/t.",
-  "tail": "<p><b>14 Days Out (to 23 September):</b> Middle East, Brazil and US Gulf prices are expected to keep rising and Egypt more slowly; conflict-led moves have kept building for three to four weeks in most past cases.</p><p><b>28 Days Out (to 7 October):</b> India's August cargoes finish shipping on 24 September, which is likely to slow the rise; its next tender, expected 5–20 October, sits at the window's end; the delayed third Chinese allocation remains the likeliest cap.</p><p><b>What would cancel this forecast:</b> If Gulf urea sails out through Hormuz in volume, if Egypt trades below $475/t fob, or if Chinese granular sells into Brazil below $435/t cfr before 23 September, this forecast no longer holds. Our US Gulf forecast also fails if the US tax on fertilizer from Russia becomes law.</p>"
+  "headline": "War prices are being paid: Saudi Red Sea tonnage in the high $440s/t fob, Algerian at $515/t fob, as Gulf attacks continue.",
+  "body": "Sabic sold 30,000t of granular urea for early-October loading at Yanbu in the mid-to-high $440s/t fob — about $30/t above its late-August sale — and Algeria's Sorfert placed 8,000t at $515/t fob for Europe (Profercy, 10 Sep). Attacks on shipping continued inside the Gulf on 9 September; no usable lane through Hormuz has opened. Traders are split on the Yanbu level: freight is capping what buyers can pay delivered (Fertecon, 9 Sep).",
+  "tail": "<p><b>14 Days Out (to 24 September):</b> All four benchmarks are expected to keep rising; conflict-led moves have kept building for three to four weeks in most past cases.</p><p><b>28 Days Out (to 8 October):</b> The rise is likely to slow once India's August cargoes finish shipping on 24 September; India's next tender announcement, expected 5–20 October, sits inside this window; the delayed third Chinese export allocation remains the likeliest cap.</p><p><b>What would cancel this forecast:</b> If Gulf urea sails out through Hormuz in volume, if Egypt trades below $475/t fob, or if Chinese granular sells into Brazil below $435/t cfr before 24 September, this forecast no longer holds. The US Gulf forecast also fails if the US tax on fertilizer from Russia becomes law.</p>"
  },
  "benchmarks": [
   {
@@ -274,13 +274,13 @@
    "now": "$420–430/t",
    "unit": "Sep 9",
    "dir": "up",
-   "target": "$425–460 by 23 Sep",
+   "target": "$430–465 by 24 Sep",
    "conf": "70% CONFIDENCE",
    "prev": {
-    "date": "8 Sep",
-    "target": "$415–450 by 22 Sep",
+    "date": "9 Sep",
+    "target": "$420–455 by 23 Sep",
     "dir": "up",
-    "conf": "68% CONFIDENCE"
+    "conf": "69% CONFIDENCE"
    },
    "spark": [425.0, 435.0, 445.0, 445.0, 445.0, 445.0, 445.0, 435.0, 430.0, 417.5, 417.5, 395.0, 395.0, 387.5, 382.5, 382.5, 395.0, 392.5, 395.0, 395.0, 395.0, 400.0, 405.0, 407.5, 407.5, 407.5, 417.5, 425.0]
   },
@@ -289,11 +289,11 @@
    "now": "$505/t",
    "unit": "Sep 9",
    "dir": "up",
-   "target": "$505–545 by 23 Sep",
+   "target": "$505–545 by 24 Sep",
    "conf": "67% CONFIDENCE",
    "prev": {
-    "date": "8 Sep",
-    "target": "$510–550 by 22 Sep",
+    "date": "9 Sep",
+    "target": "$510–550 by 23 Sep",
     "dir": "up",
     "conf": "68% CONFIDENCE"
    },
@@ -304,13 +304,13 @@
    "now": "$470–485/t",
    "unit": "Sep 9",
    "dir": "up",
-   "target": "$480–515 by 23 Sep",
+   "target": "$480–515 by 24 Sep",
    "conf": "66% CONFIDENCE",
    "prev": {
-    "date": "8 Sep",
-    "target": "$470–505 by 22 Sep",
+    "date": "9 Sep",
+    "target": "$470–505 by 23 Sep",
     "dir": "up",
-    "conf": "63% CONFIDENCE"
+    "conf": "64% CONFIDENCE"
    },
    "spark": [460.0, 477.5, 487.5, 482.5, 487.5, 482.5, 475.0, 462.5, 462.5, 452.5, 447.5, 440.0, 425.0, 417.5, 417.5, 421.5, 435.0, 435.0, 435.0, 437.5, 437.5, 447.5, 453.0, 452.5, 460.0, 460.0, 462.5, 477.5]
   },
@@ -319,13 +319,13 @@
    "now": "$450–455/st",
    "unit": "Sep 9",
    "dir": "up",
-   "target": "$455–490/st by 23 Sep",
+   "target": "$455–490/st by 24 Sep",
    "conf": "68% CONFIDENCE",
    "prev": {
-    "date": "8 Sep",
-    "target": "$440–470/st by 22 Sep",
+    "date": "9 Sep",
+    "target": "$445–475/st by 23 Sep",
     "dir": "up",
-    "conf": "66% CONFIDENCE"
+    "conf": "67% CONFIDENCE"
    },
    "spark": [425.0, 431.5, 440.0, 422.5, 420.0, 435.5, 412.5, 415.0, 398.5, 385.0, 390.0, 398.5, 387.5, 385.5, 385.0, 379.5, 387.5, 399.0, 406.0, 412.5, 412.5, 411.5, 422.0, 437.5, 444.0, 439.5, 445.0, 452.5]
   }
@@ -335,117 +335,117 @@
    "code": "F1",
    "name": "Tenders &amp; Policy",
    "state": "bear",
-   "note": "India is out of the import market: the 1.78m t bought in August ships by 24 September and no new tender has been announced. We expect the next tender to be announced between 5 and 20 October, with about 60% confidence. The rupee at a record low near 95 to the dollar raises India's landed cost and leans toward a later or smaller tender. A tender announcement is the only event that would turn this factor bullish."
+   "note": "India is out of the import market: the 1.78m t bought in August ships by 24 September and no new tender has been announced. We expect the next tender to be announced between 5 and 20 October, with about 60% confidence. The rupee near a record low of about 95 to the dollar (9 Sep) raises India's landed cost and leans toward a later or smaller tender. A tender announcement is the only event that would turn this factor bullish."
   },
   {
    "code": "F2",
    "name": "Seasonality",
    "state": "watch",
-   "note": "In past Septembers, Middle East prices have risen over the following month in about two of three years, while Egypt and New Orleans have more often slipped, and New Orleans has been the weakest September market of the past five years. European and US autumn buying has usually started in late September, inside this forecast window."
+   "note": "In past Septembers, Middle East prices have risen over the following month in about two of three years, while Egypt and New Orleans have more often slipped. European and US autumn buying has usually started in late September, inside this forecast window."
   },
   {
    "code": "F3",
    "name": "Production Cost",
    "state": "watch",
-   "note": "European producers' cash cost of making urea is about $742/t at the plant gate (ex-works), computed on gas at TTF €79.00/MWh and EUR/USD 1.1638 — up $10 on this morning's reading and a new high for this move. European suppliers have raised granular urea offers to €515–520/t FCA at La Pallice and Ghent, against €510/t traded last week, with no business yet at the higher level (Profercy, 9 Sep). Egyptian urea delivered to a French Atlantic port costs roughly $568–614/t all-in, so imports stay far cheaper than European production."
+   "note": "European producers' cash cost of making urea is about $741/t at the plant gate (ex-works), computed on gas at TTF €78.95/MWh and EUR/USD 1.1640 — up $9 on yesterday midday, with gas steady near a three-year high. Egyptian urea delivered to a French Atlantic port costs roughly $568–614/t all-in, so imports stay far cheaper than European production. French granular sales printed €510–515/t FCA La Pallice with farmer demand subdued (Argus, 9 Sep)."
   },
   {
    "code": "F4",
    "name": "Supply Shocks",
    "state": "watch",
-   "note": "Twelve vessels holding about 630,000t of non-Iranian urea are shut inside the Gulf (Kpler via Argus, 8 Sep) — that is urea cargoes waiting to load or sail, not a count of daily ship movements. Iran's Hengam plant (1.1m t/y) is stopped again and Lordegan (1.12m t/y) is still offline, on top of Iranian export loadings halted since early August. Spot tonnage from Oman is sold out until at least mid-October."
+   "note": "Twelve vessels holding about 630,000t of non-Iranian urea remain shut inside the Gulf (Kpler via Argus, 8 Sep). Iran's Pardis closed a 30,000–60,000t granular export tender on 9 September with nothing awarded, and the Hengam (1.1m t/y) and Lordegan (1.12m t/y) plants are down, so Iranian exports stay halted. Oman's spot tonnage is sold out until at least mid-October, while the Saudi Red Sea berths keep loading."
   },
   {
    "code": "F5",
    "name": "Long/Short Squeeze",
    "state": "watch",
-   "note": "Egypt's assessed range collapsed to a single $505/t point today: producers have asked $510–520/t fob for a second week and nothing has been sold there. In Brazil, suppliers refused large bids at $470/t cfr while offering $485–490/t, so both sides are holding out. No report has identified who is buying at the firmer levels elsewhere. This factor turns bearish if a producer accepts a bid below its last asking price."
+   "note": "Egypt's assessment sits at a single $505/t point: producers are still asking $510–520/t fob and no business has been done there. In Brazil, non-Chinese granular traded around $470/t cfr while offers moved up to $480–490/t, so sellers keep asking more than buyers will pay. No report has identified who is buying at the firmer levels. This factor turns bearish if a producer accepts a bid below its last asking price."
   },
   {
    "code": "F6",
    "name": "Agri Market",
    "state": "bull",
-   "note": "Grains eased today, with corn near 506 cents a bushel and wheat near 721, but corn, wheat and soybeans all stand 12–16% higher than a month ago and the FAO cereal price index for August is the highest since May 2024 (Profercy, 7 Sep). Named agri events like this have lifted urea prices one to two months later in about three of four past cases. A single day's fall is context, not a signal."
+   "note": "Corn, wheat and soybeans eased again today, but all three stand 12–16% higher than a month ago and the FAO cereal price index for August is the highest since May 2024 (7 Sep). Named agri events like this have lifted urea prices one to two months later in about three of four past cases. A single day's fall is context, not a signal."
   },
   {
    "code": "F7",
    "name": "Deferred Buying",
    "state": "bull",
-   "note": "US buyers are taking tonnage further forward: January and February barges traded up to $460/st fob New Orleans in the past 24 hours, above prompt, and one major US supplier is actively sourcing September product (Profercy, 9 Sep). Brazil's urea imports for January–August were 2.8m t, 23% below the same months of 2025 and a ten-year low for the period (customs data, 7–8 Sep). Catch-up buying like this has lifted prices over the following month in about two of three past cases."
+   "note": "About 19,500 short tons of urea traded at New Orleans in one day (Argus, 9 Sep), with January and February barges at $455 and $460/st fob — buyers committing along the curve against a thin September lineup before the winter river close. Brazil's urea imports for January–August were 2.8m t, 23% below the same months of 2025 (customs data, 7–8 Sep). Catch-up buying like this has lifted prices over the following month in about two of three past cases."
   },
   {
    "code": "F8",
    "name": "Momentum",
    "state": "bull",
-   "note": "The 9 September assessment marked the Middle East up $7.50/t, Brazil up $15/t and the US Gulf up $7.50/st, with Egypt down $2.50/t — a second consecutive rising day, so this is bullish momentum. Rises like this have carried prices further over the following two weeks in about six of ten past cases, and most of that move has come inside two weeks, so a late entry gives up much of it. Two consecutive trading days of lower granular assessments would flip this factor to bearish momentum."
+   "note": "Argus marked the Middle East up $6.50/t to $440–448 and Brazil up $5/t on 9 September, and Fertecon's Middle East mark jumped $49/t to $449 to catch up with the traded level — bullish momentum continues. Rises like this have carried further over the following two weeks in about six of ten past cases, with most of the move inside two weeks, so a late entry gives up much of it. Two consecutive days of lower assessments would flip this factor to bearish momentum."
   },
   {
    "code": "F9",
    "name": "Market Psychology",
    "state": "bull",
-   "note": "Sellers are raising asking prices faster than buyers will follow. UK offers for granular urea are now $550/t cif and above and Brazilian non-Chinese offers $485–490/t cfr, with no business concluded at any of the higher levels (Profercy, 9 Sep). When the mood has run like this before, prices were still higher two weeks later in about three of four past cases, though an ask-led move with no trades behind it is the weaker version of that pattern."
+   "note": "Sellers' higher asking prices found buyers outside Egypt for the first time this week — the two trades in the top analysis — while Egyptian business stays pinned at $505/t fob. When the mood has turned like this before, prices were still higher two weeks later in about three of four past cases."
   },
   {
    "code": "G1",
    "name": "Conflicts",
    "state": "bull",
-   "note": "Iran's attacks on merchant shipping around the Strait of Hormuz today are the heaviest of this war and the first to reach berths outside the strait. The Iran–Oman passage arrangement is still not lodged with the IMO, so the easing path has taken no step. Conflict-led moves build over three to four weeks, so little of the expected move to 7 October is lost to a considered entry. A usable lane through Hormuz that releases the shut-in tonnage would turn this factor bearish."
+   "note": "Attacks on merchant shipping continued inside the Gulf on 9 September, the day after the heaviest wave of the war, and no ceasefire step or usable lane through Hormuz has been reported. Conflict-led moves have built over three to four weeks in most past cases, so little of the expected move to 8 October is lost to a considered entry. A usable lane that releases the shut-in tonnage would turn this factor bearish."
   },
   {
    "code": "G2",
    "name": "Trade Policy",
    "state": "watch",
-   "note": "China's quota-based export licensing takes full effect on 15 September and Chinese offers are already limited ahead of it (Profercy, 9 Sep), while the third export allocation is still delayed with about 1.5–2m t expected when it comes. Chinese granular is still offered into Brazil at $455/t cfr, the cheapest tonnage on that market. The US tariff bill on Russian fertilizer is stalled in the House, and Slovakia still blocks the EU sanctions rollover that expires on 15 September."
+   "note": "China's quota-based export licensing takes full effect on 15 September and the third export allocation is still delayed, with about 1.5–2m t expected when it comes. Chinese granular offers rose $5 to $420/t fob, and to about $460/t cfr into Brazil, with no business. The US tariff bill on Russian fertilizer is stalled in the House. The EU's individual sanctions listings on Russia expire on 15 September, with Slovakia still holding out for a shorter renewal."
   },
   {
    "code": "G3",
    "name": "Global Logistics",
    "state": "watch",
-   "note": "Khor Fakkan, hit today, sits on the same side of the Strait of Hormuz as Oman's Sohar and Sur, which is where Gulf producers' remaining urea liftings load. A war-risk insurance rise on those berths would lift Egypt fob and global levels. War-risk still hangs over the Saudi Red Sea berths at Yanbu and Rabigh, undamaged so far. Low water on the Danube still limits urea moving inland from Constanța toward Hungary, Serbia, Slovakia and Austria."
+   "note": "Freight from the Gulf producers' berths is now high enough that traders call the new Yanbu price level unworkable for most destinations (Fertecon, 9 Sep) — rising freight and war-risk are what would cap fob levels even as the war lifts them. War-risk extends to the berths outside the strait after the Khor Fakkan hit of 9 September. Low water on the Danube still limits urea moving inland from Constanța toward Hungary, Serbia, Slovakia and Austria."
   }
  ],
  "drivers": [
   {
    "name": "EU TTF gas",
    "val": "€79.0",
-   "chg": "+4.1% d/d",
-   "dir": "up",
-   "sub": "+30% m/m; a fourth straight rising day and the highest since December 2022, on Hormuz risk to Qatari LNG and EU storage about 66% full, below seasonal norms (Profercy, 9 Sep)"
+   "chg": "-0.4% d/d",
+   "dir": "down",
+   "sub": "+30% m/m; steady near its highest since December 2022, on Hormuz risk to Qatari LNG, Norwegian maintenance and EU storage about 66% full"
   },
   {
    "name": "Brent crude",
-   "val": "$100.4",
-   "chg": "+2.5% d/d",
+   "val": "$101.6",
+   "chg": "+0.4% d/d",
    "dir": "up",
-   "sub": "+14% m/m; holding above $100 after touching $101.58, on the attacks on shipping around Hormuz"
+   "sub": "+14% m/m; the highest since May, holding above $100 as the tanker war raises supply concerns"
   },
   {
    "name": "Henry Hub",
-   "val": "$2.85",
-   "chg": "-2.4% d/d",
+   "val": "$2.87",
+   "chg": "-1.7% d/d",
    "dir": "down",
-   "sub": "+2% m/m; softer on heavy domestic production and comfortable storage — US gas remains insulated from the Gulf disruption"
+   "sub": "+3% m/m; heavy US production and comfortable storage keep US gas insulated from the Gulf disruption"
   },
   {
    "name": "Corn (CBOT)",
-   "val": "506c/bu",
-   "chg": "-0.9% d/d",
+   "val": "508c/bu",
+   "chg": "-0.6% d/d",
    "dir": "down",
-   "sub": "+16% m/m; easing as traders square positions before Friday's USDA supply and demand report, still near three-year highs"
+   "sub": "+16% m/m; near three-year highs ahead of Friday's USDA supply and demand report"
   },
   {
    "name": "Wheat (CBOT)",
-   "val": "721c/bu",
-   "chg": "-1.3% d/d",
+   "val": "719c/bu",
+   "chg": "-1.6% d/d",
    "dir": "down",
-   "sub": "+13% m/m; gave back Tuesday's rise; Black Sea export risk still the driver and no ceasefire has been agreed"
+   "sub": "+12% m/m; easing for a second day with Black Sea export risk still the driver"
   },
   {
    "name": "Soybeans (CBOT)",
-   "val": "1302c/bu",
-   "chg": "0.0% d/d",
-   "dir": "flat",
-   "sub": "+12% m/m; little changed near the highest since December 2023, with a fresh 192,000t US sale to China confirmed"
+   "val": "1291c/bu",
+   "chg": "-0.9% d/d",
+   "dir": "down",
+   "sub": "+12% m/m; just below the highest since December 2023"
   }
  ],
  "history": {
@@ -457,10 +457,10 @@
   "Soybeans (CBOT)": [["2025-09-22", 1013.75], ["2025-09-29", 1018], ["2025-10-06", 1006.75], ["2025-10-13", 1019.5], ["2025-10-20", 1041.75], ["2025-10-27", 1099.75], ["2025-11-03", 1101.75], ["2025-11-10", 1112.75], ["2025-11-17", 1125], ["2025-11-24", 1137.75], ["2025-12-01", 1105.25], ["2025-12-08", 1076.75], ["2025-12-15", 1049.25], ["2025-12-22", 1058.75], ["2025-12-29", 1029.5], ["2026-01-05", 1048.5], ["2026-01-12", 1057.75], ["2026-01-19", 1067.75], ["2026-01-26", 1064.25], ["2026-02-02", 1115.25], ["2026-02-09", 1133], ["2026-02-16", 1137.5], ["2026-02-23", 1157.25], ["2026-03-02", 1185], ["2026-03-09", 1211], ["2026-03-16", 1161.25], ["2026-03-23", 1159.25], ["2026-03-30", 1163.5], ["2026-04-06", 1175.75], ["2026-04-13", 1167.25], ["2026-04-20", 1163.75], ["2026-04-27", 1187.75], ["2026-05-04", 1194.25], ["2026-05-11", 1177], ["2026-05-18", 1196.5], ["2026-05-25", 1186.75], ["2026-06-01", 1121.5], ["2026-06-08", 1113.5], ["2026-06-15", 1122.75], ["2026-06-22", 1126.25], ["2026-06-29", 1131.75], ["2026-07-06", 1196.5], ["2026-07-13", 1204.5], ["2026-07-20", 1248], ["2026-07-27", 1172], ["2026-08-03", 1156.5], ["2026-08-10", 1173.75], ["2026-08-17", 1225], ["2026-08-24", 1276.25], ["2026-08-31", 1293.75], ["2026-09-04", 1309.75]]
  },
  "geo": [
-  "<b>Iran struck about ten merchant ships in and around the Strait of Hormuz today — the largest single wave against shipping since the war began.</b> The UK Maritime Trade Operations centre reported several vessels hit by disabling fire, one listing near Port Rashid in Dubai and an LNG carrier damaged at Khor Fakkan, on the UAE's Gulf of Oman coast outside the strait. Transits fell to six vessels crossing with transponders on in 24 hours, against about 130 a day before the war — all cargo types through the strait, a conflict-intensity gauge, not a urea flow (UKMTO via Al-Monitor and Reuters, 9 Sep).",
-  "<b>Iran's restricted zone beyond the Strait of Hormuz stands declared,</b> with vessels entering it to be placed on Iran's own sanctions lists, and Iran's security council chief has called the strait 'completely closed'. The Iran–Oman passage arrangement remains agreed but was again not lodged with the IMO today, so no usable lane has opened (9 Sep).",
-  "<b>No new Houthi launch at Saudi Arabia followed Monday night's attacks,</b> which wounded 73 people and started fires at Aramco facilities in Abha, Jazan and Najran and drew 32 Saudi-backed airstrikes across Yemen overnight. No damage has been reported at the Yanbu or Rabigh Red Sea berths (AP, Al Jazeera, 9 Sep).",
-  "<b>Russian strikes hit residential Kyiv and the Odesa region overnight, killing two,</b> with no damage reported to any port, grain terminal or fertilizer plant; US efforts to calm Black Sea tensions have faltered. No strike has hit Ukraine's Danube ports since 6 September, Ukraine's sea corridor has carried no traffic since 23 July, and Baltic cargoes exit through the Danish straits, unaffected (Reuters, 112.ua, 9 Sep)."
+  "<b>The tanker war now runs on both sides of the Strait of Hormuz.</b> Wednesday's wave of about ten ships struck — a tanker listing off Dubai's Port Rashid, another hit southeast of Iraq's Al-Faw, and an LNG carrier damaged at Khor Fakkan on the UAE's Gulf of Oman coast outside the strait — was the heaviest against shipping of the war. Transits ran at six vessels crossing with transponders on in 24 hours, against about 130 a day pre-war — all cargo types through the strait, a conflict-intensity gauge, not a urea flow (UKMTO via Argus, 9 Sep).",
+  "<b>Iran's declared restricted zone beyond Hormuz stands,</b> and the agreed Iran–Oman passage arrangement had still not been lodged with the IMO as of the latest reporting (9 Sep), so no usable lane has opened.",
+  "<b>War-risk still hangs over Saudi Arabia's Red Sea coast</b> after Monday's Houthi strikes on Abha, Jazan and Najran (73 wounded) and the Saudi-backed retaliation across Yemen; the export berths at Yanbu and Rabigh are undamaged and continue to load.",
+  "<b>Russian strikes resumed on Kyiv and the Odesa region this week, killing two,</b> with no damage reported to ports, grain terminals or fertilizer plants (Reuters, 9 Sep). Ukraine's sea corridor has carried no traffic since 23 July; Baltic cargoes exit through the Danish straits, unaffected."
  ],
  "eu_quota": {
   "order": "090173",
@@ -470,14 +470,14 @@
   "initial_t": 890000,
   "balance_t": 586346.1,
   "used_t": 303653.9,
-  "awaiting_t": 5516.6,
+  "awaiting_t": 5560.9,
   "critical": true,
   "exhaustion_date": null,
   "last_import": "2026-09-04",
   "last_allocation": "2026-09-08",
-  "source_update": "2026-09-08",
+  "source_update": "2026-09-09",
   "source": "https://ec.europa.eu/taxation_customs/dds2/taric/quota_tariff_details.jsp?Lang=en&StartDate=2026-05-30&Code=090173",
-  "fetched": "2026-09-09",
+  "fetched": "2026-09-10",
   "history": [["2026-09-08", 586346.1]]
  },
  "_quota_note": "eu_quota = the EU duty-free urea tariff quota (Council Regulation (EU) 2026/1181, order number 09.0173, 890,000 t for 30 May 2026 - 31 May 2027, all origins except Russia and Belarus), tonnes, as read from the Commission's QUOTA database. The page renders this block and then refreshes it from /quota.json, which the Netlify scheduled function quota.mjs rewrites daily. Runs: copy the latest /quota.json (raw.githubusercontent.com/borasamman/urea-oracle-dashboard/main/site/quota.json) into this key every edition so the embedded snapshot stays current; never drop the key; balance_t is what remains, used_t what has been cleared duty-free, history = [date, balance_t] one point per allocation date.",
@@ -675,7 +675,7 @@
           pace = 'European urea imports are seasonal. Scaling the ' + fmtT(used) + ' t cleared so far by the usual monthly pattern of the five tracked EU importers, the quota is not expected to run out before it closes on ' + longISO(q.end) + '.';
         } else {
           const endGap = q.end ? daysBetween(outISO, q.end) : null;
-          pace = 'Since the quota opened on ' + shortISO(q.start) + ', about <b>' + fmtT(perDay) + ' t a day</b> has cleared duty-free. At that pace the remaining <b>' + fmtT(q.balance_t) + ' t</b> would last about ' + Math.round(left / 7) + ' weeks and run out around <b>' + longISO(outISO) + '</b>' + (endGap != null && endGap > 0 ? ', about ' + Math.round(endGap / 7) + ' weeks before the quota closes on ' + shortISO(q.end) + '.' : '.');
+          pace = 'Since the quota opened on ' + shortISO(q.start) + ', about <b>' + fmtT(perDay) + ' t a day</b> has cleared duty-free. At that pace the remaining <b>' + fmtT(q.balance_t) + ' t</b> would last about ' + Math.round(left / 7) + ' weeks and run out around <b>' + longISO(outISO) + '</b>' + (endGap != null && endGap > 0 ? ', about ' + Math.round(endGap / 7) + ' weeks before the quota closes on ' + shortISO(q.end) + '.' : '.') ;
         }
         const h = (q.history || []).filter(p => p && p[1] != null).sort((a, b) => a[0] < b[0] ? -1 : 1);
         if (h.length >= 2) {
