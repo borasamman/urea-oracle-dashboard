@@ -4,20 +4,24 @@
  "start": "2026-05-30",
  "end": "2027-05-31",
  "initial_t": 890000,
- "balance_t": 586346.1,
- "used_t": 303653.9,
- "awaiting_t": 19688.9,
+ "balance_t": 566657.2,
+ "used_t": 323342.8,
+ "awaiting_t": 224,
  "critical": true,
  "exhaustion_date": null,
- "last_import": "2026-09-04",
- "last_allocation": "2026-09-08",
+ "last_import": "2026-09-09",
+ "last_allocation": "2026-09-11",
  "source_update": "2026-09-11",
  "source": "https://ec.europa.eu/taxation_customs/dds2/taric/quota_tariff_details.jsp?Lang=en&StartDate=2026-05-30&Code=090173",
- "fetched": "2026-09-11",
+ "fetched": "2026-09-12",
  "history": [
   [
    "2026-09-08",
    586346.1
+  ],
+  [
+   "2026-09-11",
+   566657.2
   ]
  ]
 }
