@@ -260,32 +260,12 @@
   <h2 id="bench-heading"></h2>
   <div class="bench-grid" id="bench"></div>
 
-  <!-- Ask the Oracle — public question panel (1 Sep 2026). KEEP ON EVERY EDITION,
-       exactly like the .site-nav pill bar above: analysis runs touch only the
-       embedded JSON block, so this section persists. Moved directly under the
-       calls grid on 1 Sep 2026 at Bora's request. Backed by the Supabase edge
-       function `ask`; see claude/oracle-ask-panel.md. -->
-  <h2>Ask the Oracle</h2>
-  <section class="card ask" id="ask">
-    <p class="ask-sub">Questions about the urea market — today's view, the numbers behind it, or what happened before. Answers are drawn from this dashboard and five years of daily market reports.</p>
-    <div class="ask-log" id="ask-log" aria-live="polite"></div>
-    <form class="ask-form" id="ask-form" autocomplete="off">
-      <input id="ask-input" type="text" maxlength="400" placeholder="e.g. Why is Egypt trading above the Middle East?" aria-label="Ask a question about the urea market">
-      <button type="submit" id="ask-send">Ask</button>
-    </form>
-    <div class="ask-chips">
-      <button type="button" class="ask-chip">What is driving the market today?</button>
-      <button type="button" class="ask-chip">When is India expected back in the market?</button>
-      <button type="button" class="ask-chip">Where were prices this time last year?</button>
-    </div>
-    <p class="ask-foot">Market commentary, not investment advice. Answers are generated from published reports and can be wrong — check anything you trade on.</p>
-  </section>
 
   <!-- Technical View (14 Sep 2026). KEEP ON EVERY EDITION, like the Ask panel
        and the quota section: rendered from the "ta" JSON key by the script
        below the main render. Runs append one row per benchmark per assessment
        day to ta.series and never compute a tool by hand — the page does. -->
-  <h2>Technical View — trend tools and deal activity on the last-done price</h2>
+  <h2>Technical View basis Daily Prices</h2>
   <section class="card" id="technicals"></section>
 
   <h2>Factor Board — Fundamentals (F) &amp; Geopolitics (G)</h2>
@@ -305,6 +285,27 @@
   <h2>Energy &amp; Crop Prices</h2>
   <div class="drv-grid" id="drivers"></div>
 
+  <!-- Ask the Oracle — public question panel (1 Sep 2026). KEEP ON EVERY EDITION,
+       exactly like the .site-nav pill bar above: analysis runs touch only the
+       embedded JSON block, so this section persists. Moved to the bottom of the page,
+       below Energy & Crop Prices, on 14 Sep 2026 at Bora's request. Backed by the Supabase edge
+       function `ask`; see claude/oracle-ask-panel.md. -->
+  <h2>Ask the Oracle</h2>
+  <section class="card ask" id="ask">
+    <p class="ask-sub">Questions about the urea market — today's view, the numbers behind it, or what happened before. Answers are drawn from this dashboard and five years of daily market reports.</p>
+    <div class="ask-log" id="ask-log" aria-live="polite"></div>
+    <form class="ask-form" id="ask-form" autocomplete="off">
+      <input id="ask-input" type="text" maxlength="400" placeholder="e.g. Why is Egypt trading above the Middle East?" aria-label="Ask a question about the urea market">
+      <button type="submit" id="ask-send">Ask</button>
+    </form>
+    <div class="ask-chips">
+      <button type="button" class="ask-chip">What is driving the market today?</button>
+      <button type="button" class="ask-chip">When is India expected back in the market?</button>
+      <button type="button" class="ask-chip">Where were prices this time last year?</button>
+    </div>
+    <p class="ask-foot">Market commentary, not investment advice. Answers are generated from published reports and can be wrong — check anything you trade on.</p>
+  </section>
+
   <footer>
     Sources: Profercy Nitrogen Service (daily &amp; intraday reports), Fertecon, Argus/FMB, ICE TTF, EIA, public market data.
     Factor codes per the Dreymoor factor framework (F1–F9 fundamentals, G1–G3 geopolitics); rules per the backtested Urea Oracle playbook v1.1.
@@ -316,8 +317,8 @@
 <script id="oracle-data" type="application/json">
 {
  "asof": "2026-09-14",
- "updated": "Sep 14 at 16:35 Paris time",
- "publish_at": "2026-09-14T16:28:00+02:00",
+ "updated": "Sep 14 at 16:55 Paris time",
+ "publish_at": "2026-09-14T16:49:00+02:00",
  "vintage": "Reports read: Profercy 14 Sep 10:24 · Argus 11 Sep · Fertecon 11 Sep",
  "hero": {
   "headline": "The war keeping Gulf urea shut in reached Saudi Arabia's bypass pipeline; we stay higher on all four, Brazil trimmed on China's new quota.",
