@@ -1,0 +1,299 @@
+
+  :root {
+    color-scheme: light;
+    /* Dreymoor brand palette (dreymoorfert.com, applied 10 Sep 2026 — keep on every edition) */
+    --brand: #38b8c8; --brand-deep: #257f8d; --brand-2: #31d58c; --brand-soft: #98eac5;
+    --brand-text: #257f8d; --pill-bg: #257f8d; --pill-fg: #ffffff;
+    --page: #f4f7f8; --surface: #ffffff; --ink: #333333; --ink2: #555555;
+    --muted: #777777; --grid: #e3e9ea; --baseline: #c7d2d4;
+    --border: rgba(51,51,51,0.12);
+    --good: #31d58c; --warn: #fab219; --serious: #ec835a; --crit: #d03b3b;
+    --good-text: #178a58;
+    --s1: #38b8c8; --s2: #eb6834; --s3: #22a86d;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --brand-text: #38b8c8; --pill-bg: #38b8c8; --pill-fg: #0e1719;
+      --page: #0e1719; --surface: #162326; --ink: #f1f5f5; --ink2: #c4cfd1;
+      --muted: #8b9a9d; --grid: #253538; --baseline: #34474b;
+      --border: rgba(255,255,255,0.10);
+      --good-text: #31d58c;
+      --s1: #38b8c8; --s2: #d95926; --s3: #31d58c;
+    }
+  }
+  * { box-sizing: border-box; margin: 0; }
+  body {
+    background: var(--page); color: var(--ink);
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-size: 15px; line-height: 1.5; padding: 24px 20px 60px;
+  }
+  .wrap { max-width: 1180px; margin: 0 auto; }
+  header.site { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 2px solid var(--brand); }
+  .brand { font-size: 20px; font-weight: 700; letter-spacing: .3px; color: var(--brand-text); }
+  .brand span { color: var(--muted); font-weight: 500; }
+  .asof { color: var(--ink2); font-size: 13px; }
+  .updated-chip { display:inline-block; padding:2px 10px; border:1px solid color-mix(in srgb, var(--brand-2) 40%, transparent); border-radius:999px; font-size:12px; color:var(--good-text); background:color-mix(in srgb, var(--brand-2) 14%, transparent); }
+  .vintage { color: var(--muted); font-size: 12px; margin-top: 3px; }
+  h2 { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.1px; color: var(--brand-text); margin: 34px 0 12px; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px; }
+
+  /* hero view */
+  .hero { border-left: 4px solid var(--s1); }
+  .hero .headline { font-size: 17px; font-weight: 600; margin-bottom: 8px; }
+  .hero .body { color: var(--ink2); font-size: 14.5px; }
+  .hero .tail { margin-top: 10px; font-size: 13.5px; color: var(--ink2); }
+  .hero .tail p + p { margin-top: 9px; }
+  .hero .tail b { color: var(--ink); }
+
+  /* benchmark grid */
+  .bench-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(178px, 1fr)); gap: 12px; }
+  .bench { padding: 14px 16px; }
+  .bench .name { font-size: 12.5px; font-weight: 600; color: var(--ink2); }
+  .bench .now { font-size: 21px; font-weight: 700; margin: 2px 0; }
+  .bench .call { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; margin-top: 8px; font-size: 13px; font-weight: 600; }
+  .bench .target-inline { font-weight: 600; }
+  .bench .conf-row { margin-top: 6px; }
+  .arrow-down { color: var(--crit); } .arrow-up { color: var(--good-text); } .arrow-flat { color: var(--muted); }
+  .conf { font-size: 10.5px; font-weight: 700; letter-spacing: .5px; padding: 1px 7px; border-radius: 999px; border: 1px solid var(--border); color: var(--ink2); }
+  /* 24h revision delta */
+  .bench .delta-row { margin-top: 7px; padding-top: 7px; border-top: 1px solid var(--grid); display: flex; align-items: baseline; flex-wrap: wrap; gap: 6px; font-size: 11.5px; line-height: 1.35; }
+  .delta { font-weight: 700; white-space: nowrap; }
+  .delta.up { color: var(--good-text); }
+  .delta.down { color: var(--crit); }
+  .delta.same { color: var(--muted); }
+  .delta-sub { color: var(--muted); }
+
+  /* factor board */
+  .fact-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 10px; }
+  .fact { padding: 12px 14px; }
+  .fact .top { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 4px; }
+  .fact .code { font-weight: 700; font-size: 13px; }
+  .fact .fname { font-size: 12px; color: var(--muted); }
+  .fact .note { font-size: 12.8px; color: var(--ink2); }
+  .fact ul.note { margin: 0; padding-left: 16px; }
+  .fact ul.note li { margin: 2px 0; }
+  .state { display: inline-flex; align-items: center; gap: 5px; font-size: 10.5px; font-weight: 700; letter-spacing: .4px; padding: 2px 8px; border-radius: 999px; white-space: nowrap; }
+  .state::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+  .st-bull { color: var(--good-text); background: color-mix(in srgb, var(--good) 12%, transparent); }
+  .st-bear { color: var(--crit); background: color-mix(in srgb, var(--crit) 10%, transparent); }
+  .st-watch { color: #8a6100; background: color-mix(in srgb, var(--warn) 16%, transparent); }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .st-watch { color: var(--warn); } }
+  .st-quiet { color: var(--muted); background: color-mix(in srgb, var(--muted) 12%, transparent); }
+
+  /* drivers */
+  .drv-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+  .drv { padding: 12px 14px; }
+  .drv .name { font-size: 12px; font-weight: 600; color: var(--ink2); }
+  .drv .val { font-size: 19px; font-weight: 700; margin-top: 2px; }
+  .drv .chg { font-size: 12.5px; margin-top: 2px; }
+  .chg.up { color: var(--good-text); } .chg.down { color: var(--crit); } .chg.flat { color: var(--muted); }
+  .drv .sub { font-size: 11.5px; color: var(--muted); margin-top: 3px; }
+  /* 52-week graph on each price tile (7 Sep 2026 — keep on every edition) */
+  .drv .spark52 { margin: 8px 0 4px; }
+  .drv .spark52 { min-height: 44px; }
+  .drv .spark52 svg { display: block; overflow: visible; }
+  .drv .spark52 .area { fill: var(--brand); opacity: .12; }
+  .drv .spark52 .line { fill: none; stroke: var(--brand-text); stroke-width: 1.5; stroke-linejoin: round; stroke-linecap: round; }
+  .drv .spark52 .base { stroke: var(--grid); stroke-width: 1; }
+  .drv .spark52 .dot { fill: var(--brand-text); }
+  .drv .spark52 .hit { fill: transparent; }
+  .drv .spark52 .hit:hover + .pt { opacity: 1; }
+  .drv .spark52 .pt { opacity: 0; fill: var(--brand-text); pointer-events: none; }
+  .drv .range { font-size: 10.5px; color: var(--muted); margin-bottom: 4px; white-space: nowrap; }
+  .drv .range b { font-weight: 600; color: var(--ink2); }
+
+  /* EU duty-free urea quota (9 Sep 2026 — keep on every edition) */
+  .quota { padding: 16px 18px; }
+  .quota .qupdated { font-size: 12.5px; font-weight: 600; color: var(--ink2); margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--grid); }
+  .quota-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px 18px; margin-bottom: 12px; }
+  .quota .qname { font-size: 12px; font-weight: 600; color: var(--ink2); }
+  .quota .qval { font-size: 21px; font-weight: 700; margin-top: 2px; }
+  .quota .qsub { font-size: 11.5px; color: var(--muted); margin-top: 2px; }
+  .quota .bar { position: relative; height: 10px; border-radius: 999px; background: var(--grid); overflow: hidden; margin: 4px 0 6px; }
+  .quota .bar i { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 999px; background: var(--s1); }
+  .quota .bar i.hot { background: var(--serious); }
+  .quota .bar i.crit { background: var(--crit); }
+  .quota .ticks { display: flex; justify-content: space-between; font-size: 10.5px; color: var(--muted); margin-bottom: 12px; }
+  .quota .pace { font-size: 13.5px; color: var(--ink2); }
+  .quota .pace b { color: var(--ink); }
+  .quota .qnote { font-size: 12.5px; color: var(--muted); margin-top: 10px; padding-top: 8px; border-top: 1px solid var(--grid); }
+  .quota .qnote a { color: inherit; }
+
+  /* Technical View (14 Sep 2026 — keep on every edition) */
+  #technicals { padding: 14px; }
+  .ta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(235px, 1fr)); gap: 12px; }
+  .ta { padding: 14px 16px; }
+  .ta-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; flex-wrap: wrap; }
+  .ta .name { font-size: 12.5px; font-weight: 600; color: var(--ink2); }
+  .ta .now { font-size: 19px; font-weight: 700; margin: 2px 0; }
+  .ta .ta-sub { font-size: 11px; color: var(--muted); line-height: 1.35; }
+  .ta .ta-last { font-size: 12px; font-weight: 600; color: var(--ink2); margin-left: 4px; }
+  .ta-verdict { display: inline-flex; align-items: baseline; gap: 6px; font-size: 12px; font-weight: 700; letter-spacing: .3px; padding: 3px 10px; border-radius: 999px; white-space: nowrap; }
+  .ta-verdict small { font-weight: 600; opacity: .75; }
+  .ta-verdict.strong { color: var(--good-text); background: color-mix(in srgb, var(--good) 14%, transparent); }
+  .ta-verdict.lean { color: var(--good-text); background: color-mix(in srgb, var(--good) 8%, transparent); }
+  .ta-verdict.weak { color: var(--ink2); background: color-mix(in srgb, var(--muted) 14%, transparent); }
+  .ta-verdict.none { color: var(--muted); background: color-mix(in srgb, var(--muted) 12%, transparent); }
+  .ta-verdict.down, .ta-verdict.strong.d, .ta-verdict.lean.d { color: var(--crit); background: color-mix(in srgb, var(--crit) 10%, transparent); }
+  .ta-read { font-size: 13px; color: var(--ink2); margin-top: 8px; }
+  .ta-read p + p { margin-top: 6px; }
+  .ta-read b { color: var(--ink); }
+  ul.ta-tools { list-style: none; padding: 0; margin: 10px 0 0; border-top: 1px solid var(--grid); }
+  ul.ta-tools li { display: grid; grid-template-columns: 14px auto 1fr; column-gap: 6px; align-items: baseline; padding: 5px 0; border-bottom: 1px solid var(--grid); font-size: 12.5px; }
+  ul.ta-tools li b { font-weight: 600; color: var(--ink); }
+  ul.ta-tools .ta-val { justify-self: end; font-variant-numeric: tabular-nums; color: var(--ink2); }
+  ul.ta-tools .ta-why { grid-column: 2 / 4; color: var(--muted); font-size: 11.5px; }
+  .ta-up { color: var(--good-text); } .ta-down { color: var(--crit); } .ta-flat { color: var(--muted); }
+  /* tool charts */
+  ul.ta-tools .ta-chart { grid-column: 1 / 4; margin: 4px 0 2px; }
+  .ta-chart svg { display: block; width: 100%; height: 96px; overflow: visible; }
+  .ta-chart svg.short { height: 56px; }
+  .ta-chart .price { fill: none; stroke: var(--brand-text); stroke-width: 1.6; stroke-linejoin: round; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+  .ta-chart .ind { fill: none; stroke: var(--s2); stroke-width: 1.2; vector-effect: non-scaling-stroke; }
+  .ta-chart .ind2 { fill: none; stroke: var(--muted); stroke-width: 1; stroke-dasharray: 3 2; vector-effect: non-scaling-stroke; }
+  .ta-chart .band { fill: var(--brand); opacity: .12; }
+  .ta-chart .dot { fill: var(--brand-text); }
+  .ta-chart .zero { stroke: var(--baseline); stroke-width: 1; vector-effect: non-scaling-stroke; }
+  .ta-chart .dead { fill: var(--muted); opacity: .12; }
+  .ta-chart .bar-deal { fill: var(--brand); opacity: .7; }
+  .ta-chart .bar-up { fill: var(--good); } .ta-chart .bar-down { fill: var(--crit); } .ta-chart .bar-flat { fill: var(--baseline); } .ta-chart .bar-hot { fill: var(--s2); }
+  .ta-chart .seg-up { stroke: var(--good-text); } .ta-chart .seg-down { stroke: var(--crit); } .ta-chart .seg-flat { stroke: var(--baseline); }
+  .ta-chart line[class^="seg"] { stroke-width: 1.8; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+  .ta-chart .hit { fill: transparent; }
+  .ta-chart .hit:hover { fill: var(--brand); opacity: .08; }
+  .ta-legend { font-size: 10.5px; color: var(--muted); margin-top: 3px; line-height: 1.35; }
+  .ta-legend .k { display: inline-block; width: 10px; height: 0; border-top: 2px solid; margin: 0 3px 3px 0; vertical-align: middle; }
+  .ta-legend .k.ind { border-color: var(--s2); } .ta-legend .k.ind2 { border-color: var(--muted); border-top-style: dashed; }
+  .ta-legend .k.up { border-color: var(--good-text); } .ta-legend .k.down { border-color: var(--crit); } .ta-legend .k.flat { border-color: var(--baseline); }
+  .ta-legend .k.band { height: 8px; border: 0; background: var(--brand); opacity: .25; }
+  .ta-foot { font-size: 11.5px; color: var(--muted); margin-top: 12px; padding-top: 8px; border-top: 1px solid var(--grid); }
+
+  /* geo list */
+  .geo li { margin: 7px 0 7px 2px; color: var(--ink2); font-size: 14px; }
+  .geo li b { color: var(--ink); font-weight: 600; }
+  .geo { padding-left: 20px; }
+
+  footer { margin-top: 40px; font-size: 12px; color: var(--muted); border-top: 1px solid var(--grid); padding-top: 14px; }
+  .cols2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 800px) { .cols2 { grid-template-columns: 1fr; } }
+
+  /* unified Dreymoor site nav (merge 20 Aug 2026; Production Costs + CBAM pills 9 Sep 2026 — keep on every edition) */
+  .site-nav { display: flex; gap: 8px; flex-wrap: wrap; margin: 2px 0 14px; }
+  .nav-pill { display: inline-block; padding: 4px 14px; border: 1px solid var(--border); border-radius: 999px; font-size: 12.5px; font-weight: 600; text-decoration: none; color: var(--ink2); background: var(--surface); }
+  .nav-pill.active { background: var(--pill-bg); color: var(--pill-fg); border-color: var(--pill-bg); }
+  a.nav-pill:hover { border-color: var(--brand); color: var(--brand-text); }
+  /* iPhone app shell (PWA) — safe areas + install hint */
+  @supports (padding: env(safe-area-inset-top)) {
+    body { padding-top: calc(24px + env(safe-area-inset-top)); padding-bottom: calc(60px + env(safe-area-inset-bottom)); }
+  }
+  @media (display-mode: standalone) { body { padding-top: calc(14px + env(safe-area-inset-top)); } }
+  .install-hint { display: none; margin: 0 0 16px; padding: 10px 14px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); font-size: 13px; color: var(--ink2); }
+  .install-hint.show { display: flex; align-items: center; gap: 10px; justify-content: space-between; }
+  .install-hint b { color: var(--ink); }
+  .install-hint button { border: 0; background: none; color: var(--muted); font-size: 18px; line-height: 1; cursor: pointer; padding: 2px 4px; }
+
+  /* Ask the Oracle — public question panel (1 Sep 2026). KEEP ON EVERY EDITION,
+     like the .site-nav pill bar. Analysis runs touch only the JSON block. */
+  .ask { padding: 18px; }
+  .ask-sub { margin: -2px 0 14px; color: var(--ink2); font-size: 13.5px; max-width: 66ch; }
+  .ask-log { display: flex; flex-direction: column; gap: 10px; }
+  .ask-log:not(:empty) { margin-bottom: 14px; }
+  .ask-q, .ask-a { border-radius: 9px; padding: 10px 13px; font-size: 14px; line-height: 1.55; }
+  .ask-q { background: color-mix(in srgb, var(--s1) 10%, transparent); border: 1px solid color-mix(in srgb, var(--s1) 26%, transparent); align-self: flex-end; max-width: 85%; }
+  .ask-a { background: var(--page); border: 1px solid var(--border); color: var(--ink2); }
+  .ask-a p { margin: 0 0 8px; } .ask-a p:last-child { margin-bottom: 0; }
+  .ask-src { margin-top: 8px; padding-top: 7px; border-top: 1px solid var(--grid); color: var(--muted); font-size: 11.5px; }
+  .ask-form { display: flex; gap: 8px; }
+  #ask-input { flex: 1; min-width: 0; background: var(--page); color: var(--ink); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; font: inherit; font-size: 14px; }
+  #ask-input:focus { outline: 2px solid var(--brand); outline-offset: -1px; }
+  #ask-send { background: var(--pill-bg); color: var(--pill-fg); border: 0; border-radius: 8px; padding: 10px 18px; font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; }
+  #ask-send:disabled { opacity: .45; cursor: default; }
+  .ask-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+  .ask-chip { background: transparent; color: var(--ink2); border: 1px solid var(--border); border-radius: 999px; padding: 5px 11px; font: inherit; font-size: 12.5px; cursor: pointer; }
+  .ask-chip:hover { border-color: var(--brand); color: var(--brand-text); }
+  .ask-foot { margin: 12px 0 0; color: var(--muted); font-size: 11.5px; }
+  .ask-think { display: inline-flex; gap: 4px; align-items: center; color: var(--muted); font-size: 13px; }
+  .ask-think i { width: 5px; height: 5px; border-radius: 50%; background: var(--muted); display: inline-block; animation: askpulse 1.1s infinite ease-in-out; }
+  .ask-think i:nth-child(2) { animation-delay: .15s; } .ask-think i:nth-child(3) { animation-delay: .3s; }
+  @keyframes askpulse { 0%, 80%, 100% { opacity: .25; } 40% { opacity: 1; } }
+  @media (max-width: 560px) { .ask-q { max-width: 95%; } }
+  /* Collapsible sections (17 Sep 2026, Bora — keep on every edition). The hero and
+     the "Calls to <date>" grid stay open; every section below is a <details class="sec">
+     the reader expands. Markup only — analysis runs touch just the JSON block. */
+  details.sec { margin-top: 10px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface); }
+  details.sec:first-of-type { margin-top: 24px; }
+  details.sec > summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 10px;
+    padding: 14px 16px; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.1px;
+    color: var(--brand-text); border-radius: 12px; -webkit-tap-highlight-color: transparent; }
+  details.sec > summary::-webkit-details-marker { display: none; }
+  details.sec > summary::after { content: ''; margin-left: auto; flex: none; width: 8px; height: 8px;
+    border-right: 2px solid currentColor; border-bottom: 2px solid currentColor;
+    transform: translateY(-2px) rotate(45deg); transition: transform .18s ease; }
+  details.sec[open] > summary::after { transform: translateY(2px) rotate(225deg); }
+  details.sec > summary:hover { color: var(--brand); }
+  details.sec > summary:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+  details.sec[open] > summary { border-bottom: 1px solid var(--border); border-radius: 12px 12px 0 0; }
+  details.sec .sec-hint { margin-left: 2px; font-weight: 400; text-transform: none; letter-spacing: 0;
+    font-size: 11.5px; color: var(--muted); }
+  .sec-body { padding: 14px 16px 16px; }
+  .sec-body > .card { background: transparent; border: none; border-radius: 0; padding: 0; }
+  .sec-body > h2:first-child { margin-top: 0; }
+  @media (max-width: 520px) {
+    details.sec > summary { padding: 13px 13px; font-size: 12px; letter-spacing: .9px; }
+    .sec-body { padding: 12px 13px 14px; }
+  }
+  /* Turn calls (21 Sep 2026, Bora). The calls grid answers WHEN the trend is
+     expected to turn; the price target stays in the JSON for scoring but is no
+     longer shown. Replaces the old .bench .call / .delta-row presentation —
+     those rules are left in place but nothing renders them any more. */
+  .bench .nowsub { font-size: 11px; color: var(--muted); }
+  .phase { display:inline-flex; align-items:center; gap:5px; font-size:10.5px; font-weight:700; letter-spacing:.4px;
+           padding:2px 8px; border-radius:999px; white-space:nowrap; margin-top:10px; }
+  .phase::before { content:""; width:7px; height:7px; border-radius:50%; background:currentColor; }
+  .ph-up    { color:var(--good-text); background:color-mix(in srgb, var(--good) 12%, transparent); }
+  .ph-down  { color:var(--crit); background:color-mix(in srgb, var(--crit) 10%, transparent); }
+  .ph-stall { color:#8a6100; background:color-mix(in srgb, var(--warn) 18%, transparent); }
+  .ph-turn  { color:var(--crit); background:color-mix(in srgb, var(--crit) 12%, transparent); }
+  .ph-flat  { color:var(--muted); background:color-mix(in srgb, var(--muted) 12%, transparent); }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .ph-stall { color: var(--warn); } }
+  .bench .phage { font-size:11.5px; color:var(--muted); margin-top:5px; }
+  .bench .turn { margin-top:9px; font-size:15.5px; font-weight:700; line-height:1.3; }
+  .turn.hold { color: var(--good-text); }
+  .turn.soon { color: #8a6100; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .turn.soon { color: var(--warn); } }
+  .turn.done { color: var(--crit); }
+  .bench .turnsub { font-size:12px; color:var(--ink2); margin-top:4px; }
+  .risk { margin-top:11px; padding-top:10px; border-top:1px solid var(--grid); }
+  .risk-top { display:flex; align-items:baseline; justify-content:space-between; gap:8px; font-size:12px; }
+  .risk-top .lab { font-weight:600; color:var(--ink2); }
+  .risk-top .num { font-size:19px; font-weight:700; }
+  .risk-chg { font-weight:700; white-space:nowrap; font-size:11.5px; }
+  .risk-chg.up { color: var(--crit); } .risk-chg.down { color: var(--good-text); } .risk-chg.same { color: var(--muted); }
+  .risk-bar { position:relative; height:9px; border-radius:999px; background:var(--grid); overflow:hidden; margin:6px 0 5px; }
+  .risk-bar i { position:absolute; left:0; top:0; bottom:0; border-radius:999px; background:var(--brand); }
+  .risk-bar i.b2 { background: var(--warn); } .risk-bar i.b3 { background: var(--serious); } .risk-bar i.b4 { background: var(--crit); }
+  .risk-scale { display:flex; justify-content:space-between; font-size:10px; color:var(--muted); }
+  .risk-why { font-size:11.5px; color:var(--muted); margin-top:5px; line-height:1.4; }
+  .risk-why b { color: var(--ink2); }
+  .risk-stale { font-size:11px; color:var(--muted); margin-top:4px; font-style:italic; }
+  .bench-grid { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
+  .bench-foot { font-size:11.5px; color:var(--muted); margin-top:10px; line-height:1.45; max-width:100ch; }
+  /* Turn calls, revision 2 (21 Sep 2026 evening, Bora): confidence reads as a word,
+     turn risk as a band with its scale underneath, the day's news sentence off the
+     card (it is already in the Factor Board), no assessment date unless the price
+     is stale, and no duplicated reasoning under the bar. */
+  .confline { margin-top:10px; }
+  .confword { display:inline-block; font-size:10.5px; font-weight:700; letter-spacing:.5px; padding:2px 8px; border-radius:999px; }
+  .cw-strong { color:var(--good-text); background:color-mix(in srgb, var(--good) 14%, transparent); }
+  .cw-good { color:var(--good-text); background:color-mix(in srgb, var(--good) 10%, transparent); }
+  .cw-mod { color:#8a6100; background:color-mix(in srgb, var(--warn) 16%, transparent); }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .cw-mod { color: var(--warn); } }
+  .confnote { font-size:11.5px; color:var(--muted); margin-top:4px; line-height:1.4; }
+  .bench .turnsub { font-size:12.5px; margin-top:5px; }
+  .risk-word { font-size:12.5px; font-weight:700; letter-spacing:.3px; color:var(--good-text); }
+  .risk-word.rw-b2 { color:#8a6100; } .risk-word.rw-b3 { color:var(--serious); } .risk-word.rw-b4 { color:var(--crit); }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .risk-word.rw-b2 { color: var(--warn); } }
+  .risk-scale span.on { font-weight:700; color:var(--good-text); }
+  .risk-scale span.on.rw-b2 { color:#8a6100; } .risk-scale span.on.rw-b3 { color:var(--serious); } .risk-scale span.on.rw-b4 { color:var(--crit); }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .risk-scale span.on.rw-b2 { color: var(--warn); } }
