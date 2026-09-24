@@ -13,6 +13,18 @@
 //   4. if a scheduled edition is overdue and today's content never arrived, open
 //      a GitHub issue (which emails the repo owner) — once, not every 5 minutes
 //
+// Since 24 Sep 2026 (v3.1) an edition may be SLIM: its styling and code live in
+// versioned files under site/assets/ (e.g. /assets/oracle-20260924.css) instead of
+// inline, so the daily upload carries only the markup and the data block (~58 KB
+// instead of ~132 KB — the 23 Sep evening edition failed because the full page no
+// longer fitted through a single upload). The asset files are uploaded ONCE to the
+// same Drive folder as `oracle-asset-<name>`; before publishing an edition this
+// function makes sure every /assets/<name> it references exists in the repo,
+// committing it from Drive if it does not. An edition whose assets cannot be found,
+// or whose data block does not parse, is REJECTED and the next-best is used — the
+// site never goes to a page that cannot render. Asset names are never reused: a
+// changed stylesheet or script gets a new name.
+//
 // Nothing sleeps, nothing waits for an exact second. An edition uploaded at 12:25
 // stamped publish_at 12:59 simply becomes eligible at 12:59 and goes live on the
 // next tick. An edition uploaded late goes live on the next tick after it lands.
@@ -38,7 +50,11 @@ const TARGET   = 'site/index.html';
 const PARIS    = 'Europe/Paris';
 const NAME_RE  = /^urea-oracle-dashboard-(\d{4}-\d{2}-\d{2})(?:-([A-Za-z0-9]+))?\.html$/;
 const TIMED_RE = /^e([0-2]\d[0-5]\d)$/;
-const UA       = 'oracle-publisher/3.0 (netlify scheduled function)';
+const UA       = 'oracle-publisher/3.1 (netlify scheduled function)';
+const ASSET_DIR   = 'site/assets';
+const ASSET_PREFIX = 'oracle-asset-';                        // Drive name = prefix + asset name
+const ASSET_REF_RE = /(?:href|src)="\/assets\/([A-Za-z0-9._-]+)"/g;
+const DATA_RE      = /<script id="oracle-data" type="application\/json">([\s\S]*?)<\/script>/;
 
 // Publish moments, Paris local time, weekdays only.
 const SLOTS = [{ hh: 12, mm: 59, label: 'midday' }, { hh: 18, mm: 59, label: 'evening' }];
@@ -147,6 +163,37 @@ async function download(id) {
   throw new Error(`download failed for ${id}: ${last}`);
 }
 
+// Asset files (css/js). A Drive error or interstitial page is HTML, which no
+// asset of ours ever is — that is the sanity check.
+async function downloadAsset(id) {
+  const urls = [
+    `https://drive.usercontent.google.com/download?id=${id}&export=download`,
+    `https://drive.google.com/uc?export=download&id=${id}`
+  ];
+  let last;
+  for (const u of urls) {
+    try {
+      const body = await fetchText(u);
+      if (body.trim().length > 0 && !/^\s*<(!doctype|html)/i.test(body)) return body;
+      last = `sanity check failed (len=${body.length})`;
+    } catch (e) { last = e.message; }
+  }
+  throw new Error(`asset download failed for ${id}: ${last}`);
+}
+
+// Content checks that do not depend on the layout: the data block must be there
+// and must parse. A cut or garbled upload fails here and is never published.
+export function contentProblems(html) {
+  const m = DATA_RE.exec(html);
+  if (!m) return ['missing the oracle-data block'];
+  try { JSON.parse(m[1]); } catch (e) { return [`oracle-data does not parse (${e.message})`]; }
+  return [];
+}
+
+export function assetRefs(html) {
+  return [...new Set([...html.matchAll(ASSET_REF_RE)].map(m => m[1]))];
+}
+
 // ------------------------------------------------------------------- selection
 
 // Same-date ordering, unchanged from the old publisher so legacy files behave
@@ -239,7 +286,7 @@ export function designProblems(html) {
 
 // The publish schedule, as a property of the content: an edition is eligible
 // once its own publish_at has passed. Files without one are always eligible.
-async function pickEligible(files, now, load = download) {
+async function pickEligible(files, now, load = download, assetCheck = null) {
   const candidates = files
     .map(f => { const m = NAME_RE.exec(f.name); return m ? { ...f, date: m[1], suffix: m[2] || '' } : null; })
     .filter(Boolean)
@@ -252,9 +299,9 @@ async function pickEligible(files, now, load = download) {
     try { html = await load(c.id); }
     catch (e) { console.warn(`[oracle] skipping ${c.name}: ${e.message}`); continue; }
 
-    const problems = designProblems(html);
+    const problems = [...designProblems(html), ...contentProblems(html)];
     if (problems.length) {
-      console.warn(`[oracle] REJECTED ${c.name}: old layout — ${problems.join('; ')}. ` +
+      console.warn(`[oracle] REJECTED ${c.name}: ${problems.join('; ')}. ` +
                    'Looking further down; the site keeps its current edition otherwise.');
       continue;
     }
@@ -276,6 +323,15 @@ async function pickEligible(files, now, load = download) {
     if (dueMs !== null && dueMs > now.getTime()) {
       console.log(`[oracle] ${c.name} is embargoed until ${new Date(dueMs).toISOString()} (${dueSrc}); looking further down`);
       continue;                          // not yet due — try the next-best edition
+    }
+    if (assetCheck) {
+      let missing;
+      try { missing = await assetCheck(html); }
+      catch (e) { missing = [`asset check failed: ${e.message}`]; }
+      if (missing.length) {
+        console.warn(`[oracle] REJECTED ${c.name}: ${missing.join('; ')}. Looking further down.`);
+        continue;
+      }
     }
     return { ...c, html, publishAt, dueMs, dueSrc };
   }
@@ -308,6 +364,48 @@ async function readTarget() {
     if (String(e.message).includes('-> 404')) return { sha: null, content: '' };
     throw e;
   }
+}
+
+async function repoHas(path) {
+  try { await gh(`/repos/${REPO}/contents/${path}?ref=${BRANCH}`); return true; }
+  catch (e) { if (String(e.message).includes('-> 404')) return false; throw e; }
+}
+
+async function commitFile(path, text, message) {
+  return gh(`/repos/${REPO}/contents/${path}`, {
+    method: 'PUT',
+    body: JSON.stringify({
+      message,
+      content: Buffer.from(text, 'utf8').toString('base64'),
+      branch: BRANCH,
+      committer: { name: 'oracle-publisher[bot]', email: 'oracle-publisher@users.noreply.github.com' }
+    })
+  });
+}
+
+// Every /assets/<name> an edition references must exist in the repo before the
+// edition goes live. Missing ones are committed from the Drive folder
+// (`oracle-asset-<name>`). Returns a list of problems; empty means ready.
+function makeAssetCheck(files) {
+  const inDrive = new Map(files.filter(f => f.name.startsWith(ASSET_PREFIX))
+                               .map(f => [f.name.slice(ASSET_PREFIX.length), f]));
+  const known = new Set();
+  return async (html) => {
+    const problems = [];
+    for (const name of assetRefs(html)) {
+      if (known.has(name)) continue;
+      const path = `${ASSET_DIR}/${name}`;
+      if (await repoHas(path)) { known.add(name); continue; }
+      const f = inDrive.get(name);
+      if (!f) { problems.push(`asset ${name} is neither in the repo nor in Drive as ${ASSET_PREFIX}${name}`); continue; }
+      const text = await downloadAsset(f.id);
+      if (DRY_RUN) { console.log(`[oracle] DRY_RUN: would commit ${path} (${text.length} chars)`); known.add(name); continue; }
+      await commitFile(path, text, `[oracle-asset] ${name} from Drive`);
+      console.log(`[oracle] committed asset ${path} (${Buffer.byteLength(text)} bytes) from Drive`);
+      known.add(name);
+    }
+    return problems;
+  };
 }
 
 async function commit(html, sha, message) {
@@ -367,7 +465,7 @@ export default async () => {
     return new Response('drive listing failed', { status: 502 });
   }
 
-  const chosen = await pickEligible(listed.files, now);
+  const chosen = await pickEligible(listed.files, now, download, makeAssetCheck(listed.files));
   if (!chosen) {
     console.warn(`[oracle] no eligible edition (${listed.files.length} files seen via ${listed.source})`);
   }
