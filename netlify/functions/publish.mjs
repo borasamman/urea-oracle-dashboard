@@ -34,7 +34,10 @@
 //   GITHUB_REPO      default borasamman/urea-oracle-dashboard
 //   GITHUB_BRANCH    default main
 //   DRIVE_FOLDER_ID  default 1ZUOfloc_TELKDQMpabLJky60KZPNgcBr
-//   DRIVE_API_KEY    optional — without it the function falls back to scraping
+//   DRIVE_API_KEY    strongly recommended — without it the function falls back to
+//                    scraping the public folder page, which on 25 Sep 2026 returned
+//                    17 of ~150 files for six hours and held the evening edition
+//                    back until 00:55. With it: ordered, paged listing + API downloads.
 //   DRY_RUN          optional — "1" logs what it would do and commits nothing
 
 const FOLDER_ID = process.env.DRIVE_FOLDER_ID || '1ZUOfloc_TELKDQMpabLJky60KZPNgcBr';
@@ -50,7 +53,7 @@ const TARGET   = 'site/index.html';
 const PARIS    = 'Europe/Paris';
 const NAME_RE  = /^urea-oracle-dashboard-(\d{4}-\d{2}-\d{2})(?:-([A-Za-z0-9]+))?\.html$/;
 const TIMED_RE = /^e([0-2]\d[0-5]\d)$/;
-const UA       = 'oracle-publisher/3.1 (netlify scheduled function)';
+const UA       = 'oracle-publisher/3.2 (netlify scheduled function)';
 const ASSET_DIR   = 'site/assets';
 const ASSET_PREFIX = 'oracle-asset-';                        // Drive name = prefix + asset name
 const ASSET_REF_RE = /(?:href|src)="\/assets\/([A-Za-z0-9._-]+)"/g;
@@ -111,14 +114,24 @@ async function fetchText(url, opts = {}) {
 }
 
 // Preferred: the real Drive API. Needs DRIVE_API_KEY and a link-shared folder.
+// Newest first and paged (v3.2, 28 Sep 2026): the folder holds well over 100
+// files, and an unordered single page is not guaranteed to include the newest.
 async function listViaApi() {
   if (!DRIVE_KEY) return null;
   const q = encodeURIComponent(`'${FOLDER_ID}' in parents and trashed = false`);
-  const url = `https://www.googleapis.com/drive/v3/files?q=${q}`
-            + `&fields=files(id,name,createdTime)&pageSize=200&key=${DRIVE_KEY}`;
-  const body = await fetchText(url);
-  const files = JSON.parse(body).files || [];
-  return files.map(f => ({ id: f.id, name: f.name, created: f.createdTime }));
+  const out = [];
+  let pageToken = '';
+  for (let page = 0; page < 5; page++) {
+    const url = `https://www.googleapis.com/drive/v3/files?q=${q}`
+              + `&orderBy=createdTime%20desc&pageSize=1000`
+              + `&fields=nextPageToken,files(id,name,createdTime)&key=${DRIVE_KEY}`
+              + (pageToken ? `&pageToken=${encodeURIComponent(pageToken)}` : '');
+    const j = JSON.parse(await fetchText(url));
+    for (const f of j.files || []) out.push({ id: f.id, name: f.name, created: f.createdTime });
+    if (!j.nextPageToken) break;
+    pageToken = j.nextPageToken;
+  }
+  return out;
 }
 
 // Fallback: the folder-page scrape the old publisher relied on. Kept ONLY as a
@@ -147,11 +160,19 @@ async function listFolder() {
   return { files: viaScrape, source: 'scrape' };
 }
 
-async function download(id) {
-  const urls = [
+// Where to fetch a file's bytes from. With an API key, the Drive API is tried
+// first: it returns the raw file with no "can't scan for viruses" or warning
+// page in front of it (the page that blocked .js assets on 24 Sep 2026).
+function downloadUrls(id) {
+  return [
+    ...(DRIVE_KEY ? [`https://www.googleapis.com/drive/v3/files/${id}?alt=media&key=${DRIVE_KEY}`] : []),
     `https://drive.usercontent.google.com/download?id=${id}&export=download`,
     `https://drive.google.com/uc?export=download&id=${id}`
   ];
+}
+
+async function download(id) {
+  const urls = downloadUrls(id);
   let last;
   for (const u of urls) {
     try {
@@ -166,10 +187,7 @@ async function download(id) {
 // Asset files (css/js). A Drive error or interstitial page is HTML, which no
 // asset of ours ever is — that is the sanity check.
 async function downloadAsset(id) {
-  const urls = [
-    `https://drive.usercontent.google.com/download?id=${id}&export=download`,
-    `https://drive.google.com/uc?export=download&id=${id}`
-  ];
+  const urls = downloadUrls(id);
   let last;
   for (const u of urls) {
     try {
