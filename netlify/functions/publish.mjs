@@ -467,7 +467,14 @@ async function raiseStale(title, body) {
 
 // ----------------------------------------------------------------------- main
 
+// RETIRED 28 Sep 2026. The Oracle page now reads each edition straight from the
+// database (Supabase public.editions) and nothing is copied from Drive any more.
+// Without this guard, this function would copy a Drive file over the new page
+// (site/index.html) every time it ran. Delete RETIRED to bring the old route back.
+const RETIRED = true;
+
 export default async () => {
+  if (RETIRED) return new Response('retired - the Oracle page reads the database directly', { status: 410 });
   const now = new Date();
   const paris = parisParts(now);
 
@@ -549,4 +556,5 @@ export default async () => {
   });
 };
 
-export const config = { schedule: '*/5 * * * *' };
+// schedule removed 28 Sep 2026 (was '*/5 * * * *') - see RETIRED above
+export const config = {};
