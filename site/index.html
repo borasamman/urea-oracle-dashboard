@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="oracle-page" content="database-v1">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <!-- iPhone app shell (PWA, 24 Aug 2026) — keep these tags on every edition -->
 <link rel="manifest" href="/manifest.webmanifest">
@@ -139,8 +140,26 @@
  "_history_note": "history = 52 weekly closing prices per Energy & Crop Prices tile, keyed by the tile name, [ISO date, value] pairs oldest first; the page draws it as the 52-week graph. Runs: keep it verbatim; every Monday midday run appends last week's close for each series and drops the oldest point so each stays at 52. Source: front-month futures weekly closes (TTF, Brent, Henry Hub, CBOT corn/wheat/soybeans)."
 }</script>
 
-<script src="/assets/oracle-20260924.js"></script>
 <script>
+/* Urea Oracle page loader (28 Sep 2026). The page design is fixed; each edition lives in
+   the database (Supabase table public.editions) and the page shows the newest one whose
+   publish time has passed - the database hides later ones, so nothing has to "flip" the
+   site at 13:00 or 19:00. The data block above is a built-in copy of an older edition,
+   used only if the database cannot be reached. */
+(function () {
+  var KEY = 'sb_publishable_P9Wm7Owg1tCMpl7Ws44L5w_YrGnwXs2';
+  var URL = 'https://qexbmezexqcitprtdemt.supabase.co/rest/v1/oracle_live?select=payload,publish_at,created_at';
+  var el = document.getElementById('oracle-data');
+  function chip(ms) {
+    var d = new Date(ms);
+    if (d.getUTCMinutes() === 59) d = new Date(ms + 60000);
+    var p = {};
+    new Intl.DateTimeFormat('en-US', { timeZone: 'Europe/Paris', month: 'short', day: 'numeric',
+      hour: '2-digit', minute: '2-digit', hour12: false }).formatToParts(d).forEach(function (x) { p[x.type] = x.value; });
+    return p.month + ' ' + p.day + ' at ' + (p.hour === '24' ? '00' : p.hour) + ':' + p.minute + ' Paris time';
+  }
+  function afterPageCode() {
+
 /* Calls-grid patch (24 Sep 2026, Bora). KEEP ON EVERY EDITION until the page code is
    re-issued as a new asset with these changes built in. Runs after the page code:
    (1) fixed card order Egypt, Brazil, US Gulf, Middle East; (2) the risk bar is
@@ -170,6 +189,30 @@
     'whether momentum is fading, how much business is being reported against the normal rate, and whether the reasons behind the move are reversing. ' +
     'A turn means a reversal of 5% or more in the last traded price. Past patterns and stated judgement, not a guarantee; these calls have not yet been scored.';
 } catch (e) { console.error('[oracle] calls-grid patch', e); } })();
+
+  }
+  var started = false;
+  function start() {
+    if (started) return; started = true;
+    var s = document.createElement('script');
+    s.src = '/assets/oracle-20260924.js';
+    s.onload = afterPageCode;
+    document.body.appendChild(s);
+  }
+  var ctl = window.AbortController ? new AbortController() : null;
+  var timer = setTimeout(function () { if (ctl) ctl.abort(); start(); }, 8000);
+  fetch(URL, { headers: { apikey: KEY, Authorization: 'Bearer ' + KEY }, cache: 'no-store', signal: ctl ? ctl.signal : undefined })
+    .then(function (r) { return r.ok ? r.json() : Promise.reject('HTTP ' + r.status); })
+    .then(function (rows) {
+      var row = rows && rows[0];
+      if (started || !row || !row.payload || !row.payload.asof) return;
+      var p = row.payload;
+      p.updated = chip(Math.max(Date.parse(row.publish_at), Date.parse(row.created_at)));
+      el.textContent = JSON.stringify(p);
+    })
+    .catch(function (e) { console.warn('[oracle] live edition not reachable; showing the built-in copy', e); })
+    .then(function () { clearTimeout(timer); start(); });
+})();
 </script>
 
 </body>
