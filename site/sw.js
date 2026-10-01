@@ -10,7 +10,7 @@
  * The publisher only rewrites site/index.html, so this file survives every
  * publish. Bump CACHE when this file changes so old caches are dropped.
  */
-const CACHE = 'oracle-shell-v1';
+const CACHE = 'oracle-shell-v2';
 const SHELL = ['/', '/manifest.webmanifest', '/icons/icon-192.png', '/icons/icon-512.png'];
 
 self.addEventListener('install', (e) => {
