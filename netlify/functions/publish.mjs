@@ -285,7 +285,7 @@ const sameEdition = (a, b) => stripChip(a) === stripChip(b);
 
 // ---------------------------------------------------------------- design guard
 // Added 10 Sep 2026 (Bora): every edition must carry the four-pill site nav
-// (Daily Urea Oracle · Weekly Digest · Production Costs · CBAM) and the DREYMOOR
+// (Urea Oracle · Weekly Digest · Production Costs · CBAM) and the DREYMOOR
 // brand line. The analysis runs only rewrite the JSON block, so a real edition
 // always passes; a file built from an old template is rejected and logged, and
 // the next-best eligible edition is used instead. If the design is changed on
@@ -293,7 +293,7 @@ const sameEdition = (a, b) => stripChip(a) === stripChip(b);
 const DESIGN_MARKERS = [
   ['class="brand"',          'the DREYMOOR brand line'],
   ['class="site-nav"',       'the site nav'],
-  ['>Daily Urea Oracle<',    'the "Daily Urea Oracle" pill'],
+  ['>Urea Oracle<',    'the "Urea Oracle" pill'],
   ['>Weekly Digest<',        'the "Weekly Digest" pill'],
   ['>Production Costs<',     'the "Production Costs" pill'],
   ['>CBAM<',                 'the "CBAM" pill']
